@@ -1,0 +1,163 @@
+/*
+ * vaguada.css — estilos propios que usa VaguadaLanding.jsx
+ * (extraídos del CSS compilado de la página original).
+ *
+ * Si tu proyecto ya importa Tailwind v4 en otro CSS global, puedes quitar
+ * la línea @import "tailwindcss" de aquí.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+/* ── Base ─────────────────────────────────────────────── */
+@layer base {
+  body {
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0f172a;
+  }
+}
+
+body {
+  background-image:
+    radial-gradient(640px at 8% 10%, #bed5f58c, #0000 60%),
+    radial-gradient(560px at 92% 16%, #cdd7f580, #0000 60%),
+    radial-gradient(680px at 50% 96%, #d2e4f573, #0000 60%),
+    linear-gradient(#f7fafc 0%, #eff3f8 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Diapositivas con scroll-snap ─────────────────────── */
+.slides-container {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100dvh;
+  overflow-y: auto;
+}
+
+.slide-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Tablets táctiles: sin snap, altura libre */
+.slides-container.no-snap {
+  scroll-snap-type: none;
+  height: auto;
+  overflow-y: visible;
+}
+
+.no-snap .slide-section {
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Tipografías ──────────────────────────────────────── */
+.font-syne {
+  font-family: Manrope, "Plus Jakarta Sans", sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.font-mono-code {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* ── Capa de tema ─────────────────────────────────────────
+ * El JSX usa clases "stone/emerald" con bordes gruesos; esta capa las
+ * reinterpreta como tarjetas de vidrio redondeadas en azul pizarra.
+ * Borra este bloque si prefieres el estilo crudo (beige + bordes negros).
+ */
+:root {
+  --e-ink: #1e2a45;
+  --e-body: #4b5768;
+  --e-dim: #8993a3;
+  --e-faint: #b7bfc9;
+  --e-accent: #3b6fa0;
+  --e-accent-soft: #8fc1e0;
+  --e-glass: #ffffffe0;
+}
+
+.bg-\[\#FAF6EE\],
+.bg-\[\#F4EFE6\] {
+  background-color: transparent !important;
+}
+
+.from-\[\#FAF6EE\],
+.from-\[\#F4EFE6\],
+.via-\[\#FAF6EE\]\/85,
+.via-\[\#FAF6EE\]\/90,
+.via-\[\#F4EFE6\]\/90,
+.to-\[\#FAF6EE\],
+.to-\[\#FAF6EE\]\/65,
+.to-\[\#FAF6EE\]\/80,
+.to-\[\#F4EFE6\]\/60 {
+  background-image: none !important;
+}
+
+.text-stone-950,
+.text-stone-900 { color: var(--e-ink) !important; }
+.text-stone-800,
+.text-stone-700 { color: var(--e-body) !important; }
+.text-stone-600,
+.text-stone-500 { color: var(--e-dim) !important; }
+.text-stone-400 { color: var(--e-faint) !important; }
+
+.border-2.border-stone-800,
+.bg-white\/95 {
+  background: var(--e-glass) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  border: none !important;
+  border-radius: 28px !important;
+  box-shadow: 0 14px 40px #1e2a4524, 0 2px 10px #1e2a4512 !important;
+}
+
+.border-2.border-stone-900,
+.bg-stone-950 {
+  background-color: var(--e-ink) !important;
+  border: none !important;
+  border-radius: 22px !important;
+  box-shadow: 0 10px 30px #1e2a4538 !important;
+}
+
+.border-b-2,
+.border-b-4 { border-bottom: 1px solid #1e2a4514 !important; }
+.border-l-4 { border-left-width: 2px !important; }
+.border-l-4.border-stone-800 { border-left-color: #1e2a4526 !important; }
+.border-l-4.border-emerald-600 { border-left-color: var(--e-accent) !important; }
+
+.text-emerald-700,
+.text-emerald-800,
+.text-emerald-900 { color: var(--e-accent) !important; }
+.bg-emerald-700,
+.bg-emerald-800,
+.bg-emerald-600 { background-color: var(--e-accent) !important; }
+.text-emerald-400 { color: var(--e-accent-soft) !important; }
+
+a.font-syne,
+button.font-syne,
+a.font-mono-code,
+button.font-mono-code {
+  border-radius: 999px !important;
+}
