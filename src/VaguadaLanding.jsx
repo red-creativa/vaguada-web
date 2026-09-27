@@ -87,12 +87,12 @@ const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined
 /* ────────────────────────────────────────────────────────────────────────── */
 
 const BRAND = {
-  name: "VAGUADA",
+  name: "WILLKA",
   email: "contacto@vaguada.com",
   tagline: "Soluciones ambientales para industrias e instituciones.",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  footerBadge: "VAGUADA — Soluciones ambientales para industrias e instituciones",
+  footerBadge: "WILLKA — Soluciones ambientales para industrias e instituciones",
 };
 
 const AREAS = [
@@ -274,7 +274,7 @@ const CONTACT = {
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  signature: "VAGUADA — Soluciones ambientales para industrias e instituciones",
+  signature: "WILLKA — Soluciones ambientales para industrias e instituciones",
 };
 
 const PROCESS_STEPS = [
