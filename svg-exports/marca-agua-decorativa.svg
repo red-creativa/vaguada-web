@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-62 -42 159 99" width="300" height="200" fill="none">
+  <!-- Marca de agua repetida de fondo (Hero, Áreas, Proceso, Sectores): mismo isotipo a baja opacidad general, aplicada desde el contenedor padre. -->
+  <polygon points="-60,-40 -40,-40 -15,20 -35,20" fill="#1e2a45" />
+  <path d="M -35,20 L -15,20 Q 0,55 15,20 L -5,20 Q -10,35 -35,20 Z" fill="#1e2a45" opacity="0.55" />
+  <polygon points="-5,20 15,20 40,-30 20,-30" fill="#1e2a45" opacity="0.8" />
+  <polygon points="20,-30 40,-30 80,45 60,45" fill="#1e2a45" />
+  <polygon points="60,45 80,45 95,20 75,20" fill="#1e2a45" opacity="0.8" />
+</svg>

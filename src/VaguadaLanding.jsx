@@ -284,8 +284,16 @@ const PROCESS_STEPS = [
   { icon: CircleCheck, lead: "Entregamos la solución funcionando", rest: ": permiso aprobado u obra operando." },
 ];
 
-const SLIDE_LABELS = ["Inicio", "Áreas", "Llave en Mano", "Sectores", "Contacto"];
 const AREAS_PER_SLIDE = 3;
+const AREAS_PAGE_COUNT = Math.ceil(AREAS.length / AREAS_PER_SLIDE);
+const SLIDE_LABELS = [
+  "Inicio",
+  ...Array.from({ length: AREAS_PAGE_COUNT }).map((_, i) => `Áreas ${i + 1}/${AREAS_PAGE_COUNT}`),
+  "Llave en Mano",
+  "Sectores",
+  "Equipo",
+  "Contacto",
+];
 const MOBILE_QUERY = "(max-width: 767px)";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -343,59 +351,33 @@ const LOGO_VARIANTS = {
 const LOGO_SVG_CLASS =
   "w-[72%] h-[72%] relative z-10 transition-transform duration-300 group-hover:scale-110";
 
-function VaguadaLogo({ className = "", size = "md", variant = "dark", style = "topographic" }) {
+/** Isotipo "cinta" de la marca: cinco segmentos en zigzag ascendente. */
+function RibbonMark({ className }) {
+  return (
+    <svg viewBox="-62 -42 159 99" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <polygon points="-60,-40 -40,-40 -15,20 -35,20" fill="currentColor" />
+      <path d="M -35,20 L -15,20 Q 0,55 15,20 L -5,20 Q -10,35 -35,20 Z" fill="currentColor" opacity="0.55" />
+      <polygon points="-5,20 15,20 40,-30 20,-30" fill="currentColor" opacity="0.8" />
+      <polygon points="20,-30 40,-30 80,45 60,45" fill="currentColor" />
+      <polygon points="60,45 80,45 95,20 75,20" fill="currentColor" opacity="0.8" />
+    </svg>
+  );
+}
+
+function VaguadaLogo({ className = "", size = "md", variant = "dark" }) {
   return (
     <div
       className={`rounded-xl flex items-center justify-center transition-all duration-300 relative overflow-hidden group-hover:scale-105 ${LOGO_SIZES[size]} ${LOGO_VARIANTS[variant]} ${className}`}
     >
       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-teal-400/20 pointer-events-none" />
-
-      {style === "topographic" && (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={LOGO_SVG_CLASS}>
-          <path d="M6 10 C 13 10, 16.5 25, 20 29 C 23.5 25, 27 10, 34 10" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" className="opacity-95" />
-          <path d="M10 17 C 14.5 17, 17 26.5, 20 31 C 23 26.5, 25.5 17, 30 17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="opacity-60" />
-          <path d="M14 23.5 C 17 23.5, 18.5 28.5, 20 32.5 C 21.5 28.5, 23 23.5, 26 23.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="opacity-40" />
-          <circle cx="20" cy="10" r="1.8" fill="currentColor" className="opacity-90" />
-        </svg>
-      )}
-
-      {style === "geometric" && (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={LOGO_SVG_CLASS}>
-          <path d="M8 9 L20 31 L20 18 L12 9 Z" fill="currentColor" className="opacity-80" />
-          <path d="M32 9 L20 31 L20 18 L28 9 Z" fill="currentColor" className="opacity-95" />
-          <line x1="20" y1="7" x2="20" y2="33" stroke="currentColor" strokeWidth="2" strokeDasharray="2 3" className="opacity-70" />
-        </svg>
-      )}
-
-      {style === "monogram" && (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={LOGO_SVG_CLASS}>
-          <path d="M9 10 L19.5 32 L22 32 L31 10 H26 L20.5 25 L15 10 H9 Z" fill="currentColor" />
-          <circle cx="20" cy="14" r="2.2" fill="currentColor" className="opacity-90" />
-          <path d="M17 14 H23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      )}
-
-      {style === "fluid" && (
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={LOGO_SVG_CLASS}>
-          <path d="M8 12 Q 14 26 20 31 Q 26 26 32 12" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-          <path d="M13 10 Q 17 20 20 25 Q 23 20 27 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="opacity-60" />
-          <circle cx="20" cy="33.5" r="2" fill="currentColor" />
-        </svg>
-      )}
+      <RibbonMark className={LOGO_SVG_CLASS} />
     </div>
   );
 }
 
-/** Marca de agua con las curvas del valle (decorativa). */
-function ValleyMark({ className = "w-full h-full", outer = "2.5", inner = "1.8", withDot = true, rounded = false }) {
-  const lineProps = rounded ? { strokeLinecap: "round", strokeLinejoin: "round" } : {};
-  return (
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <path d="M6 10 C 13 10, 16.5 25, 20 29 C 23.5 25, 27 10, 34 10" stroke="currentColor" strokeWidth={outer} {...lineProps} />
-      <path d="M10 17 C 14.5 17, 17 26.5, 20 31 C 23 26.5, 25.5 17, 30 17" stroke="currentColor" strokeWidth={inner} {...lineProps} />
-      {withDot && <circle cx="20" cy="35" r="2" fill="currentColor" />}
-    </svg>
-  );
+/** Marca de agua decorativa: el isotipo en cinta, repetible a baja opacidad. */
+function ValleyMark({ className = "w-full h-full" }) {
+  return <RibbonMark className={className} />;
 }
 
 /** Ícono de LinkedIn (lucide ya no garantiza los íconos de marcas). */
@@ -526,6 +508,16 @@ function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
   );
 }
 
+/** Indicador de scroll solo con flechas (sin texto), para slides intermedias. */
+function ScrollArrowHint({ className = "" }) {
+  return (
+    <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 text-stone-400 pointer-events-none ${className}`}>
+      <ChevronDown className="w-4 h-4 animate-bounce" />
+      <ChevronDown className="w-4 h-4 -mt-2.5 opacity-50 animate-bounce [animation-delay:100ms]" />
+    </div>
+  );
+}
+
 /* ────────────────────────────────────────────────────────────────────────── */
 /* Escritorio: diapositivas a pantalla completa                               */
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -540,7 +532,7 @@ function HeroSlide() {
       <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6EE] via-[#FAF6EE]/90 to-[#FAF6EE]/65 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#FAF6EE] via-transparent to-[#FAF6EE]/80 pointer-events-none" />
       <div className="absolute right-[-2%] bottom-[-5%] w-[480px] sm:w-[620px] lg:w-[750px] opacity-[0.08] text-stone-900 pointer-events-none z-0">
-        <ValleyMark outer="2.8" inner="2" rounded />
+        <ValleyMark />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10 flex-1 flex flex-col">
@@ -584,7 +576,7 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
     <section className={`${SLIDE_BASE} justify-center bg-[#F4EFE6] py-8 sm:py-10`}>
       <div className="absolute inset-0 opacity-[0.045] pointer-events-none flex flex-wrap gap-20 p-8 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 12 }).map((_, i) => (
-          <ValleyMark key={i} className="w-24 h-24" outer="2.5" inner="1.8" />
+          <ValleyMark key={i} className="w-24 h-24" />
         ))}
       </div>
 
@@ -640,7 +632,7 @@ function ProcessSlide() {
         gradientClass="bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/85 to-[#FAF6EE]"
       />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] opacity-[0.05] pointer-events-none text-stone-900">
-        <ValleyMark outer="3" inner="2.2" />
+        <ValleyMark />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
@@ -677,6 +669,7 @@ function ProcessSlide() {
           })}
         </div>
       </div>
+      <ScrollArrowHint />
     </section>
   );
 }
@@ -690,7 +683,7 @@ function SectorsSlide() {
         gradientClass="bg-gradient-to-r from-[#F4EFE6] via-[#F4EFE6]/90 to-[#F4EFE6]/60"
       />
       <div className="absolute -right-10 -bottom-10 w-80 h-80 opacity-[0.05] pointer-events-none text-stone-900">
-        <ValleyMark outer="2.5" inner="2" withDot={false} />
+        <ValleyMark />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
@@ -722,6 +715,7 @@ function SectorsSlide() {
           ))}
         </div>
       </div>
+      <ScrollArrowHint />
     </section>
   );
 }
@@ -764,6 +758,7 @@ function TeamSlide() {
           ))}
         </div>
       </div>
+      <ScrollArrowHint />
     </section>
   );
 }
@@ -879,7 +874,7 @@ function ContactSlide({ onCopyEmail, copied }) {
 
 function DesktopSlides({ onCopyEmail, copied }) {
   const [flippedIds, toggleFlipped] = useToggleSet();
-  const pageCount = Math.ceil(AREAS.length / AREAS_PER_SLIDE);
+  const pageCount = AREAS_PAGE_COUNT;
 
   return (
     <div className="bg-[#FAF6EE] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950">

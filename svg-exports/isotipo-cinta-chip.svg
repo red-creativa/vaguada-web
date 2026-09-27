@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="200" height="200">
+  <!-- Versión tal como se usa en el sitio: chip navy + cinta en un solo tono (accent-soft). -->
   <rect width="40" height="40" rx="9" fill="#1e2a45" />
   <svg x="3" y="10" width="34" height="21" viewBox="-62 -42 159 99" fill="none">
     <polygon points="-60,-40 -40,-40 -15,20 -35,20" fill="#8fc1e0" />
