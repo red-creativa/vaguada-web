@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vaguada.especialistas.workers.dev/sitemap.xml
+Sitemap: https://vaguada.pages.dev/sitemap.xml
