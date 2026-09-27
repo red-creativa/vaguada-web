@@ -88,7 +88,7 @@ const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined
 
 const BRAND = {
   name: "WILLKA",
-  email: "contacto@vaguada.com",
+  email: "contacto@willka.com",
   tagline: "Soluciones ambientales para industrias e instituciones.",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
   location: "La Rioja y Provincias Aledañas, Argentina",
@@ -269,7 +269,7 @@ const TEAM = {
 
 const CONTACT = {
   title: "Contacto",
-  email: "contacto@vaguada.com",
+  email: "contacto@willka.com",
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
