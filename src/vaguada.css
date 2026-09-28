@@ -64,9 +64,9 @@ html {
 /* ── Móvil: slides verticales con "peek" de la siguiente sección ─────── */
 .mobile-slides-container {
   scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
   height: 100dvh;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 .mobile-slide {
@@ -74,7 +74,15 @@ html {
   scroll-snap-stop: always;
   height: 100dvh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   transition: opacity 0.35s ease;
+}
+
+/* La primera slide (Hero + Capacidades técnicas) ya ocupa toda la altura por sí sola. */
+.mobile-slide:first-child {
+  display: block;
 }
 
 .no-scrollbar::-webkit-scrollbar {

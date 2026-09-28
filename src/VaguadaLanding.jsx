@@ -24,6 +24,7 @@ import {
   Building2,
   Check,
   ChevronDown,
+  ChevronUp,
   CircleCheck,
   CloudRain,
   Compass,
@@ -619,6 +620,20 @@ function ScrollArrowHint({ className = "" }) {
     <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 text-stone-400 pointer-events-none ${className}`}>
       <ChevronDown className="w-4 h-4 animate-bounce" />
       <ChevronDown className="w-4 h-4 -mt-2.5 opacity-50 animate-bounce [animation-delay:100ms]" />
+    </div>
+  );
+}
+
+/** Indicador de flechas para las slides móviles: marca si se puede subir y/o bajar. */
+function MobileSlideArrows({ up = false, down = false }) {
+  return (
+    <div className="absolute inset-0 flex flex-col justify-between py-3 pointer-events-none text-stone-400">
+      <div className="flex justify-center">
+        {up && <ChevronUp className="w-4 h-4 animate-bounce" />}
+      </div>
+      <div className="flex justify-center">
+        {down && <ChevronDown className="w-4 h-4 animate-bounce" />}
+      </div>
     </div>
   );
 }
@@ -1323,18 +1338,22 @@ function MobileLanding({ onCopyEmail, copied }) {
 
   return (
     <div ref={containerRef} className="mobile-slides-container no-scrollbar bg-[#FAF6EE] text-stone-900">
-      <div data-mobile-slide className={slideClass(0)}>
+      <div data-mobile-slide className={`relative ${slideClass(0)}`}>
         <MobileHero />
         <MobileAreasCarousel />
+        <MobileSlideArrows down />
       </div>
-      <div data-mobile-slide className={slideClass(1)}>
+      <div data-mobile-slide className={`relative ${slideClass(1)}`}>
         <MobileProcess />
+        <MobileSlideArrows up down />
       </div>
-      <div data-mobile-slide className={slideClass(2)}>
+      <div data-mobile-slide className={`relative ${slideClass(2)}`}>
         <MobileSectors />
+        <MobileSlideArrows up down />
       </div>
-      <div data-mobile-slide className={slideClass(3)}>
+      <div data-mobile-slide className={`relative ${slideClass(3)}`}>
         <MobileTeam />
+        <MobileSlideArrows up down />
       </div>
       <div data-mobile-slide className={slideClass(4)}>
         <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
