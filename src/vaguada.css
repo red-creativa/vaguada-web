@@ -61,28 +61,30 @@ html {
   overflow: visible;
 }
 
-/* ── Móvil: slides verticales con "peek" de la siguiente sección ─────── */
+/* ── Móvil: slides a pantalla completa con transición de fundido ──────
+ * Cada slide ocupa toda la pantalla y está apilada (position: absolute);
+ * cambiar de sección esfuma la actual y aparece la siguiente ya centrada,
+ * en vez de desplazar físicamente el scroll.
+ */
 .mobile-slides-container {
-  scroll-snap-type: y mandatory;
+  position: relative;
   height: 100dvh;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
+  overflow: hidden;
+  touch-action: pan-y;
 }
 
 .mobile-slide {
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  height: 100dvh;
+  position: absolute;
+  inset: 0;
   overflow-y: auto;
+  transition: opacity 0.4s ease;
+}
+
+/* Slides de una sola sección: se centran verticalmente en la pantalla. */
+.mobile-slide--center {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: opacity 0.35s ease;
-}
-
-/* La primera slide (Hero + Capacidades técnicas) ya ocupa toda la altura por sí sola. */
-.mobile-slide:first-child {
-  display: block;
 }
 
 .no-scrollbar::-webkit-scrollbar {

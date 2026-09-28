@@ -329,29 +329,6 @@ function useIsTouchDevice() {
   return isTouch;
 }
 
-/** Detecta qué slide móvil está centrado, para atenuar los demás (mismo efecto que el carrusel de áreas). */
-function useActiveMobileSlide(containerRef, count) {
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const onScroll = () => {
-      const slides = container.querySelectorAll("[data-mobile-slide]");
-      const step = slides[0]?.offsetHeight || container.clientHeight;
-      if (!step) return;
-      setActive(Math.min(count - 1, Math.max(0, Math.round(container.scrollTop / step))));
-    };
-
-    container.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => container.removeEventListener("scroll", onScroll);
-  }, [containerRef, count]);
-
-  return active;
-}
-
 function useToggleSet() {
   const [ids, setIds] = useState([]);
   const toggle = useCallback(
@@ -624,15 +601,23 @@ function ScrollArrowHint({ className = "" }) {
   );
 }
 
-/** Indicador de flechas para las slides móviles: marca si se puede subir y/o bajar. */
-function MobileSlideArrows({ up = false, down = false }) {
+/** Flechas de navegación de las slides móviles: tocables, marcan si se puede subir y/o bajar. */
+function MobileSlideArrows({ up = false, down = false, onUp, onDown }) {
   return (
     <div className="absolute inset-0 flex flex-col justify-between py-3 pointer-events-none text-stone-400">
       <div className="flex justify-center">
-        {up && <ChevronUp className="w-4 h-4 animate-bounce" />}
+        {up && (
+          <button type="button" onClick={onUp} aria-label="Sección anterior" className="pointer-events-auto p-2 animate-bounce">
+            <ChevronUp className="w-4 h-4" />
+          </button>
+        )}
       </div>
       <div className="flex justify-center">
-        {down && <ChevronDown className="w-4 h-4 animate-bounce" />}
+        {down && (
+          <button type="button" onClick={onDown} aria-label="Siguiente sección" className="pointer-events-auto p-2 animate-bounce">
+            <ChevronDown className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   );
@@ -1052,7 +1037,7 @@ function SlideNav({ activeIndex, onNavigate }) {
 
 function MobileHero() {
   return (
-    <section className="relative px-4 pt-8 pb-6 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative px-10 pt-10 pb-6 border-b-2 border-stone-800 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.heroBg}
         imageClass="opacity-[0.16]"
@@ -1329,33 +1314,62 @@ function MobileContact({ onCopyEmail, copied }) {
 }
 
 const MOBILE_SLIDE_COUNT = 5;
+const MOBILE_SWIPE_THRESHOLD = 45;
 
 function MobileLanding({ onCopyEmail, copied }) {
-  const containerRef = useRef(null);
-  const activeSlide = useActiveMobileSlide(containerRef, MOBILE_SLIDE_COUNT);
+  const [slide, setSlide] = useState(0);
+  const touchStartY = useRef(null);
 
-  const slideClass = (i) => `mobile-slide ${activeSlide === i ? "opacity-100" : "opacity-40"}`;
+  const goTo = useCallback((next) => {
+    setSlide((prev) => {
+      const target = typeof next === "function" ? next(prev) : next;
+      return Math.min(MOBILE_SLIDE_COUNT - 1, Math.max(0, target));
+    });
+  }, []);
+
+  const onTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const onTouchEnd = (e) => {
+    if (touchStartY.current === null) return;
+    const delta = touchStartY.current - e.changedTouches[0].clientY;
+    touchStartY.current = null;
+    if (Math.abs(delta) < MOBILE_SWIPE_THRESHOLD) return;
+    goTo((prev) => prev + (delta > 0 ? 1 : -1));
+  };
+
+  // Cada slide es absoluta y ocupa toda la pantalla: cambiar de sección es un
+  // fundido (se esfuma la actual, aparece la otra ya centrada), no un scroll físico.
+  const slideClass = (i, center = true) =>
+    `mobile-slide no-scrollbar ${center ? "mobile-slide--center" : ""} ${
+      slide === i ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
+    }`;
 
   return (
-    <div ref={containerRef} className="mobile-slides-container no-scrollbar bg-[#FAF6EE] text-stone-900">
-      <div data-mobile-slide className={`relative ${slideClass(0)}`}>
+    <div
+      className="mobile-slides-container bg-[#FAF6EE] text-stone-900"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <div className={slideClass(0, false)}>
         <MobileHero />
         <MobileAreasCarousel />
-        <MobileSlideArrows down />
+        <MobileSlideArrows down onDown={() => goTo(1)} />
       </div>
-      <div data-mobile-slide className={`relative ${slideClass(1)}`}>
+      <div className={slideClass(1)}>
         <MobileProcess />
-        <MobileSlideArrows up down />
+        <MobileSlideArrows up down onUp={() => goTo(0)} onDown={() => goTo(2)} />
       </div>
-      <div data-mobile-slide className={`relative ${slideClass(2)}`}>
+      <div className={slideClass(2)}>
         <MobileSectors />
-        <MobileSlideArrows up down />
+        <MobileSlideArrows up down onUp={() => goTo(1)} onDown={() => goTo(3)} />
       </div>
-      <div data-mobile-slide className={`relative ${slideClass(3)}`}>
+      <div className={slideClass(3)}>
         <MobileTeam />
-        <MobileSlideArrows up down />
+        <MobileSlideArrows up down onUp={() => goTo(2)} onDown={() => goTo(4)} />
       </div>
-      <div data-mobile-slide className={slideClass(4)}>
+      <div className={slideClass(4)}>
         <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
       </div>
       {copied && (
