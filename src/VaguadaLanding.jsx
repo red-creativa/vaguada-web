@@ -393,7 +393,7 @@ function RibbonMark({ className }) {
  * suspensión → decantación → oxigenación con burbujas → salida limpia).
  * La forma de la cinta es la misma que RibbonMark, solo cambia el relleno.
  */
-function RibbonLogoArt({ className }) {
+function RibbonLogoArt({ className, bubbles = true }) {
   const uid = useId();
   const id = (n) => `ribbon-art-${uid}-${n}`;
 
@@ -448,14 +448,16 @@ function RibbonLogoArt({ className }) {
       {/* Primera clarificación: burbujas de oxigenación */}
       <g>
         <polygon points="-5,20 15,20 40,-30 20,-30" fill={`url(#${id("g3")})`} />
-        <g clipPath={`url(#${id("clip3")})`} fill="#ffffff" opacity="0.6">
-          <circle cx="8" cy="-20" r="1" />
-          <circle cx="18" cy="-14" r="1.6" />
-          <circle cx="12" cy="-5" r="0.8" />
-          <circle cx="24" cy="-2" r="1.3" />
-          <circle cx="20" cy="8" r="1.9" />
-          <circle cx="30" cy="12" r="1" />
-        </g>
+        {bubbles && (
+          <g clipPath={`url(#${id("clip3")})`} fill="#ffffff" opacity="0.6">
+            <circle cx="8" cy="-20" r="1" />
+            <circle cx="18" cy="-14" r="1.6" />
+            <circle cx="12" cy="-5" r="0.8" />
+            <circle cx="24" cy="-2" r="1.3" />
+            <circle cx="20" cy="8" r="1.9" />
+            <circle cx="30" cy="12" r="1" />
+          </g>
+        )}
       </g>
 
       {/* Depuración final */}
@@ -467,13 +469,13 @@ function RibbonLogoArt({ className }) {
   );
 }
 
-function VaguadaLogo({ className = "", size = "md", variant = "dark" }) {
+function VaguadaLogo({ className = "", size = "md", variant = "dark", bubbles = true }) {
   return (
     <div
       className={`rounded-xl flex items-center justify-center transition-all duration-300 relative overflow-hidden group-hover:scale-105 ${LOGO_SIZES[size]} ${LOGO_VARIANTS[variant]} ${className}`}
     >
       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-teal-400/20 pointer-events-none" />
-      <RibbonLogoArt className={LOGO_SVG_CLASS} />
+      <RibbonLogoArt className={LOGO_SVG_CLASS} bubbles={bubbles} />
     </div>
   );
 }
@@ -1035,17 +1037,18 @@ function SlideNav({ activeIndex, onNavigate }) {
 
 function MobileHero() {
   return (
-    <section className="relative px-4 pt-12 pb-9 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative px-4 pt-8 pb-6 border-b-2 border-stone-800 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.heroBg}
         imageClass="opacity-[0.16]"
         gradientClass="bg-gradient-to-b from-[#FAF6EE]/70 via-[#FAF6EE]/92 to-[#FAF6EE]"
       />
       <div className="relative z-10">
-        <div className="flex flex-col items-center text-center gap-3 mb-9">
+        <div className="flex flex-col items-center text-center gap-3 mb-6">
           <VaguadaLogo
             size="lg"
             variant="dark"
+            bubbles={false}
             className="w-24 h-24 border-2 border-stone-900 bg-stone-950 text-emerald-400 shrink-0 shadow-lg"
           />
           <span className="font-extrabold tracking-tight text-stone-950 text-4xl font-syne uppercase">{BRAND.name}</span>
@@ -1091,12 +1094,7 @@ function MobileAreasCarousel() {
   }, []);
 
   return (
-    <section className="px-4 py-8 border-b-2 border-stone-800">
-      <p className="font-mono-code text-[11px] font-bold uppercase tracking-widest text-emerald-800 flex items-center gap-2 mb-3">
-        <span className="w-2 h-2 bg-emerald-600" />
-        Capacidades técnicas
-      </p>
-
+    <section className="px-4 py-5 border-b-2 border-stone-800">
       <div
         ref={scrollerRef}
         className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2"
@@ -1118,10 +1116,6 @@ function MobileAreasCarousel() {
           </div>
         ))}
       </div>
-
-      <p className="text-center text-[10px] font-mono-code text-stone-400 uppercase tracking-wider mt-2">
-        ← Deslizá para ver las {AREAS.length} áreas →
-      </p>
     </section>
   );
 }
