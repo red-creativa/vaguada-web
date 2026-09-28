@@ -87,12 +87,12 @@ const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined
 /* ────────────────────────────────────────────────────────────────────────── */
 
 const BRAND = {
-  name: "WILLKA",
-  email: "contacto@willka.com",
+  name: "wilkha",
+  email: "contacto@wilkha.com",
   tagline: "Soluciones ambientales para industrias e instituciones.",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  footerBadge: "WILLKA — Soluciones ambientales para industrias e instituciones",
+  footerBadge: "WILKHA — Soluciones ambientales para industrias e instituciones",
 };
 
 const AREAS = [
@@ -269,12 +269,12 @@ const TEAM = {
 
 const CONTACT = {
   title: "Contacto",
-  email: "contacto@willka.com",
+  email: "contacto@wilkha.com",
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  signature: "WILLKA — Soluciones ambientales para industrias e instituciones",
+  signature: "WILKHA — Soluciones ambientales para industrias e instituciones",
 };
 
 const PROCESS_STEPS = [
@@ -636,8 +636,9 @@ function ProcessSlide() {
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="pb-4 mb-8 border-b-2 border-stone-800">
-          <h2 className="font-syne text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase text-stone-950 tracking-tight leading-none mb-3">
+        <div className="flex flex-col items-center text-center gap-3 pb-4 mb-8 border-b-2 border-stone-800">
+          <span className="w-10 h-px bg-emerald-600/70" />
+          <h2 className="font-syne text-4xl sm:text-6xl lg:text-7xl font-extrabold text-stone-950 tracking-tight leading-none">
             Nos encargamos de todo.
           </h2>
         </div>
@@ -687,8 +688,9 @@ function SectorsSlide() {
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 mb-6 border-b-2 border-stone-800">
-          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase text-stone-950 tracking-tight">
+        <div className="flex flex-col items-center text-center gap-3 pb-4 mb-6 border-b-2 border-stone-800">
+          <span className="w-10 h-px bg-emerald-600/70" />
+          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
             {SECTORS.title}
           </h2>
           <div className="font-mono-code text-xs text-stone-600 font-bold">09 INDUSTRIAS PRODUCTIVAS</div>
@@ -786,8 +788,9 @@ function ContactSlide({ onCopyEmail, copied }) {
       />
 
       <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
-        <div className="max-w-3xl pb-4 mb-6 border-b-2 border-stone-800">
-          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase text-stone-950 tracking-tight mb-1.5">
+        <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-3 pb-4 mb-6 border-b-2 border-stone-800">
+          <span className="w-10 h-px bg-emerald-600/70" />
+          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
             {CONTACT.title}
           </h2>
         </div>
@@ -944,9 +947,12 @@ function MobileHero() {
           />
           <span className="font-extrabold tracking-tight text-stone-950 text-4xl font-syne uppercase">{BRAND.name}</span>
         </div>
-        <h1 className="font-syne text-[28px] font-extrabold tracking-[-0.02em] text-stone-950 uppercase leading-[1.08]">
-          {BRAND.tagline}
-        </h1>
+        <div className="flex flex-col items-center gap-3">
+          <span className="w-10 h-px bg-emerald-600/70" />
+          <h1 className="font-syne text-[22px] font-extrabold text-stone-950 leading-snug text-center max-w-[24ch] mx-auto">
+            {BRAND.tagline}
+          </h1>
+        </div>
       </div>
     </section>
   );
@@ -1020,9 +1026,12 @@ function MobileAreasCarousel() {
 function MobileProcess() {
   return (
     <section className="px-4 py-8 border-b-2 border-stone-800">
-      <h2 className="font-syne text-3xl font-extrabold uppercase text-stone-950 tracking-tight leading-none mb-5">
-        Nos encargamos de todo.
-      </h2>
+      <div className="flex flex-col items-center text-center gap-3 mb-5">
+        <span className="w-10 h-px bg-emerald-600/70" />
+        <h2 className="font-syne text-3xl font-extrabold text-stone-950 tracking-tight leading-tight">
+          Nos encargamos de todo.
+        </h2>
+      </div>
       <div className="flex flex-col gap-3">
         {PROCESS_STEPS.map(({ icon: Icon, lead, rest }, i) => (
           <div key={i} className="bg-white border-2 border-stone-800 p-4 flex gap-3 items-start">
@@ -1048,9 +1057,12 @@ function MobileSectors() {
         imageClass="opacity-[0.10]"
         gradientClass="bg-gradient-to-b from-[#FAF6EE]/75 via-[#FAF6EE]/90 to-[#FAF6EE]"
       />
-      <h2 className="relative z-10 font-syne text-2xl font-extrabold uppercase text-stone-950 tracking-tight mb-4">
-        {SECTORS.title}
-      </h2>
+      <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-4">
+        <span className="w-10 h-px bg-emerald-600/70" />
+        <h2 className="font-syne text-2xl font-extrabold text-stone-950 tracking-tight">
+          {SECTORS.title}
+        </h2>
+      </div>
       <div className="relative z-10 grid grid-cols-2 gap-2.5">
         {SECTORS.items.map(({ id, name, icon: Icon }) => (
           <div key={id} className="bg-white border-2 border-stone-800 p-3 flex flex-col gap-2">
@@ -1119,10 +1131,13 @@ function MobileContact({ onCopyEmail, copied }) {
         imageClass="opacity-[0.10]"
         gradientClass="bg-gradient-to-b from-[#FAF6EE]/80 via-[#FAF6EE]/92 to-[#FAF6EE]"
       />
-      <h2 className="relative z-10 font-syne text-2xl font-extrabold uppercase text-stone-950 tracking-tight mb-1.5">
-        {CONTACT.title}
-      </h2>
-      <p className="relative z-10 text-xs text-stone-600 mb-5">{CONTACT.signature}</p>
+      <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
+        <span className="w-10 h-px bg-emerald-600/70" />
+        <h2 className="font-syne text-2xl font-extrabold text-stone-950 tracking-tight">
+          {CONTACT.title}
+        </h2>
+        <p className="text-xs text-stone-600">{CONTACT.signature}</p>
+      </div>
 
       <div className="relative z-10 flex flex-col gap-3">
         {/* Correo */}
