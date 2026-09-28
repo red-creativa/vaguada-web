@@ -17,7 +17,7 @@
  * Coloca tus archivos en /public/images/ con esos nombres o cambia las rutas.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -250,7 +250,7 @@ const TEAM = {
     {
       id: "francisco-salvadores",
       name: "Francisco Salvadores",
-      role: "Director Operativo",
+      role: "Responsable de Operaciones",
       credential: "Ingeniero Ambiental — Universidad Nacional del Litoral",
       linkedin: "https://linkedin.com/in/fransalva2res/",
       bio: "Experiencia en evaluación de impacto ambiental, líneas de base, gestión integral de residuos y sistemas de gestión ISO 14001 / ISO 9001. Coordinación de equipos interdisciplinarios y articulación con organismos públicos y privados.",
@@ -259,7 +259,7 @@ const TEAM = {
       id: "luca-parquet",
       name: "Luca Parquet",
       displayName: "Luca PARQUET",
-      role: "Director de SIG y Modelado",
+      role: "Responsable de SIG y Modelado",
       credential: "Ingénieur — École des Ponts ParisTech, Francia · Ingeniero en Recursos Hídricos, UNL",
       linkedin: "https://linkedin.com/in/luca-parquet/",
       bio: "Especialista en modelación hidráulica e hidrológica (HEC-RAS, HEC-HMS, TELEMAC-MASCARET) y sistemas de información geográfica. Experiencia en Francia y Argentina en dimensionamiento de obras y gestión del riesgo de inundación.",
@@ -364,13 +364,93 @@ function RibbonMark({ className }) {
   );
 }
 
+/**
+ * Relleno del isotipo para el logo: degradé de 4 tonos + partículas que
+ * representan la depuración de un efluente (ingreso con sólidos en
+ * suspensión → decantación → oxigenación con burbujas → salida limpia).
+ * La forma de la cinta es la misma que RibbonMark, solo cambia el relleno.
+ */
+function RibbonLogoArt({ className }) {
+  const uid = useId();
+  const id = (n) => `ribbon-art-${uid}-${n}`;
+
+  return (
+    <svg viewBox="-62 -42 159 99" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id={id("g1")} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#705b41" />
+          <stop offset="100%" stopColor="#4e6b45" />
+        </linearGradient>
+        <linearGradient id={id("g2")} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#3d5e41" />
+          <stop offset="100%" stopColor="#2a666b" />
+        </linearGradient>
+        <linearGradient id={id("g3")} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#2a666b" />
+          <stop offset="100%" stopColor="#429db5" />
+        </linearGradient>
+        <linearGradient id={id("g4")} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#429db5" />
+          <stop offset="100%" stopColor="#75cbe3" />
+        </linearGradient>
+        <linearGradient id={id("g5")} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#75cbe3" />
+          <stop offset="100%" stopColor="#d4f6ff" />
+        </linearGradient>
+        <clipPath id={id("clip1")}>
+          <polygon points="-60,-40 -40,-40 -15,20 -35,20" />
+        </clipPath>
+        <clipPath id={id("clip3")}>
+          <polygon points="-5,20 15,20 40,-30 20,-30" />
+        </clipPath>
+      </defs>
+
+      {/* Efluente crudo: sólidos en suspensión */}
+      <g style={{ mixBlendMode: "multiply" }}>
+        <polygon points="-60,-40 -40,-40 -15,20 -35,20" fill={`url(#${id("g1")})`} />
+        <g clipPath={`url(#${id("clip1")})`} fill="#3a2f1f">
+          <circle cx="-52" cy="-32" r="1.6" />
+          <circle cx="-46" cy="-20" r="1" />
+          <circle cx="-49" cy="-8" r="1.8" />
+          <circle cx="-40" cy="2" r="1.3" />
+          <circle cx="-42" cy="12" r="2" />
+          <circle cx="-30" cy="16" r="1.4" />
+          <circle cx="-24" cy="15" r="1.7" />
+        </g>
+      </g>
+
+      {/* Zona de choque / decantación */}
+      <path d="M -35,20 L -15,20 Q 0,55 15,20 L -5,20 Q -10,35 -35,20 Z" fill={`url(#${id("g2")})`} />
+
+      {/* Primera clarificación: burbujas de oxigenación */}
+      <g>
+        <polygon points="-5,20 15,20 40,-30 20,-30" fill={`url(#${id("g3")})`} />
+        <g clipPath={`url(#${id("clip3")})`} fill="#ffffff" opacity="0.6">
+          <circle cx="8" cy="-20" r="1" />
+          <circle cx="18" cy="-14" r="1.6" />
+          <circle cx="12" cy="-5" r="0.8" />
+          <circle cx="24" cy="-2" r="1.3" />
+          <circle cx="20" cy="8" r="1.9" />
+          <circle cx="30" cy="12" r="1" />
+        </g>
+      </g>
+
+      {/* Depuración final */}
+      <polygon points="20,-30 40,-30 80,45 60,45" fill={`url(#${id("g4")})`} />
+
+      {/* Salida limpia */}
+      <polygon points="60,45 80,45 95,20 75,20" fill={`url(#${id("g5")})`} />
+    </svg>
+  );
+}
+
 function VaguadaLogo({ className = "", size = "md", variant = "dark" }) {
   return (
     <div
       className={`rounded-xl flex items-center justify-center transition-all duration-300 relative overflow-hidden group-hover:scale-105 ${LOGO_SIZES[size]} ${LOGO_VARIANTS[variant]} ${className}`}
     >
       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-teal-400/20 pointer-events-none" />
-      <RibbonMark className={LOGO_SVG_CLASS} />
+      <RibbonLogoArt className={LOGO_SVG_CLASS} />
     </div>
   );
 }
