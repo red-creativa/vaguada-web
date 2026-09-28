@@ -70,14 +70,15 @@ html {
   position: relative;
   height: 100dvh;
   overflow: hidden;
-  touch-action: pan-y;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .mobile-slide {
   position: absolute;
   inset: 0;
   overflow-y: auto;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 /* Slides de una sola sección: se centran verticalmente en la pantalla. */

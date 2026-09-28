@@ -1097,7 +1097,7 @@ function MobileAreasCarousel() {
     <section className="px-4 py-5 border-b-2 border-stone-800">
       <div
         ref={scrollerRef}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2"
+        className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2 touch-pan-x"
         style={{ paddingLeft: "calc((100vw - 256px) / 2)", paddingRight: "calc((100vw - 256px) / 2)" }}
       >
         {AREAS.map((area, i) => (
@@ -1343,7 +1343,9 @@ function MobileLanding({ onCopyEmail, copied }) {
   // fundido (se esfuma la actual, aparece la otra ya centrada), no un scroll físico.
   const slideClass = (i, center = true) =>
     `mobile-slide no-scrollbar ${center ? "mobile-slide--center" : ""} ${
-      slide === i ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
+      slide === i
+        ? "opacity-100 scale-100 z-10 pointer-events-auto"
+        : "opacity-0 scale-[0.96] z-0 pointer-events-none"
     }`;
 
   return (
