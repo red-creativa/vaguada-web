@@ -328,6 +328,29 @@ function useIsTouchDevice() {
   return isTouch;
 }
 
+/** Detecta qué slide móvil está centrado, para atenuar los demás (mismo efecto que el carrusel de áreas). */
+function useActiveMobileSlide(containerRef, count) {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onScroll = () => {
+      const slides = container.querySelectorAll("[data-mobile-slide]");
+      const step = slides[0]?.offsetHeight || container.clientHeight;
+      if (!step) return;
+      setActive(Math.min(count - 1, Math.max(0, Math.round(container.scrollTop / step))));
+    };
+
+    container.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => container.removeEventListener("scroll", onScroll);
+  }, [containerRef, count]);
+
+  return active;
+}
+
 function useToggleSet() {
   const [ids, setIds] = useState([]);
   const toggle = useCallback(
@@ -1296,15 +1319,32 @@ function MobileContact({ onCopyEmail, copied }) {
   );
 }
 
+const MOBILE_SLIDE_COUNT = 5;
+
 function MobileLanding({ onCopyEmail, copied }) {
+  const containerRef = useRef(null);
+  const activeSlide = useActiveMobileSlide(containerRef, MOBILE_SLIDE_COUNT);
+
+  const slideClass = (i) => `mobile-slide ${activeSlide === i ? "opacity-100" : "opacity-40"}`;
+
   return (
-    <div className="bg-[#FAF6EE] text-stone-900 min-h-screen">
-      <MobileHero />
-      <MobileAreasCarousel />
-      <MobileProcess />
-      <MobileSectors />
-      <MobileTeam />
-      <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
+    <div ref={containerRef} className="mobile-slides-container no-scrollbar bg-[#FAF6EE] text-stone-900">
+      <div data-mobile-slide className={slideClass(0)}>
+        <MobileHero />
+        <MobileAreasCarousel />
+      </div>
+      <div data-mobile-slide className={slideClass(1)}>
+        <MobileProcess />
+      </div>
+      <div data-mobile-slide className={slideClass(2)}>
+        <MobileSectors />
+      </div>
+      <div data-mobile-slide className={slideClass(3)}>
+        <MobileTeam />
+      </div>
+      <div data-mobile-slide className={slideClass(4)}>
+        <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
+      </div>
       {copied && (
         <CopiedToast className="fixed bottom-5 left-4 right-4 z-50 flex items-center justify-center gap-2 px-4 py-3 bg-stone-950 text-white font-syne font-bold rounded-md shadow-2xl text-xs uppercase tracking-wider border-2 border-stone-900" />
       )}
