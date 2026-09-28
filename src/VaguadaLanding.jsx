@@ -89,12 +89,12 @@ const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined
 /* ────────────────────────────────────────────────────────────────────────── */
 
 const BRAND = {
-  name: "üillkha",
-  email: "contacto@uillkha.com",
+  name: "üylka",
+  email: "contacto@uylka.com",
   tagline: "Soluciones ambientales para industrias e instituciones",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  footerBadge: "ÜILLKHA — Soluciones ambientales para industrias e instituciones",
+  footerBadge: "ÜYLKA — Soluciones ambientales para industrias e instituciones",
 };
 
 const AREAS = [
@@ -271,12 +271,12 @@ const TEAM = {
 
 const CONTACT = {
   title: "Contacto",
-  email: "contacto@uillkha.com",
+  email: "contacto@uylka.com",
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  signature: "ÜILLKHA — Soluciones ambientales para industrias e instituciones",
+  signature: "ÜYLKA — Soluciones ambientales para industrias e instituciones",
 };
 
 const PROCESS_STEPS = [
@@ -476,10 +476,10 @@ function LinkedinIcon({ className = "" }) {
 }
 
 /** Imagen de fondo + degradado encima. */
-function SectionBackdrop({ image, imageClass, gradientClass }) {
+function SectionBackdrop({ image, imageClass, gradientClass, imageBoxClass = "absolute inset-0" }) {
   return (
     <>
-      <div className={`absolute inset-0 bg-cover bg-center pointer-events-none ${imageClass}`} style={bgImage(image)} />
+      <div className={`${imageBoxClass} bg-cover bg-center pointer-events-none ${imageClass}`} style={bgImage(image)} />
       <div className={`absolute inset-0 pointer-events-none ${gradientClass}`} />
     </>
   );
@@ -1146,6 +1146,7 @@ function MobileProcess() {
       <SectionBackdrop
         image={IMAGES.contactBg}
         imageClass="opacity-[0.26]"
+        imageBoxClass="absolute inset-x-0 top-0 h-96"
         gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
@@ -1177,6 +1178,7 @@ function MobileSectors() {
       <SectionBackdrop
         image={IMAGES.sectorsBg}
         imageClass="opacity-[0.28]"
+        imageBoxClass="absolute inset-x-0 top-0 h-96"
         gradientClass="bg-gradient-to-b from-[#0f1e2e]/75 via-[#0f1e2e]/90 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-4">
@@ -1251,6 +1253,7 @@ function MobileContact({ onCopyEmail, copied }) {
       <SectionBackdrop
         image={IMAGES.contactBg}
         imageClass="opacity-[0.26]"
+        imageBoxClass="absolute inset-x-0 top-0 h-96"
         gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
