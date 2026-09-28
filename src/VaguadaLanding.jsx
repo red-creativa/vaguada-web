@@ -1,4 +1,4 @@
-/**
+﻿/**
  * VaguadaLanding.jsx
  *
  * Reconstrucción legible del componente publicado en el artifact
@@ -61,6 +61,7 @@ import "./vaguada.css";
 
 const IMAGES = {
   heroBg: "/images/hero.jpg",
+  heroBgMobile: "/images/hero-mobile.jpg",
   processBg: "/images/proceso.jpg",
   sectorsBg: "/images/sectores.jpg",
   contactBg: "/images/contacto.jpg",
@@ -88,12 +89,12 @@ const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined
 /* ────────────────────────────────────────────────────────────────────────── */
 
 const BRAND = {
-  name: "wilkha",
-  email: "contacto@wilkha.com",
-  tagline: "Soluciones ambientales para industrias e instituciones.",
+  name: "üillkha",
+  email: "contacto@uillkha.com",
+  tagline: "Soluciones ambientales para industrias e instituciones",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  footerBadge: "WILKHA — Soluciones ambientales para industrias e instituciones",
+  footerBadge: "ÜILLKHA — Soluciones ambientales para industrias e instituciones",
 };
 
 const AREAS = [
@@ -270,12 +271,12 @@ const TEAM = {
 
 const CONTACT = {
   title: "Contacto",
-  email: "contacto@wilkha.com",
+  email: "contacto@uillkha.com",
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
   location: "La Rioja y Provincias Aledañas, Argentina",
-  signature: "WILKHA — Soluciones ambientales para industrias e instituciones",
+  signature: "ÜILLKHA — Soluciones ambientales para industrias e instituciones",
 };
 
 const PROCESS_STEPS = [
@@ -632,10 +633,9 @@ const SLIDE_BASE =
 
 function HeroSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-between bg-[#FAF6EE] py-8 sm:py-12 text-stone-900`}>
-      <div className="absolute inset-0 bg-cover bg-center opacity-[0.20] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6EE] via-[#FAF6EE]/90 to-[#FAF6EE]/65 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#FAF6EE] via-transparent to-[#FAF6EE]/80 pointer-events-none" />
+    <section className={`${SLIDE_BASE} justify-between bg-[#0f1e2e] py-8 sm:py-12 text-stone-900`}>
+      <div className="absolute inset-0 bg-cover bg-center opacity-[0.3] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
+      <div className="absolute inset-0 bg-[#0f1e2e]/60 pointer-events-none" />
       <div className="absolute right-[-2%] bottom-[-5%] w-[480px] sm:w-[620px] lg:w-[750px] opacity-[0.08] text-stone-900 pointer-events-none z-0">
         <ValleyMark />
       </div>
@@ -678,7 +678,7 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
   const areas = AREAS.slice(pageIndex * AREAS_PER_SLIDE, pageIndex * AREAS_PER_SLIDE + AREAS_PER_SLIDE);
 
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#F4EFE6] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#0b1826] py-8 sm:py-10`}>
       <div className="absolute inset-0 opacity-[0.045] pointer-events-none flex flex-wrap gap-20 p-8 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 12 }).map((_, i) => (
           <ValleyMark key={i} className="w-24 h-24" />
@@ -730,11 +730,11 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
 
 function ProcessSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#FAF6EE] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#0f1e2e] py-8 sm:py-10`}>
       <SectionBackdrop
         image={IMAGES.processBg}
-        imageClass="opacity-[0.14]"
-        gradientClass="bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/85 to-[#FAF6EE]"
+        imageClass="opacity-[0.32]"
+        gradientClass="bg-gradient-to-b from-[#0f1e2e] via-[#0f1e2e]/85 to-[#0f1e2e]"
       />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] opacity-[0.05] pointer-events-none text-stone-900">
         <ValleyMark />
@@ -782,11 +782,11 @@ function ProcessSlide() {
 
 function SectorsSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#F4EFE6] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#0b1826] py-8 sm:py-10`}>
       <SectionBackdrop
         image={IMAGES.sectorsBg}
-        imageClass="opacity-[0.10]"
-        gradientClass="bg-gradient-to-r from-[#F4EFE6] via-[#F4EFE6]/90 to-[#F4EFE6]/60"
+        imageClass="opacity-[0.28]"
+        gradientClass="bg-gradient-to-r from-[#0b1826] via-[#0b1826]/90 to-[#0b1826]/60"
       />
       <div className="absolute -right-10 -bottom-10 w-80 h-80 opacity-[0.05] pointer-events-none text-stone-900">
         <ValleyMark />
@@ -829,7 +829,7 @@ function SectorsSlide() {
 
 function TeamSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#FAF6EE] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#0f1e2e] py-8 sm:py-10`}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {TEAM.members.map((member) => (
@@ -885,11 +885,11 @@ function ContactSlide({ onCopyEmail, copied }) {
   const card = "bg-white/95 border-2 border-stone-800 p-6 flex flex-col justify-between shadow-xs";
 
   return (
-    <section className="slide-section flex flex-col justify-between bg-[#FAF6EE] px-4 sm:px-6 lg:px-8 pt-8 pb-4 relative overflow-hidden">
+    <section className="slide-section flex flex-col justify-between bg-[#0f1e2e] px-4 sm:px-6 lg:px-8 pt-8 pb-4 relative overflow-hidden">
       <SectionBackdrop
         image={IMAGES.contactBg}
-        imageClass="opacity-[0.1]"
-        gradientClass="bg-gradient-to-t from-[#FAF6EE] via-[#FAF6EE]/90 to-[#FAF6EE]"
+        imageClass="opacity-[0.26]"
+        gradientClass="bg-gradient-to-t from-[#0f1e2e] via-[#0f1e2e]/90 to-[#0f1e2e]"
       />
 
       <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
@@ -985,7 +985,7 @@ function DesktopSlides({ onCopyEmail, copied }) {
   const pageCount = AREAS_PAGE_COUNT;
 
   return (
-    <div className="bg-[#FAF6EE] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950">
+    <div className="bg-[#0f1e2e] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950">
       <HeroSlide />
       {Array.from({ length: pageCount }).map((_, i) => (
         <AreasSlide key={i} pageIndex={i} pageCount={pageCount} flippedIds={flippedIds} onToggle={toggleFlipped} />
@@ -1002,7 +1002,7 @@ function SlideNav({ activeIndex, onNavigate }) {
   return (
     <aside
       aria-label="Navegación de diapositivas"
-      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#FAF6EE]/90 backdrop-blur-xs p-2 rounded-full border border-stone-300 shadow-md"
+      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#0f1e2e]/90 backdrop-blur-xs p-2 rounded-full border border-stone-300 shadow-md"
     >
       {SLIDE_LABELS.map((label, i) => {
         const active = activeIndex === i;
@@ -1017,7 +1017,7 @@ function SlideNav({ activeIndex, onNavigate }) {
             <span
               className={`transition-all duration-300 rounded-full ${
                 active
-                  ? "w-3 h-3 bg-stone-950 ring-2 ring-emerald-600 ring-offset-2 ring-offset-[#FAF6EE]"
+                  ? "w-3 h-3 bg-stone-950 ring-2 ring-emerald-600 ring-offset-2 ring-offset-[#0f1e2e]"
                   : "w-2 h-2 bg-stone-400 group-hover:bg-stone-700"
               }`}
             />
@@ -1037,25 +1037,28 @@ function SlideNav({ activeIndex, onNavigate }) {
 
 function MobileHero() {
   return (
-    <section className="relative px-10 pt-10 pb-6 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative h-full flex flex-col justify-center px-8 py-10 overflow-hidden">
       <SectionBackdrop
-        image={IMAGES.heroBg}
-        imageClass="opacity-[0.16]"
-        gradientClass="bg-gradient-to-b from-[#FAF6EE]/70 via-[#FAF6EE]/92 to-[#FAF6EE]"
+        image={IMAGES.heroBgMobile}
+        imageClass="opacity-[0.4] scale-105"
+        gradientClass="bg-gradient-to-b from-[#0f1e2e]/55 via-[#0f1e2e]/80 to-[#0f1e2e]"
       />
-      <div className="relative z-10">
-        <div className="flex flex-col items-center text-center gap-3 mb-6">
+      <div className="relative z-10 flex flex-col items-center">
+        <div className="flex flex-col items-center text-center gap-4 mb-10">
           <VaguadaLogo
             size="lg"
             variant="dark"
             bubbles={false}
-            className="w-28 h-28 border-2 border-stone-900 bg-stone-950 text-emerald-400 shrink-0 shadow-lg"
+            className="w-36 h-36 border-2 border-stone-900 bg-stone-950 text-emerald-400 shrink-0 shadow-lg"
           />
-          <span className="font-extrabold tracking-tight text-stone-950 text-5xl font-syne uppercase">{BRAND.name}</span>
+          <div className="flex items-center justify-center gap-2.5">
+            <span className="font-extrabold tracking-tight text-stone-950 text-6xl font-syne uppercase">{BRAND.name}</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
+          </div>
         </div>
-        <div className="flex flex-col items-center gap-3">
-          <span className="w-10 h-px bg-emerald-600/70" />
-          <h1 className="font-syne text-2xl font-extrabold text-stone-950 leading-snug text-center max-w-[24ch] mx-auto">
+        <div className="flex flex-col items-center gap-4">
+          <span className="w-12 h-px bg-emerald-600/70" />
+          <h1 className="font-syne text-3xl font-extrabold text-stone-950 leading-snug text-center max-w-[20ch] mx-auto">
             {BRAND.tagline}
           </h1>
         </div>
@@ -1063,6 +1066,8 @@ function MobileHero() {
     </section>
   );
 }
+
+const MOBILE_AREA_CARD_WIDTH = 224;
 
 function MobileAreasCarousel() {
   const [flippedIds, toggleFlipped] = useToggleSet();
@@ -1094,17 +1099,32 @@ function MobileAreasCarousel() {
   }, []);
 
   return (
-    <section className="px-4 py-5 border-b-2 border-stone-800">
+    <section className="relative px-4 py-5">
+      <div className="absolute inset-0 overflow-hidden opacity-[0.045] pointer-events-none flex flex-wrap gap-8 p-4 justify-around items-center text-stone-900 select-none">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <ValleyMark key={i} className="w-16 h-16" />
+        ))}
+      </div>
+      <div className="relative z-10 flex items-center gap-2 mb-4 px-4">
+        <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
+        <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500">
+          Conocé nuestros servicios
+        </span>
+      </div>
       <div
         ref={scrollerRef}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2 touch-pan-x"
-        style={{ paddingLeft: "calc((100vw - 288px) / 2)", paddingRight: "calc((100vw - 288px) / 2)" }}
+        className="relative z-10 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2 touch-pan-x"
+        style={{
+          paddingLeft: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2)`,
+          paddingRight: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2)`,
+        }}
       >
         {AREAS.map((area, i) => (
           <div
             key={area.id}
             data-area-card
-            className={`shrink-0 w-72 snap-center [perspective:1200px] h-72 transition-opacity duration-300 ${activeIndex === i ? "opacity-100" : "opacity-35"}`}
+            style={{ width: MOBILE_AREA_CARD_WIDTH, height: MOBILE_AREA_CARD_WIDTH * 1.45 }}
+            className={`shrink-0 snap-center [perspective:1200px] transition-opacity duration-300 ${activeIndex === i ? "opacity-100" : "opacity-35"}`}
           >
             <AreaFlipCard
               area={area}
@@ -1122,14 +1142,19 @@ function MobileAreasCarousel() {
 
 function MobileProcess() {
   return (
-    <section className="px-4 py-8 border-b-2 border-stone-800">
-      <div className="flex flex-col items-center text-center gap-3 mb-5">
+    <section className="relative px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
+      <SectionBackdrop
+        image={IMAGES.contactBg}
+        imageClass="opacity-[0.26]"
+        gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
+      />
+      <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
         <span className="w-10 h-px bg-emerald-600/70" />
         <h2 className="font-syne text-3xl font-extrabold text-stone-950 tracking-tight leading-tight">
           Nos encargamos de todo.
         </h2>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="relative z-10 flex flex-col gap-3">
         {PROCESS_STEPS.map(({ icon: Icon, lead, rest }, i) => (
           <div key={i} className="bg-white border-2 border-stone-800 p-4 flex gap-3 items-start">
             <div className="w-9 h-9 bg-stone-950 text-emerald-400 flex items-center justify-center shrink-0">
@@ -1151,8 +1176,8 @@ function MobileSectors() {
     <section className="relative px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.sectorsBg}
-        imageClass="opacity-[0.10]"
-        gradientClass="bg-gradient-to-b from-[#FAF6EE]/75 via-[#FAF6EE]/90 to-[#FAF6EE]"
+        imageClass="opacity-[0.28]"
+        gradientClass="bg-gradient-to-b from-[#0f1e2e]/75 via-[#0f1e2e]/90 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-4">
         <span className="w-10 h-px bg-emerald-600/70" />
@@ -1225,15 +1250,14 @@ function MobileContact({ onCopyEmail, copied }) {
     <section className="relative px-4 py-8 pb-12 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.contactBg}
-        imageClass="opacity-[0.10]"
-        gradientClass="bg-gradient-to-b from-[#FAF6EE]/80 via-[#FAF6EE]/92 to-[#FAF6EE]"
+        imageClass="opacity-[0.26]"
+        gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
         <span className="w-10 h-px bg-emerald-600/70" />
         <h2 className="font-syne text-2xl font-extrabold text-stone-950 tracking-tight">
           {CONTACT.title}
         </h2>
-        <p className="text-xs text-stone-600">{CONTACT.signature}</p>
       </div>
 
       <div className="relative z-10 flex flex-col gap-3">
@@ -1313,7 +1337,7 @@ function MobileContact({ onCopyEmail, copied }) {
   );
 }
 
-const MOBILE_SLIDE_COUNT = 5;
+const MOBILE_SLIDE_COUNT = 6;
 const MOBILE_SWIPE_THRESHOLD = 45;
 
 function MobileLanding({ onCopyEmail, copied }) {
@@ -1345,34 +1369,38 @@ function MobileLanding({ onCopyEmail, copied }) {
     `mobile-slide no-scrollbar ${center ? "mobile-slide--center" : ""} ${
       slide === i
         ? "opacity-100 scale-100 z-10 pointer-events-auto"
-        : "opacity-0 scale-[0.96] z-0 pointer-events-none"
+        : "opacity-0 scale-[0.985] z-0 pointer-events-none"
     }`;
 
   return (
     <div
-      className={`mobile-slides-container bg-[#FAF6EE] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
+      className={`mobile-slides-container bg-[#0f1e2e] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
       <div className={slideClass(0, false)}>
         <MobileHero />
-        <MobileAreasCarousel />
         <MobileSlideArrows down onDown={() => goTo(1)} />
       </div>
       <div className={slideClass(1)}>
-        <MobileProcess />
+        <MobileAreasCarousel />
         <MobileSlideArrows up down onUp={() => goTo(0)} onDown={() => goTo(2)} />
       </div>
       <div className={slideClass(2)}>
-        <MobileSectors />
+        <MobileProcess />
         <MobileSlideArrows up down onUp={() => goTo(1)} onDown={() => goTo(3)} />
       </div>
       <div className={slideClass(3)}>
-        <MobileTeam />
+        <MobileSectors />
         <MobileSlideArrows up down onUp={() => goTo(2)} onDown={() => goTo(4)} />
       </div>
       <div className={slideClass(4)}>
+        <MobileTeam />
+        <MobileSlideArrows up down onUp={() => goTo(3)} onDown={() => goTo(5)} />
+      </div>
+      <div className={slideClass(5)}>
         <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
+        <MobileSlideArrows up onUp={() => goTo(4)} />
       </div>
       {copied && (
         <CopiedToast className="fixed bottom-5 left-4 right-4 z-50 flex items-center justify-center gap-2 px-4 py-3 bg-stone-950 text-white font-syne font-bold rounded-md shadow-2xl text-xs uppercase tracking-wider border-2 border-stone-900" />
@@ -1422,7 +1450,7 @@ export default function VaguadaLanding() {
 
   return (
     <div
-      className={`w-screen font-sans bg-[#FAF6EE] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950 ${
+      className={`w-screen font-sans bg-[#0f1e2e] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950 ${
         isTouchTablet ? "min-h-screen" : "h-screen overflow-hidden flex flex-col"
       }`}
     >
