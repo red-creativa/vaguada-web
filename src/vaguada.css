@@ -70,6 +70,15 @@ html {
   position: relative;
   height: 100dvh;
   overflow: hidden;
+}
+
+/* Solo en la primera sección se permite el pull-to-refresh nativo del navegador. */
+.mobile-slides-container.mobile-slides--refreshable {
+  overscroll-behavior-y: auto;
+  touch-action: pan-y;
+}
+
+.mobile-slides-container:not(.mobile-slides--refreshable) {
   overscroll-behavior: none;
   touch-action: none;
 }

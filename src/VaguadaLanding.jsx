@@ -1049,13 +1049,13 @@ function MobileHero() {
             size="lg"
             variant="dark"
             bubbles={false}
-            className="w-24 h-24 border-2 border-stone-900 bg-stone-950 text-emerald-400 shrink-0 shadow-lg"
+            className="w-28 h-28 border-2 border-stone-900 bg-stone-950 text-emerald-400 shrink-0 shadow-lg"
           />
-          <span className="font-extrabold tracking-tight text-stone-950 text-4xl font-syne uppercase">{BRAND.name}</span>
+          <span className="font-extrabold tracking-tight text-stone-950 text-5xl font-syne uppercase">{BRAND.name}</span>
         </div>
         <div className="flex flex-col items-center gap-3">
           <span className="w-10 h-px bg-emerald-600/70" />
-          <h1 className="font-syne text-[22px] font-extrabold text-stone-950 leading-snug text-center max-w-[24ch] mx-auto">
+          <h1 className="font-syne text-2xl font-extrabold text-stone-950 leading-snug text-center max-w-[24ch] mx-auto">
             {BRAND.tagline}
           </h1>
         </div>
@@ -1098,13 +1098,13 @@ function MobileAreasCarousel() {
       <div
         ref={scrollerRef}
         className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2 touch-pan-x"
-        style={{ paddingLeft: "calc((100vw - 256px) / 2)", paddingRight: "calc((100vw - 256px) / 2)" }}
+        style={{ paddingLeft: "calc((100vw - 288px) / 2)", paddingRight: "calc((100vw - 288px) / 2)" }}
       >
         {AREAS.map((area, i) => (
           <div
             key={area.id}
             data-area-card
-            className={`shrink-0 w-64 snap-center [perspective:1200px] h-64 transition-opacity duration-300 ${activeIndex === i ? "opacity-100" : "opacity-35"}`}
+            className={`shrink-0 w-72 snap-center [perspective:1200px] h-72 transition-opacity duration-300 ${activeIndex === i ? "opacity-100" : "opacity-35"}`}
           >
             <AreaFlipCard
               area={area}
@@ -1350,7 +1350,7 @@ function MobileLanding({ onCopyEmail, copied }) {
 
   return (
     <div
-      className="mobile-slides-container bg-[#FAF6EE] text-stone-900"
+      className={`mobile-slides-container bg-[#FAF6EE] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
