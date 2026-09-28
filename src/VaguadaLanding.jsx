@@ -24,6 +24,8 @@ import {
   Building2,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   CircleCheck,
   CloudRain,
@@ -93,7 +95,7 @@ const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined
 
 const BRAND = {
   name: "üilka",
-  email: "contacto@uilka.com",
+  email: "salvadoresfrancisco@gmail.com",
   tagline: "Soluciones ambientales para industrias e instituciones",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
   location: "La Rioja y Provincias Aledañas, Argentina",
@@ -274,7 +276,7 @@ const TEAM = {
 
 const CONTACT = {
   title: "Contacto",
-  email: "contacto@uilka.com",
+  email: "salvadoresfrancisco@gmail.com",
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
@@ -339,7 +341,8 @@ function useToggleSet() {
     (id) => setIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])),
     [],
   );
-  return [ids, toggle];
+  const reset = useCallback(() => setIds([]), []);
+  return [ids, toggle, reset];
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -522,20 +525,20 @@ const FLIP_CARD_STYLES = {
     item: "text-[11px]",
   },
   mobile: {
-    icon: "w-4 h-4",
+    icon: "w-5 h-5",
     front: "",
-    frontBody: "p-3.5",
-    number: "text-[10px]",
-    frontIconBox: "w-8 h-8",
-    titleWrap: "px-1",
-    title: "text-lg",
-    back: "bg-white p-3.5",
-    backHeader: "gap-2 pb-2 mb-2",
-    backIconBox: "w-7 h-7",
-    backTitle: "text-[11px]",
-    subtitle: "text-[10px] mb-2",
-    list: "flex flex-col gap-1",
-    item: "text-[10px]",
+    frontBody: "p-5",
+    number: "text-xs",
+    frontIconBox: "w-10 h-10",
+    titleWrap: "px-2",
+    title: "text-2xl",
+    back: "bg-white p-5",
+    backHeader: "gap-2.5 pb-3 mb-3",
+    backIconBox: "w-9 h-9",
+    backTitle: "text-sm",
+    subtitle: "text-xs mb-3",
+    list: "flex flex-col gap-1.5",
+    item: "text-xs",
   },
 };
 
@@ -573,7 +576,7 @@ function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
               <span className="font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Click para ver detalle →</span>
             </div>
           ) : (
-            <span className="text-center font-mono-code text-[9px] text-white/75 uppercase tracking-wider">Tocá para ver detalle</span>
+            <span className="text-center font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Tocá para ver detalle</span>
           )}
         </div>
       </div>
@@ -1073,12 +1076,17 @@ function MobileHero() {
   );
 }
 
-const MOBILE_AREA_CARD_WIDTH = 224;
+const MOBILE_AREA_CARD_WIDTH = 300;
 
 function MobileAreasCarousel() {
-  const [flippedIds, toggleFlipped] = useToggleSet();
+  const [flippedIds, toggleFlipped, resetFlipped] = useToggleSet();
   const scrollerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Al deslizar a otra tarjeta, las que quedaron dadas vuelta vuelven a su frente.
+  useEffect(() => {
+    resetFlipped();
+  }, [activeIndex, resetFlipped]);
 
   // Detecta qué tarjeta está centrada para resaltarla.
   useEffect(() => {
@@ -1111,36 +1119,60 @@ function MobileAreasCarousel() {
           <ValleyMark key={i} className="w-16 h-16" />
         ))}
       </div>
-      <div className="relative z-10 flex items-center gap-2 mb-4 px-4">
-        <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
-        <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500">
+      <div className="relative z-10 flex items-center justify-center gap-2 mb-8 px-4">
+        <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full shrink-0" />
+        <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500 text-center">
           Conocé nuestros servicios
         </span>
       </div>
-      <div
-        ref={scrollerRef}
-        className="relative z-10 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2 touch-pan-x"
-        style={{
-          paddingLeft: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2)`,
-          paddingRight: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2)`,
-        }}
-      >
-        {AREAS.map((area, i) => (
+      <div className="relative">
+        <div
+          ref={scrollerRef}
+          className="relative z-10 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 pb-2 touch-pan-x"
+          style={{
+            paddingLeft: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2)`,
+            paddingRight: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2)`,
+          }}
+        >
+          {AREAS.map((area, i) => (
+            <div
+              key={area.id}
+              data-area-card
+              style={{ width: MOBILE_AREA_CARD_WIDTH, height: MOBILE_AREA_CARD_WIDTH * 1.45 }}
+              className={`shrink-0 snap-center [perspective:1200px] transition-opacity duration-300 ${activeIndex === i ? "opacity-100" : "opacity-35"}`}
+            >
+              <AreaFlipCard
+                area={area}
+                index={i}
+                flipped={flippedIds.includes(area.id)}
+                onToggle={() =>
+                  activeIndex === i
+                    ? toggleFlipped(area.id)
+                    : scrollerRef.current
+                        ?.querySelectorAll("[data-area-card]")
+                        [i]?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+                }
+                variant="mobile"
+              />
+            </div>
+          ))}
+        </div>
+        {activeIndex > 0 && (
           <div
-            key={area.id}
-            data-area-card
-            style={{ width: MOBILE_AREA_CARD_WIDTH, height: MOBILE_AREA_CARD_WIDTH * 1.45 }}
-            className={`shrink-0 snap-center [perspective:1200px] transition-opacity duration-300 ${activeIndex === i ? "opacity-100" : "opacity-35"}`}
+            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-white animate-swipe-left"
+            style={{ left: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 56px)` }}
           >
-            <AreaFlipCard
-              area={area}
-              index={i}
-              flipped={flippedIds.includes(area.id)}
-              onToggle={() => toggleFlipped(area.id)}
-              variant="mobile"
-            />
+            <ChevronLeft className="w-7 h-7 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]" strokeWidth={2.5} />
           </div>
-        ))}
+        )}
+        {activeIndex < AREAS.length - 1 && (
+          <div
+            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-white animate-swipe-right"
+            style={{ right: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 56px)` }}
+          >
+            <ChevronRight className="w-7 h-7 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]" strokeWidth={2.5} />
+          </div>
+        )}
       </div>
     </section>
   );

@@ -102,6 +102,22 @@ html {
   display: none;
 }
 
+/* Flechitas que invitan a deslizar el carrusel de servicios. */
+@keyframes swipe-left {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50% { transform: translateX(-4px); opacity: 1; }
+}
+@keyframes swipe-right {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+.animate-swipe-left {
+  animation: swipe-left 1.4s ease-in-out infinite;
+}
+.animate-swipe-right {
+  animation: swipe-right 1.4s ease-in-out infinite;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
