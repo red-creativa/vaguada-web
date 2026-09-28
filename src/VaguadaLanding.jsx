@@ -63,8 +63,11 @@ const IMAGES = {
   heroBg: "/images/hero.jpg",
   heroBgMobile: "/images/hero-mobile.jpg",
   processBg: "/images/proceso.jpg",
+  processBgMobile: "/images/proceso-mobile.jpg",
   sectorsBg: "/images/sectores.jpg",
+  sectorsBgMobile: "/images/sectores-mobile.jpg",
   contactBg: "/images/contacto.jpg",
+  contactBgMobile: "/images/contacto-mobile.jpg",
   areas: {
     "ingenieria-diagnostico": "/images/areas/diagnostico.jpg",
     "cumplimiento-ambiental": "/images/areas/cumplimiento.jpg",
@@ -476,10 +479,13 @@ function LinkedinIcon({ className = "" }) {
 }
 
 /** Imagen de fondo + degradado encima. */
-function SectionBackdrop({ image, imageClass, gradientClass, imageBoxClass = "absolute inset-0" }) {
+function SectionBackdrop({ image, imageClass, gradientClass, imageBoxClass = "absolute top-0 bottom-0" }) {
   return (
     <>
-      <div className={`${imageBoxClass} bg-cover bg-center pointer-events-none ${imageClass}`} style={bgImage(image)} />
+      <div
+        className={`${imageBoxClass} left-1/2 -translate-x-1/2 w-screen bg-cover bg-center pointer-events-none ${imageClass}`}
+        style={bgImage(image)}
+      />
       <div className={`absolute inset-0 pointer-events-none ${gradientClass}`} />
     </>
   );
@@ -634,7 +640,7 @@ const SLIDE_BASE =
 function HeroSlide() {
   return (
     <section className={`${SLIDE_BASE} justify-between bg-[#0f1e2e] py-8 sm:py-12 text-stone-900`}>
-      <div className="absolute inset-0 bg-cover bg-center opacity-[0.3] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
+      <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-screen bg-cover bg-center opacity-[0.3] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
       <div className="absolute inset-0 bg-[#0f1e2e]/60 pointer-events-none" />
       <div className="absolute right-[-2%] bottom-[-5%] w-[480px] sm:w-[620px] lg:w-[750px] opacity-[0.08] text-stone-900 pointer-events-none z-0">
         <ValleyMark />
@@ -1142,11 +1148,10 @@ function MobileAreasCarousel() {
 
 function MobileProcess() {
   return (
-    <section className="relative px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
       <SectionBackdrop
-        image={IMAGES.contactBg}
+        image={IMAGES.processBgMobile}
         imageClass="opacity-[0.26]"
-        imageBoxClass="absolute inset-x-0 top-0 h-96"
         gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
@@ -1174,11 +1179,10 @@ function MobileProcess() {
 
 function MobileSectors() {
   return (
-    <section className="relative px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
       <SectionBackdrop
-        image={IMAGES.sectorsBg}
+        image={IMAGES.sectorsBgMobile}
         imageClass="opacity-[0.28]"
-        imageBoxClass="absolute inset-x-0 top-0 h-96"
         gradientClass="bg-gradient-to-b from-[#0f1e2e]/75 via-[#0f1e2e]/90 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-4">
@@ -1249,11 +1253,10 @@ function MobileTeam() {
 
 function MobileContact({ onCopyEmail, copied }) {
   return (
-    <section className="relative px-4 py-8 pb-12 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 pb-12 overflow-hidden">
       <SectionBackdrop
-        image={IMAGES.contactBg}
+        image={IMAGES.contactBgMobile}
         imageClass="opacity-[0.26]"
-        imageBoxClass="absolute inset-x-0 top-0 h-96"
         gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
