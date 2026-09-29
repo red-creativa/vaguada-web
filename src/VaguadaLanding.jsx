@@ -752,7 +752,7 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
 
 function MayperSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#0f1e2e] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#1c3348] py-8 sm:py-10`}>
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none flex flex-wrap gap-16 p-8 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 10 }).map((_, i) => (
           <ValleyMark key={i} className="w-24 h-24" />
@@ -762,7 +762,7 @@ function MayperSlide() {
       <div className="max-w-5xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
         <div className="flex items-center justify-center gap-2 mb-8">
           <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
-          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
+          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-300">
             {MAYPER.title}
           </span>
         </div>
@@ -781,14 +781,15 @@ function MayperSlide() {
           />
         </a>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 w-full">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 w-full">
           {MAYPER.items.map((item, i) => (
-            <figure key={i} className="bg-white border-2 border-stone-800 overflow-hidden shadow-xs">
-              <div
-                className="h-40 sm:h-44 bg-contain bg-no-repeat bg-center bg-[#0f1e2e]/70 p-2"
-                style={bgImage(IMAGES[item.image])}
+            <figure key={i} className="flex flex-col items-center gap-4 max-w-sm">
+              <img
+                src={IMAGES[item.image]}
+                alt={item.caption}
+                className="max-h-56 sm:max-h-72 w-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
               />
-              <figcaption className="p-3 sm:p-4 font-mono-code text-xs sm:text-sm font-bold uppercase text-stone-800 text-center">
+              <figcaption className="font-mono-code text-xs sm:text-sm font-bold uppercase text-stone-200 text-center">
                 {item.caption}
               </figcaption>
             </figure>
@@ -880,7 +881,7 @@ function SectorsSlide() {
               className="bg-white/95 border-2 border-stone-800 p-3.5 flex items-center justify-between hover:bg-stone-100 transition-all shadow-2xs group cursor-default"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-stone-950 text-white flex items-center justify-center group-hover:bg-emerald-700 transition-colors shrink-0">
+                <div className="w-9 h-9 bg-slate-700 text-white flex items-center justify-center group-hover:bg-emerald-700 transition-colors shrink-0">
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
@@ -1245,6 +1246,11 @@ function MobileAreasCarousel() {
 function MobileMayper() {
   return (
     <section className="relative min-h-full flex flex-col justify-center px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
+      <SectionBackdrop
+        image={IMAGES.mayperInfra}
+        imageClass="opacity-[0.16] scale-105"
+        gradientClass="bg-gradient-to-b from-[#1c3348]/80 via-[#1c3348]/90 to-[#1c3348]"
+      />
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none flex flex-wrap gap-8 p-4 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 8 }).map((_, i) => (
           <ValleyMark key={i} className="w-16 h-16" />
@@ -1254,7 +1260,7 @@ function MobileMayper() {
       <div className="relative z-10 flex flex-col items-center text-center">
         <div className="flex items-center justify-center gap-2 mb-6 px-4">
           <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full shrink-0" />
-          <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500 text-center">
+          <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-300 text-center">
             {MAYPER.title}
           </span>
         </div>
@@ -1264,19 +1270,20 @@ function MobileMayper() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Ir al sitio de Mayper"
-          className="inline-flex items-center justify-center bg-white border-2 border-stone-800 p-3.5 mb-7 shadow-sm"
+          className="inline-flex items-center justify-center bg-white border-2 border-stone-800 p-3.5 mb-8 shadow-sm"
         >
           <img src={IMAGES.mayperLogo} alt="Logo Mayper" className="h-11 w-auto object-contain" />
         </a>
 
-        <div className="grid grid-cols-1 gap-4 w-full">
+        <div className="flex flex-col items-center gap-8 w-full">
           {MAYPER.items.map((item, i) => (
-            <figure key={i} className="bg-white border-2 border-stone-800 overflow-hidden">
-              <div
-                className="h-28 bg-contain bg-no-repeat bg-center bg-[#0f1e2e]/90 p-2"
-                style={bgImage(IMAGES[item.image])}
+            <figure key={i} className="flex flex-col items-center gap-2.5 w-full">
+              <img
+                src={IMAGES[item.image]}
+                alt={item.caption}
+                className="max-h-44 w-auto object-contain drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
               />
-              <figcaption className="p-2.5 font-mono-code text-[11px] font-bold uppercase text-stone-800 text-center">
+              <figcaption className="font-mono-code text-[11px] font-bold uppercase text-stone-200 text-center">
                 {item.caption}
               </figcaption>
             </figure>
@@ -1304,7 +1311,7 @@ function MobileProcess() {
       <div className="relative z-10 flex flex-col gap-3">
         {PROCESS_STEPS.map(({ icon: Icon, lead, rest }, i) => (
           <div key={i} className="bg-white border-2 border-stone-800 p-4 flex gap-3 items-start">
-            <div className="w-9 h-9 bg-stone-950 text-emerald-400 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 bg-slate-700 text-emerald-300 flex items-center justify-center shrink-0">
               <Icon className="w-4 h-4" />
             </div>
             <p className="text-[13px] text-stone-700 leading-relaxed font-light pt-1.5">
@@ -1335,7 +1342,7 @@ function MobileSectors() {
       <div className="relative z-10 grid grid-cols-2 gap-2.5">
         {SECTORS.items.map(({ id, name, icon: Icon }) => (
           <div key={id} className="bg-white border-2 border-stone-800 p-3 flex flex-col gap-2">
-            <div className="w-8 h-8 bg-stone-950 text-white flex items-center justify-center">
+            <div className="w-8 h-8 bg-slate-700 text-white flex items-center justify-center">
               <Icon className="w-4 h-4" />
             </div>
             <h3 className="font-syne text-[12px] font-bold uppercase text-stone-950 leading-tight">{name}</h3>
