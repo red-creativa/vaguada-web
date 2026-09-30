@@ -295,7 +295,7 @@ const PROCESS_STEPS = [
 ];
 
 const MAYPER = {
-  title: "Distribuidores oficiales MAYPER en La Rioja",
+  title: "Representantes MAYPER en La Rioja",
   url: "https://mayper.com.ar/",
   items: [
     { image: "mayperPlanta", caption: "Plantas de tratamiento de efluentes modulares" },
@@ -655,9 +655,9 @@ const SLIDE_BASE =
 
 function HeroSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-between bg-[#0f1e2e] py-8 sm:py-12 text-stone-900`}>
+    <section className={`${SLIDE_BASE} justify-between bg-[#f7faf8] py-8 sm:py-12 text-stone-900`}>
       <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-screen bg-cover bg-center opacity-[0.3] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
-      <div className="absolute inset-0 bg-[#0f1e2e]/60 pointer-events-none" />
+      <div className="absolute inset-0 bg-[#f7faf8]/60 pointer-events-none" />
       <div className="absolute right-[-2%] bottom-[-5%] w-[480px] sm:w-[620px] lg:w-[750px] opacity-[0.08] text-stone-900 pointer-events-none z-0">
         <ValleyMark />
       </div>
@@ -669,8 +669,8 @@ function HeroSlide() {
             <div className="flex flex-col items-center gap-3">
               <VaguadaLogo
                 size="lg"
-                variant="dark"
-                className="w-32 h-32 sm:w-40 sm:h-40 lg:w-44 lg:h-44 border-2 border-stone-900 bg-stone-950 text-emerald-400 shadow-md shrink-0"
+                variant="light"
+                className="w-32 h-32 sm:w-40 sm:h-40 lg:w-44 lg:h-44 shadow-md shrink-0"
               />
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2.5">
@@ -700,7 +700,7 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
   const areas = AREAS.slice(pageIndex * AREAS_PER_SLIDE, pageIndex * AREAS_PER_SLIDE + AREAS_PER_SLIDE);
 
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#0b1826] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#eef3f1] py-8 sm:py-10`}>
       <div className="absolute inset-0 opacity-[0.045] pointer-events-none flex flex-wrap gap-20 p-8 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 12 }).map((_, i) => (
           <ValleyMark key={i} className="w-24 h-24" />
@@ -752,7 +752,7 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
 
 function MayperSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#1c3348] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#eaf1ec] py-8 sm:py-10`}>
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none flex flex-wrap gap-16 p-8 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 10 }).map((_, i) => (
           <ValleyMark key={i} className="w-24 h-24" />
@@ -762,7 +762,7 @@ function MayperSlide() {
       <div className="max-w-5xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
         <div className="flex items-center justify-center gap-2 mb-8">
           <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
-          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-300">
+          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
             {MAYPER.title}
           </span>
         </div>
@@ -789,7 +789,7 @@ function MayperSlide() {
                 alt={item.caption}
                 className="max-h-56 sm:max-h-72 w-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
               />
-              <figcaption className="font-mono-code text-xs sm:text-sm font-bold uppercase text-stone-200 text-center">
+              <figcaption className="font-mono-code text-xs sm:text-sm font-bold uppercase text-stone-700 text-center">
                 {item.caption}
               </figcaption>
             </figure>
@@ -803,11 +803,11 @@ function MayperSlide() {
 
 function ProcessSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#0f1e2e] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#f7faf8] py-8 sm:py-10`}>
       <SectionBackdrop
         image={IMAGES.processBg}
         imageClass="opacity-[0.32]"
-        gradientClass="bg-gradient-to-b from-[#0f1e2e] via-[#0f1e2e]/85 to-[#0f1e2e]"
+        gradientClass="bg-gradient-to-b from-[#f7faf8] via-[#f7faf8]/85 to-[#f7faf8]"
       />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] opacity-[0.05] pointer-events-none text-stone-900">
         <ValleyMark />
@@ -855,11 +855,11 @@ function ProcessSlide() {
 
 function SectorsSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#0b1826] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#eef3f1] py-8 sm:py-10`}>
       <SectionBackdrop
         image={IMAGES.sectorsBg}
         imageClass="opacity-[0.28]"
-        gradientClass="bg-gradient-to-r from-[#0b1826] via-[#0b1826]/90 to-[#0b1826]/60"
+        gradientClass="bg-gradient-to-r from-[#eef3f1] via-[#eef3f1]/90 to-[#eef3f1]/60"
       />
       <div className="absolute -right-10 -bottom-10 w-80 h-80 opacity-[0.05] pointer-events-none text-stone-900">
         <ValleyMark />
@@ -902,7 +902,7 @@ function SectorsSlide() {
 
 function TeamSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#0f1e2e] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center bg-[#f7faf8] py-8 sm:py-10`}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {TEAM.members.map((member) => (
@@ -958,11 +958,11 @@ function ContactSlide({ onCopyEmail, copied }) {
   const card = "bg-white/95 border-2 border-stone-800 p-6 flex flex-col justify-between shadow-xs";
 
   return (
-    <section className="slide-section flex flex-col justify-between bg-[#0f1e2e] px-4 sm:px-6 lg:px-8 pt-8 pb-4 relative overflow-hidden">
+    <section className="slide-section flex flex-col justify-between bg-[#f7faf8] px-4 sm:px-6 lg:px-8 pt-8 pb-4 relative overflow-hidden">
       <SectionBackdrop
         image={IMAGES.contactBg}
         imageClass="opacity-[0.26]"
-        gradientClass="bg-gradient-to-t from-[#0f1e2e] via-[#0f1e2e]/90 to-[#0f1e2e]"
+        gradientClass="bg-gradient-to-t from-[#f7faf8] via-[#f7faf8]/90 to-[#f7faf8]"
       />
 
       <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
@@ -1058,7 +1058,7 @@ function DesktopSlides({ onCopyEmail, copied }) {
   const pageCount = AREAS_PAGE_COUNT;
 
   return (
-    <div className="bg-[#0f1e2e] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950">
+    <div className="bg-[#f7faf8] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950">
       <HeroSlide />
       {Array.from({ length: pageCount }).map((_, i) => (
         <AreasSlide key={i} pageIndex={i} pageCount={pageCount} flippedIds={flippedIds} onToggle={toggleFlipped} />
@@ -1076,7 +1076,7 @@ function SlideNav({ activeIndex, onNavigate }) {
   return (
     <aside
       aria-label="Navegación de diapositivas"
-      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#0f1e2e]/90 backdrop-blur-xs p-2 rounded-full border border-stone-300 shadow-md"
+      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#f7faf8]/90 backdrop-blur-xs p-2 rounded-full border border-stone-300 shadow-md"
     >
       {SLIDE_LABELS.map((label, i) => {
         const active = activeIndex === i;
@@ -1091,7 +1091,7 @@ function SlideNav({ activeIndex, onNavigate }) {
             <span
               className={`transition-all duration-300 rounded-full ${
                 active
-                  ? "w-3 h-3 bg-stone-950 ring-2 ring-emerald-600 ring-offset-2 ring-offset-[#0f1e2e]"
+                  ? "w-3 h-3 bg-stone-950 ring-2 ring-emerald-600 ring-offset-2 ring-offset-[#f7faf8]"
                   : "w-2 h-2 bg-stone-400 group-hover:bg-stone-700"
               }`}
             />
@@ -1115,15 +1115,15 @@ function MobileHero() {
       <SectionBackdrop
         image={IMAGES.heroBgMobile}
         imageClass="opacity-[0.4] scale-105"
-        gradientClass="bg-gradient-to-b from-[#0f1e2e]/55 via-[#0f1e2e]/80 to-[#0f1e2e]"
+        gradientClass="bg-gradient-to-b from-[#f7faf8]/55 via-[#f7faf8]/80 to-[#f7faf8]"
       />
       <div className="relative z-10 flex flex-col items-center">
         <div className="flex flex-col items-center text-center gap-4 mb-10">
           <VaguadaLogo
             size="lg"
-            variant="dark"
+            variant="light"
             bubbles={false}
-            className="w-36 h-36 border-2 border-stone-900 bg-stone-950 text-emerald-400 shrink-0 shadow-lg"
+            className="w-36 h-36 shrink-0 shadow-lg"
           />
           <div className="flex items-center justify-center gap-2.5">
             <span className="font-extrabold tracking-tight text-stone-950 text-6xl font-syne uppercase">{BRAND.name}</span>
@@ -1224,18 +1224,18 @@ function MobileAreasCarousel() {
         </div>
         {activeIndex > 0 && (
           <div
-            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-white animate-swipe-left"
+            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-slate-400 animate-swipe-left"
             style={{ left: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 56px)` }}
           >
-            <ChevronLeft className="w-7 h-7 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]" strokeWidth={2.5} />
+            <ChevronLeft className="w-7 h-7" strokeWidth={2.5} />
           </div>
         )}
         {activeIndex < AREAS.length - 1 && (
           <div
-            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-white animate-swipe-right"
+            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-slate-400 animate-swipe-right"
             style={{ right: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 56px)` }}
           >
-            <ChevronRight className="w-7 h-7 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]" strokeWidth={2.5} />
+            <ChevronRight className="w-7 h-7" strokeWidth={2.5} />
           </div>
         )}
       </div>
@@ -1249,7 +1249,7 @@ function MobileMayper() {
       <SectionBackdrop
         image={IMAGES.mayperInfra}
         imageClass="opacity-[0.16] scale-105"
-        gradientClass="bg-gradient-to-b from-[#1c3348]/80 via-[#1c3348]/90 to-[#1c3348]"
+        gradientClass="bg-gradient-to-b from-[#eaf1ec]/80 via-[#eaf1ec]/90 to-[#eaf1ec]"
       />
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none flex flex-wrap gap-8 p-4 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 8 }).map((_, i) => (
@@ -1260,7 +1260,7 @@ function MobileMayper() {
       <div className="relative z-10 flex flex-col items-center text-center">
         <div className="flex items-center justify-center gap-2 mb-6 px-4">
           <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full shrink-0" />
-          <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-300 text-center">
+          <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500 text-center">
             {MAYPER.title}
           </span>
         </div>
@@ -1283,7 +1283,7 @@ function MobileMayper() {
                 alt={item.caption}
                 className="max-h-44 w-auto object-contain drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
               />
-              <figcaption className="font-mono-code text-[11px] font-bold uppercase text-stone-200 text-center">
+              <figcaption className="font-mono-code text-[11px] font-bold uppercase text-stone-700 text-center">
                 {item.caption}
               </figcaption>
             </figure>
@@ -1300,7 +1300,7 @@ function MobileProcess() {
       <SectionBackdrop
         image={IMAGES.processBgMobile}
         imageClass="opacity-[0.26]"
-        gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
+        gradientClass="bg-gradient-to-b from-[#f7faf8]/80 via-[#f7faf8]/92 to-[#f7faf8]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
         <span className="w-10 h-px bg-emerald-600/70" />
@@ -1331,7 +1331,7 @@ function MobileSectors() {
       <SectionBackdrop
         image={IMAGES.sectorsBgMobile}
         imageClass="opacity-[0.28]"
-        gradientClass="bg-gradient-to-b from-[#0f1e2e]/75 via-[#0f1e2e]/90 to-[#0f1e2e]"
+        gradientClass="bg-gradient-to-b from-[#f7faf8]/75 via-[#f7faf8]/90 to-[#f7faf8]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-4">
         <span className="w-10 h-px bg-emerald-600/70" />
@@ -1405,7 +1405,7 @@ function MobileContact({ onCopyEmail, copied }) {
       <SectionBackdrop
         image={IMAGES.contactBgMobile}
         imageClass="opacity-[0.26]"
-        gradientClass="bg-gradient-to-b from-[#0f1e2e]/80 via-[#0f1e2e]/92 to-[#0f1e2e]"
+        gradientClass="bg-gradient-to-b from-[#f7faf8]/80 via-[#f7faf8]/92 to-[#f7faf8]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
         <span className="w-10 h-px bg-emerald-600/70" />
@@ -1528,7 +1528,7 @@ function MobileLanding({ onCopyEmail, copied }) {
 
   return (
     <div
-      className={`mobile-slides-container bg-[#0f1e2e] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
+      className={`mobile-slides-container bg-[#f7faf8] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -1608,7 +1608,7 @@ export default function VaguadaLanding() {
 
   return (
     <div
-      className={`w-screen font-sans bg-[#0f1e2e] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950 ${
+      className={`w-screen font-sans bg-[#f7faf8] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950 ${
         isTouchTablet ? "min-h-screen" : "h-screen overflow-hidden flex flex-col"
       }`}
     >
