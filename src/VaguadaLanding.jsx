@@ -70,9 +70,6 @@ const IMAGES = {
   sectorsBgMobile: "/images/sectores-mobile.jpg",
   contactBg: "/images/contacto.jpg",
   contactBgMobile: "/images/contacto-mobile.jpg",
-  mayperLogo: "/logo-mayper.png",
-  mayperPlanta: "/Hero-Plantas.webp",
-  mayperInfra: "/Home-Infra.webp",
   areas: {
     "ingenieria-diagnostico": "/images/areas/diagnostico.jpg",
     "cumplimiento-ambiental": "/images/areas/cumplimiento.jpg",
@@ -294,21 +291,11 @@ const PROCESS_STEPS = [
   { icon: CircleCheck, lead: "Entregamos la solución funcionando", rest: ": permiso aprobado u obra operando." },
 ];
 
-const MAYPER = {
-  title: "Representantes MAYPER en La Rioja",
-  url: "https://mayper.com.ar/",
-  items: [
-    { image: "mayperPlanta", caption: "Plantas de tratamiento de efluentes modulares" },
-    { image: "mayperInfra", caption: "Infraestructura para agua y efluentes" },
-  ],
-};
-
 const AREAS_PER_SLIDE = 3;
 const AREAS_PAGE_COUNT = Math.ceil(AREAS.length / AREAS_PER_SLIDE);
 const SLIDE_LABELS = [
   "Inicio",
   ...Array.from({ length: AREAS_PAGE_COUNT }).map((_, i) => `Áreas ${i + 1}/${AREAS_PAGE_COUNT}`),
-  "Mayper",
   "Llave en Mano",
   "Sectores",
   "Equipo",
@@ -750,57 +737,6 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
   );
 }
 
-function MayperSlide() {
-  return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#eaf1ec] py-8 sm:py-10`}>
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none flex flex-wrap gap-16 p-8 justify-around items-center text-stone-900 select-none">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <ValleyMark key={i} className="w-24 h-24" />
-        ))}
-      </div>
-
-      <div className="max-w-5xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
-          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
-            {MAYPER.title}
-          </span>
-        </div>
-
-        <a
-          href={MAYPER.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Ir al sitio de Mayper"
-          className="inline-flex items-center justify-center bg-white border-2 border-stone-800 p-4 sm:p-5 mb-12 shadow-md hover:scale-[1.03] transition-transform"
-        >
-          <img
-            src={IMAGES.mayperLogo}
-            alt="Logo Mayper"
-            className="h-14 sm:h-16 w-auto object-contain"
-          />
-        </a>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 w-full">
-          {MAYPER.items.map((item, i) => (
-            <figure key={i} className="flex flex-col items-center gap-4 max-w-sm">
-              <img
-                src={IMAGES[item.image]}
-                alt={item.caption}
-                className="max-h-56 sm:max-h-72 w-auto object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
-              />
-              <figcaption className="font-mono-code text-xs sm:text-sm font-bold uppercase text-stone-700 text-center">
-                {item.caption}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-      <ScrollArrowHint />
-    </section>
-  );
-}
-
 function ProcessSlide() {
   return (
     <section className={`${SLIDE_BASE} justify-center bg-[#f7faf8] py-8 sm:py-10`}>
@@ -1063,7 +999,6 @@ function DesktopSlides({ onCopyEmail, copied }) {
       {Array.from({ length: pageCount }).map((_, i) => (
         <AreasSlide key={i} pageIndex={i} pageCount={pageCount} flippedIds={flippedIds} onToggle={toggleFlipped} />
       ))}
-      <MayperSlide />
       <ProcessSlide />
       <SectorsSlide />
       <TeamSlide />
@@ -1238,57 +1173,6 @@ function MobileAreasCarousel() {
             <ChevronRight className="w-7 h-7" strokeWidth={2.5} />
           </div>
         )}
-      </div>
-    </section>
-  );
-}
-
-function MobileMayper() {
-  return (
-    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
-      <SectionBackdrop
-        image={IMAGES.mayperInfra}
-        imageClass="opacity-[0.16] scale-105"
-        gradientClass="bg-gradient-to-b from-[#eaf1ec]/80 via-[#eaf1ec]/90 to-[#eaf1ec]"
-      />
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none flex flex-wrap gap-8 p-4 justify-around items-center text-stone-900 select-none">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <ValleyMark key={i} className="w-16 h-16" />
-        ))}
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center text-center">
-        <div className="flex items-center justify-center gap-2 mb-6 px-4">
-          <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full shrink-0" />
-          <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500 text-center">
-            {MAYPER.title}
-          </span>
-        </div>
-
-        <a
-          href={MAYPER.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Ir al sitio de Mayper"
-          className="inline-flex items-center justify-center bg-white border-2 border-stone-800 p-3.5 mb-8 shadow-sm"
-        >
-          <img src={IMAGES.mayperLogo} alt="Logo Mayper" className="h-11 w-auto object-contain" />
-        </a>
-
-        <div className="flex flex-col items-center gap-8 w-full">
-          {MAYPER.items.map((item, i) => (
-            <figure key={i} className="flex flex-col items-center gap-2.5 w-full">
-              <img
-                src={IMAGES[item.image]}
-                alt={item.caption}
-                className="max-h-44 w-auto object-contain drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
-              />
-              <figcaption className="font-mono-code text-[11px] font-bold uppercase text-stone-700 text-center">
-                {item.caption}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -1491,7 +1375,7 @@ function MobileContact({ onCopyEmail, copied }) {
   );
 }
 
-const MOBILE_SLIDE_COUNT = 7;
+const MOBILE_SLIDE_COUNT = 6;
 const MOBILE_SWIPE_THRESHOLD = 45;
 
 function MobileLanding({ onCopyEmail, copied }) {
@@ -1541,24 +1425,20 @@ function MobileLanding({ onCopyEmail, copied }) {
         <MobileSlideArrows up down onUp={() => goTo(0)} onDown={() => goTo(2)} />
       </div>
       <div className={slideClass(2)}>
-        <MobileMayper />
+        <MobileProcess />
         <MobileSlideArrows up down onUp={() => goTo(1)} onDown={() => goTo(3)} />
       </div>
       <div className={slideClass(3)}>
-        <MobileProcess />
+        <MobileSectors />
         <MobileSlideArrows up down onUp={() => goTo(2)} onDown={() => goTo(4)} />
       </div>
       <div className={slideClass(4)}>
-        <MobileSectors />
+        <MobileTeam />
         <MobileSlideArrows up down onUp={() => goTo(3)} onDown={() => goTo(5)} />
       </div>
       <div className={slideClass(5)}>
-        <MobileTeam />
-        <MobileSlideArrows up down onUp={() => goTo(4)} onDown={() => goTo(6)} />
-      </div>
-      <div className={slideClass(6)}>
         <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
-        <MobileSlideArrows up onUp={() => goTo(5)} />
+        <MobileSlideArrows up onUp={() => goTo(4)} />
       </div>
       {copied && (
         <CopiedToast className="fixed bottom-5 left-4 right-4 z-50 flex items-center justify-center gap-2 px-4 py-3 bg-stone-950 text-white font-syne font-bold rounded-md shadow-2xl text-xs uppercase tracking-wider border-2 border-stone-900" />
