@@ -45,7 +45,6 @@ import {
   PhoneCall,
   Pickaxe,
   Recycle,
-  Search,
   SlidersVertical,
   Sprout,
   Truck,
@@ -143,6 +142,7 @@ const AREAS = [
       "Redes de distribución",
       "Redes cloacales",
       "Reutilización de agua",
+      "Dragado de lagunas",
     ],
   },
   {
@@ -285,7 +285,6 @@ const CONTACT = {
 };
 
 const PROCESS_STEPS = [
-  { icon: Search, lead: "Relevamos el problema o necesidad", rest: " en el lugar: técnico, normativo u operativo." },
   { icon: SlidersVertical, lead: "Diseñamos la solución a medida", rest: ": ingeniería, balances o documentación normativa." },
   { icon: Workflow, lead: "Gestionamos compras, proveedores y trámites", rest: " hasta la ejecución." },
   { icon: CircleCheck, lead: "Entregamos la solución funcionando", rest: ": permiso aprobado u obra operando." },
@@ -590,9 +589,9 @@ function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
         <p className={`text-stone-600 leading-relaxed shrink-0 ${s.subtitle}`}>{area.subtitle}</p>
         <div className={`overflow-y-auto no-scrollbar flex-1 ${s.list}`}>
           {area.items.map((item, i) => (
-            <div key={i} className={`flex items-center gap-1.5 font-mono-code text-stone-800 ${s.item}`}>
+            <div key={i} className={`flex items-start gap-1.5 font-mono-code text-stone-800 leading-snug ${s.item}`}>
               <span className="text-emerald-700 font-bold shrink-0">›</span>
-              <span className="truncate">{item}</span>
+              <span className="min-w-0 break-words">{item}</span>
             </div>
           ))}
         </div>
