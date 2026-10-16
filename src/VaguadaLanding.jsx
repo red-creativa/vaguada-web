@@ -1,4 +1,4 @@
-﻿/**
+/**
  * VaguadaLanding.jsx
  *
  * Reconstrucción legible del componente publicado en el artifact
@@ -19,41 +19,41 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
+  Agro,
   ArrowRight,
   ArrowUpRight,
-  Building2,
+  Chat,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
-  CircleCheck,
-  CloudRain,
-  Compass,
+  Circular,
+  Climate,
+  Compliance,
   Copy,
-  Droplet,
-  Earth,
-  Factory,
-  FileCheck2,
-  Fuel,
-  Gauge,
-  GraduationCap,
-  Landmark,
+  Deliver,
+  Design,
+  Diagnosis,
+  Emissions,
+  Energy,
+  Facility,
+  Graduation,
+  Hydraulics,
+  Infrastructure,
+  Logistics,
   Mail,
-  MapPin,
-  MessageCircle,
-  PhoneCall,
-  Pickaxe,
-  Recycle,
-  SlidersVertical,
-  Sprout,
-  Truck,
-  Warehouse,
-  Waves,
-  Wind,
-  Workflow,
-  Zap,
-} from "lucide-react";
+  Manage,
+  Manufacturing,
+  Mining,
+  Oil,
+  Phone,
+  Pin,
+  PublicSector,
+  Remediation,
+  Waste,
+  Water,
+} from "./icons";
 import "./vaguada.css";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -73,9 +73,9 @@ const IMAGES = {
     "ingenieria-diagnostico": "/images/areas/diagnostico.jpg",
     "cumplimiento-ambiental": "/images/areas/cumplimiento.jpg",
     "agua-saneamiento": "/images/areas/agua.jpg",
-    "residuos-economia-circular": "/images/areas/residuos.jpg",
+    residuos: "/images/areas/residuos.jpg",
+    "circularidad-sustentabilidad": "/images/areas/sustentabilidad.jpg",
     "emisiones-atmosfericas": "/images/areas/emisiones.jpg",
-    "sustentabilidad-eficiencia": "/images/areas/sustentabilidad.jpg",
     "riesgo-climatico": "/images/areas/riesgo-climatico.jpg",
     "remediacion-restauracion": "/images/areas/remediacion.jpg",
     "modelado-hidraulico": "/images/areas/modelado-hidraulico.jpg",
@@ -87,7 +87,6 @@ const IMAGES = {
 };
 
 const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined);
-
 /* ────────────────────────────────────────────────────────────────────────── */
 /* Contenido                                                                  */
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -97,161 +96,148 @@ const BRAND = {
   email: "salvadoresfrancisco@gmail.com",
   tagline: "Soluciones ambientales para industrias e instituciones",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
-  location: "La Rioja y Provincias Aledañas, Argentina",
+  location: "La Rioja y provincias vecinas, Argentina",
   footerBadge: "ÜILKA — Soluciones ambientales para industrias e instituciones",
 };
 
 const AREAS = [
   {
     id: "ingenieria-diagnostico",
-    title: "Diagnósticos y Recomendaciones",
-    subtitle: "Entendimiento técnico de la operación como punto de partida.",
+    title: "Diagnóstico y eficiencia",
+    subtitle: "Detectamos pérdidas y oportunidades de ahorro en tu operación.",
     items: [
-      "Diagnósticos ambientales integrales",
-      "Evaluación de procesos",
-      "Identificación de riesgos",
-      "Análisis de consumos y pérdidas",
+      "Diagnóstico ambiental integral",
       "Balances de materia y energía",
-      "Oportunidades de mejora",
-      "Evaluación técnico-económica",
+      "Eficiencia energética e hídrica",
+      "Identificación de riesgos",
+      "Evaluación técnico‑económica",
     ],
   },
   {
     id: "cumplimiento-ambiental",
     title: "Cumplimiento ambiental",
-    subtitle:
-      'Art. 41 CN — "Todos los habitantes gozan del derecho a un ambiente sano, equilibrado, apto para el desarrollo humano."',
+    subtitle: "Permisos en regla sin frenar la operación.",
     items: [
-      "Evaluaciones de Impacto Ambiental",
-      "Declaraciones de Impacto Ambiental",
-      "Estudios y documentación",
-      "Permisos",
-      "Licencias",
+      "Estudios de Impacto Ambiental (EIA)",
+      "Permisos, licencias y habilitaciones",
+      "Regularización de establecimientos",
       "Planes de gestión ambiental",
-      "Regularización",
     ],
   },
   {
     id: "agua-saneamiento",
     title: "Agua y efluentes",
-    subtitle: "Infraestructura de agua y tratamiento de efluentes, de punta a punta.",
+    subtitle: "Diseño y obra, de la captación al vuelco.",
     items: [
-      "Captación, bombeo y almacenamiento",
+      "Captación y almacenamiento",
       "Potabilización",
-      "Plantas de tratamiento",
-      "Redes de distribución",
-      "Redes cloacales",
-      "Reutilización de agua",
+      "Plantas de tratamiento de efluentes",
+      "Redes de agua y cloacas",
+      "Reúso de agua",
       "Dragado de lagunas",
     ],
   },
   {
-    id: "residuos-economia-circular",
-    title: "Residuos y economía circular",
-    subtitle: "Gestión de residuos y modelos de valorización.",
+    id: "residuos",
+    title: "Gestión de residuos",
+    subtitle: "Nos hacemos cargo de tus residuos, de la generación a la disposición final.",
     items: [
-      "Gestión de residuos",
-      "Residuos peligrosos",
-      "Almacenamiento",
-      "Trazabilidad",
-      "Transporte y disposición",
-      "Valorización",
-      "Recuperación de materiales",
-      "Economía circular",
+      "Residuos comunes y peligrosos",
+      "Almacenamiento y trazabilidad",
+      "Retiro y transporte",
+      "Tratamiento y disposición final",
+    ],
+  },
+  {
+    id: "circularidad-sustentabilidad",
+    title: "Sustentabilidad Empresarial y Modelos de Negocio Circulares",
+    subtitle: "Residuos convertidos en valor y desempeño ambiental medible.",
+    items: [
+      "Valorización de subproductos",
+      "Simbiosis industrial",
+      "Indicadores de sustentabilidad",
+      "Reportes de sustentabilidad",
+      "Certificaciones (ISO, B Corp, etc.)",
     ],
   },
   {
     id: "emisiones-atmosfericas",
     title: "Emisiones atmosféricas",
-    subtitle: "Caracterización, modelación y control de emisiones.",
-    items: ["Monitoreo", "Caracterización", "Modelación", "Control", "Tratamiento", "Optimización de procesos"],
-  },
-  {
-    id: "sustentabilidad-eficiencia",
-    title: "Sustentabilidad empresarial",
-    subtitle: "Cultura ambiental, indicadores y datos para la gestión diaria.",
+    subtitle: "Medición, modelación y control.",
     items: [
-      "Cultura ambiental corporativa",
-      "Capacitaciones técnicas",
-      "KPIs Ambientales",
-      "Eficiencia energética e hídrica",
-      "Soluciones y diagnósticos",
+      "Monitoreo y caracterización",
+      "Modelación de dispersión",
+      "Sistemas de control y tratamiento",
+      "Optimización de procesos",
     ],
   },
   {
     id: "riesgo-climatico",
     title: "Riesgo climático y adaptación",
-    subtitle: "De datos climáticos a decisiones de inversión.",
+    subtitle: "Datos climáticos para decidir inversiones.",
     items: [
-      "Tendencias climáticas",
-      "Eventos extremos",
-      "Sequías",
-      "Olas de calor",
-      "Precipitaciones y viento",
-      "Riesgo físico compuesto",
-      "Evaluación de vulnerabilidad",
-      "Medidas de adaptación",
+      "Tendencias y eventos extremos",
+      "Sequías, olas de calor y tormentas",
+      "Riesgo físico sobre activos",
+      "Vulnerabilidad y adaptación",
     ],
   },
   {
     id: "remediacion-restauracion",
     title: "Remediación y restauración",
-    subtitle: "Suelos, aguas y ecosistemas.",
+    subtitle: "Suelos, aguas y ecosistemas afectados.",
     items: [
-      "Estado de situación",
-      "Delimitación",
+      "Caracterización y delimitación",
       "Evaluación de riesgo",
-      "Tratamientos in situ y ex situ",
+      "Tratamiento in situ y ex situ",
       "Aguas superficiales y subterráneas",
-      "Restauración ecológica",
-      "Revegetación",
+      "Restauración y revegetación",
     ],
   },
   {
     id: "modelado-hidraulico",
     title: "Modelado hidráulico e hidrológico",
-    subtitle: "Simulación de crecidas y escurrimientos con HEC-RAS y HEC-HMS para decidir con datos.",
+    // ‑: guion que no se separa de línea.
+    subtitle: "Crecidas y escurrimientos simulados con HEC‑RAS y HEC‑HMS.",
     items: [
       "Estudios de inundabilidad",
-      "Modelación hidrológica de cuencas",
-      "Caudales de diseño y crecidas",
-      "Modelación hidráulica 1D y 2D",
-      "Líneas de ribera y planicies de inundación",
-      "Drenaje pluvial urbano",
+      "Caudales de diseño",
+      "Modelación 1D y 2D",
+      "Líneas de ribera",
+      "Drenaje pluvial",
     ],
   },
 ];
 
 const AREA_ICONS = {
-  "ingenieria-diagnostico": Compass,
-  "cumplimiento-ambiental": FileCheck2,
-  "agua-saneamiento": Droplet,
-  "residuos-economia-circular": Recycle,
-  "emisiones-atmosfericas": Wind,
-  "sustentabilidad-eficiencia": Gauge,
-  "riesgo-climatico": CloudRain,
-  "remediacion-restauracion": Sprout,
-  "modelado-hidraulico": Waves,
+  "ingenieria-diagnostico": Diagnosis,
+  "cumplimiento-ambiental": Compliance,
+  "agua-saneamiento": Water,
+  residuos: Waste,
+  "circularidad-sustentabilidad": Circular,
+  "emisiones-atmosfericas": Emissions,
+  "riesgo-climatico": Climate,
+  "remediacion-restauracion": Remediation,
+  "modelado-hidraulico": Hydraulics,
 };
 
 const SECTORS = {
   title: "Sectores de aplicación",
-  subtitle: "Industrias en las que trabajamos",
   items: [
-    { id: "mineria", name: "Minería", icon: Pickaxe },
-    { id: "energia", name: "Energía", icon: Zap },
-    { id: "industria", name: "Industria y manufactura", icon: Factory },
-    { id: "infraestructura", name: "Infraestructura y construcción", icon: Building2 },
-    { id: "hidrocarburos", name: "Hidrocarburos y combustibles", icon: Fuel },
-    { id: "agroindustria", name: "Industria agro-ganadera", icon: Sprout },
-    { id: "logistica", name: "Logística", icon: Truck },
-    { id: "grandes-instalaciones", name: "Grandes instalaciones", icon: Warehouse },
-    { id: "sector-publico", name: "Sector público y gobiernos", icon: Landmark },
+    { id: "mineria", name: "Minería", icon: Mining },
+    { id: "energia", name: "Energía", icon: Energy },
+    { id: "hidrocarburos", name: "Hidrocarburos", icon: Oil },
+    { id: "industria", name: "Industria manufacturera", icon: Manufacturing },
+    { id: "agroindustria", name: "Agroindustria", icon: Agro },
+    { id: "infraestructura", name: "Infraestructura y construcción", icon: Infrastructure },
+    { id: "logistica", name: "Logística", icon: Logistics },
+    { id: "grandes-instalaciones", name: "Parques y grandes instalaciones", icon: Facility },
+    { id: "sector-publico", name: "Sector público", icon: PublicSector },
   ],
 };
 
 const TEAM = {
-
+  title: "Quiénes somos",
   subtitle: "Equipo",
   members: [
     {
@@ -275,19 +261,19 @@ const TEAM = {
 };
 
 const CONTACT = {
-  title: "Contacto",
+  title: "Contanos tu proyecto",
   email: "salvadoresfrancisco@gmail.com",
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
-  location: "La Rioja y Provincias Aledañas, Argentina",
+  location: "La Rioja y provincias vecinas, Argentina",
   signature: "ÜILKA — Soluciones ambientales para industrias e instituciones",
 };
 
 const PROCESS_STEPS = [
-  { icon: SlidersVertical, lead: "Diseñamos la solución a medida", rest: ": ingeniería, balances o documentación normativa." },
-  { icon: Workflow, lead: "Gestionamos compras, proveedores y trámites", rest: " hasta la ejecución." },
-  { icon: CircleCheck, lead: "Entregamos la solución funcionando", rest: ": permiso aprobado u obra operando." },
+  { icon: Design, lead: "Diseño", rest: ": ingeniería y documentación a medida." },
+  { icon: Manage, lead: "Gestión", rest: ": compras, proveedores y trámites." },
+  { icon: Deliver, lead: "Entrega", rest: ": permiso aprobado u obra en marcha." },
 ];
 
 const AREAS_PER_SLIDE = 3;
@@ -456,7 +442,7 @@ function RibbonLogoArt({ className, bubbles = true }) {
 function VaguadaLogo({ className = "", size = "md", variant = "dark", bubbles = true }) {
   return (
     <div
-      className={`rounded-xl flex items-center justify-center transition-all duration-300 relative overflow-hidden group-hover:scale-105 ${LOGO_SIZES[size]} ${LOGO_VARIANTS[variant]} ${className}`}
+      className={`flex items-center justify-center transition-all duration-300 relative overflow-hidden group-hover:scale-105 ${LOGO_SIZES[size]} ${LOGO_VARIANTS[variant]} ${className}`}
     >
       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-teal-400/20 pointer-events-none" />
       <RibbonLogoArt className={LOGO_SVG_CLASS} bubbles={bubbles} />
@@ -508,42 +494,37 @@ function CopiedToast({ className }) {
 
 const FLIP_CARD_STYLES = {
   desktop: {
-    icon: "w-5 h-5",
+    icon: "w-7 h-7",
     front: "shadow-md",
     frontBody: "p-4 sm:p-5",
     number: "text-[11px]",
-    frontIconBox: "w-9 h-9",
     titleWrap: "px-2",
-    title: "text-xl sm:text-2xl",
+    // Escala con el ancho de la tarjeta para que la palabra más larga entre entera.
+    title: "text-[length:min(1.5rem,10.5cqi)]",
     back: "shadow-md bg-white p-4 sm:p-5",
     backHeader: "gap-2.5 pb-2.5 mb-2.5",
-    backIconBox: "w-8 h-8",
     backTitle: "text-xs sm:text-sm",
-    subtitle: "text-[11px] mb-2.5",
-    list: "grid grid-cols-1 gap-1",
-    item: "text-[11px]",
+    subtitle: "text-xs mb-1",
+    item: "text-xs lg:text-[13px]",
   },
   mobile: {
-    icon: "w-5 h-5",
+    icon: "w-7 h-7",
     front: "",
     frontBody: "p-5",
     number: "text-xs",
-    frontIconBox: "w-10 h-10",
     titleWrap: "px-2",
-    title: "text-2xl",
+    title: "text-[length:min(1.5rem,10.5cqi)]",
     back: "bg-white p-5",
     backHeader: "gap-2.5 pb-3 mb-3",
-    backIconBox: "w-9 h-9",
     backTitle: "text-sm",
-    subtitle: "text-xs mb-3",
-    list: "flex flex-col gap-1.5",
-    item: "text-xs",
+    subtitle: "text-[13px] mb-1",
+    item: "text-sm",
   },
 };
 
 function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
   const s = FLIP_CARD_STYLES[variant];
-  const Icon = AREA_ICONS[area.id] ?? Compass;
+  const Icon = AREA_ICONS[area.id] ?? Diagnosis;
   const icon = <Icon className={s.icon} />;
 
   return (
@@ -563,19 +544,17 @@ function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
         <div className={`relative z-10 h-full flex flex-col ${s.frontBody}`}>
           <div className="flex items-center justify-between">
             <span className={`font-mono-code text-white/70 font-bold ${s.number}`}>0{index + 1}</span>
-            <div className={`bg-white/15 backdrop-blur-xs border border-white/30 text-white flex items-center justify-center ${s.frontIconBox}`}>
-              {icon}
-            </div>
+            <div className="text-white">{icon}</div>
           </div>
-          <div className={`flex-1 flex items-center justify-center text-center ${s.titleWrap}`}>
+          <div className={`@container flex-1 flex items-center justify-center text-center ${s.titleWrap}`}>
             <h3 className={`font-syne font-bold uppercase text-white leading-tight ${s.title}`}>{area.title}</h3>
           </div>
           {variant === "desktop" ? (
             <div className="text-center">
-              <span className="font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Click para ver detalle →</span>
+              <span className="font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Ver servicios →</span>
             </div>
           ) : (
-            <span className="text-center font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Tocá para ver detalle</span>
+            <span className="text-center font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Tocá para ver servicios</span>
           )}
         </div>
       </div>
@@ -583,15 +562,19 @@ function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
       {/* Dorso */}
       <div className={`absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] border-2 border-stone-800 flex flex-col overflow-hidden ${s.back}`}>
         <div className={`flex items-center border-b-2 border-stone-800 shrink-0 ${s.backHeader}`}>
-          <div className={`bg-stone-950 text-white flex items-center justify-center shrink-0 ${s.backIconBox}`}>{icon}</div>
+          <div className="text-[var(--e-icon)] shrink-0">{icon}</div>
           <h3 className={`font-syne font-bold uppercase text-stone-950 leading-tight ${s.backTitle}`}>{area.title}</h3>
         </div>
         <p className={`text-stone-600 leading-relaxed shrink-0 ${s.subtitle}`}>{area.subtitle}</p>
-        <div className={`overflow-y-auto no-scrollbar flex-1 ${s.list}`}>
+        {/* Las filas se reparten todo el alto disponible: sin huecos al pie de la tarjeta. */}
+        <div className="overflow-y-auto no-scrollbar flex-1 flex flex-col">
           {area.items.map((item, i) => (
-            <div key={i} className={`flex items-start gap-1.5 font-mono-code text-stone-800 leading-snug ${s.item}`}>
+            <div
+              key={i}
+              className={`flex-1 flex items-center gap-2 py-1.5 border-t border-stone-200 font-mono-code text-stone-800 leading-snug ${s.item}`}
+            >
               <span className="text-emerald-700 font-bold shrink-0">›</span>
-              <span className="min-w-0 break-words">{item}</span>
+              <span className="min-w-0">{item}</span>
             </div>
           ))}
         </div>
@@ -663,7 +646,7 @@ function HeroSlide() {
                   <span className="font-extrabold tracking-tight text-stone-950 text-4xl sm:text-5xl lg:text-6xl font-syne uppercase">
                     {BRAND.name}
                   </span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
+                  <span className="w-2.5 h-2.5 bg-emerald-600 animate-pulse" />
                 </div>
               </div>
             </div>
@@ -674,7 +657,7 @@ function HeroSlide() {
         </div>
 
         <div className="pt-4 border-t-2 border-stone-800 flex items-center justify-center gap-2 text-stone-700 animate-pulse text-[11px] font-mono-code font-bold uppercase tracking-wider">
-          <span>Desliza para conocer más</span>
+          <span>Deslizá para conocer más</span>
           <ChevronDown className="w-4 h-4 text-emerald-700" />
         </div>
       </div>
@@ -695,15 +678,15 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="flex items-center gap-2 mb-4">
-          <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
+          <span className="w-1.5 h-1.5 bg-emerald-600" />
           <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
-            Conocé nuestros servicios
+            Servicios
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
           {areas.map((area) => (
-            <div key={area.id} className="[perspective:1400px] h-72 sm:h-80">
+            <div key={area.id} className="[perspective:1400px] h-72 sm:h-96 lg:h-80">
               <AreaFlipCard
                 area={area}
                 index={AREAS.indexOf(area)}
@@ -720,7 +703,7 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
             {Array.from({ length: pageCount }).map((_, i) => (
               <span
                 key={i}
-                className={`h-1.5 transition-all duration-300 rounded-full ${i === pageIndex ? "w-6 bg-emerald-700" : "w-1.5 bg-stone-300"}`}
+                className={`h-1.5 transition-all duration-300 ${i === pageIndex ? "w-6 bg-emerald-700" : "w-1.5 bg-stone-300"}`}
               />
             ))}
           </div>
@@ -750,7 +733,9 @@ function ProcessSlide() {
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="flex flex-col items-center text-center gap-3 pb-4 mb-8 border-b-2 border-stone-800">
-          <span className="w-10 h-px bg-emerald-600/70" />
+          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
+            Llave en mano
+          </span>
           <h2 className="font-syne text-4xl sm:text-6xl lg:text-7xl font-extrabold text-stone-950 tracking-tight leading-none">
             Nos encargamos de todo.
           </h2>
@@ -759,10 +744,12 @@ function ProcessSlide() {
         <div className="flex flex-col md:flex-row items-stretch gap-0 mb-6">
           {PROCESS_STEPS.map((step, i) => {
             const isLast = i === PROCESS_STEPS.length - 1;
+            const Icon = step.icon;
             return (
               <div key={i} className="flex items-stretch flex-1">
                 <div className="bg-white border-2 border-stone-800 p-6 sm:p-7 flex flex-col items-center justify-center text-center flex-1 shadow-xs">
-                  <span className="font-mono-code text-[11px] font-bold text-stone-400 mb-3">0{i + 1}</span>
+                  <Icon className="w-10 h-10 text-[var(--e-icon)] mb-3" />
+                  <span className="font-mono-code text-[11px] font-bold text-stone-400 mb-2">0{i + 1}</span>
                   <p className="text-sm sm:text-base text-stone-700 leading-relaxed font-light max-w-[26ch]">
                     <span className="font-bold text-stone-950">{step.lead}</span>
                     {step.rest}
@@ -806,26 +793,18 @@ function SectorsSlide() {
           <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
             {SECTORS.title}
           </h2>
-          <div className="font-mono-code text-xs text-stone-600 font-bold">09 INDUSTRIAS PRODUCTIVAS</div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
           {SECTORS.items.map(({ id, name, icon: Icon }) => (
             <div
               key={id}
-              className="bg-white/95 border-2 border-stone-800 p-3.5 flex items-center justify-between hover:bg-stone-100 transition-all shadow-2xs group cursor-default"
+              className="bg-white/95 border-2 border-stone-800 p-3.5 flex items-center gap-3 hover:bg-stone-100 transition-all shadow-2xs group cursor-default"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-slate-700 text-white flex items-center justify-center group-hover:bg-emerald-700 transition-colors shrink-0">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-syne text-xs sm:text-sm font-bold uppercase text-stone-950 group-hover:text-emerald-900 transition-colors">
-                    {name}
-                  </h3>
-                </div>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5 text-stone-400 group-hover:text-emerald-700 transition-colors" />
+              <Icon className="w-8 h-8 text-[var(--e-icon)] shrink-0" />
+              <h3 className="font-syne text-xs sm:text-sm font-bold uppercase text-stone-950 group-hover:text-emerald-900 transition-colors">
+                {name}
+              </h3>
             </div>
           ))}
         </div>
@@ -839,12 +818,18 @@ function TeamSlide() {
   return (
     <section className={`${SLIDE_BASE} justify-center bg-[#f7faf8] py-8 sm:py-10`}>
       <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="flex flex-col items-center text-center gap-3 pb-4 mb-6 border-b-2 border-stone-800">
+          <span className="w-10 h-px bg-emerald-600/70" />
+          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
+            {TEAM.title}
+          </h2>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {TEAM.members.map((member) => (
             <div key={member.id} className="bg-white/95 border-2 border-stone-800 p-6 flex flex-col shadow-xs">
               <div className="flex items-center gap-4 mb-4">
                 <div
-                  className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-cover bg-center border-2 border-stone-300 shadow-sm shrink-0"
+                  className="w-28 h-28 sm:w-32 sm:h-32 bg-cover bg-center border-2 border-stone-300 shadow-sm shrink-0"
                   style={bgImage(IMAGES.team[member.id])}
                 />
                 <div>
@@ -857,7 +842,7 @@ function TeamSlide() {
                 </div>
               </div>
               <div className="flex items-start gap-2 pb-3 mb-4 border-b border-stone-200">
-                <GraduationCap className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
+                <Graduation className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
                 <span className="text-xs text-stone-600 font-mono-code leading-relaxed">{member.credential}</span>
               </div>
               <a
@@ -878,13 +863,11 @@ function TeamSlide() {
   );
 }
 
-function ContactCardHeader({ label, icon: Icon, accent = false }) {
+function ContactCardHeader({ label, icon: Icon }) {
   return (
     <div className="flex items-center justify-between pb-3 border-b-2 border-stone-200 mb-4">
       <span className="font-mono-code text-[11px] text-stone-500 uppercase font-bold">{label}</span>
-      <div className={`w-7 h-7 ${accent ? "bg-emerald-700" : "bg-stone-950"} text-white flex items-center justify-center`}>
-        <Icon className="w-3.5 h-3.5" />
-      </div>
+      <Icon className="w-6 h-6 text-[var(--e-icon)]" />
     </div>
   );
 }
@@ -912,21 +895,29 @@ function ContactSlide({ onCopyEmail, copied }) {
           {/* Correo */}
           <div className={card}>
             <div>
-              <ContactCardHeader label="01 / CORREO OFICIAL" icon={Mail} />
+              <ContactCardHeader label="01 / CORREO" icon={Mail} />
               <a
                 href={`mailto:${CONTACT.email}`}
-                className="font-mono-code text-sm sm:text-base font-bold text-stone-950 hover:text-emerald-700 transition-colors break-all block mb-2"
+                className="font-mono-code text-[13px] xl:text-base font-bold text-stone-950 hover:text-emerald-700 transition-colors break-words block mb-2"
               >
                 {CONTACT.email}
               </a>
             </div>
-            <div className="mt-6 pt-4 border-t border-stone-300 flex items-center gap-3 relative">
+            <div className="mt-6 pt-4 border-t border-stone-300 flex items-center gap-2">
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-stone-950 hover:bg-stone-800 text-white font-syne font-bold text-xs uppercase tracking-wider transition-colors"
+              >
+                <span>Enviar</span>
+                <Mail className="w-4 h-4" />
+              </a>
               <button
                 onClick={onCopyEmail}
                 type="button"
-                className="px-3.5 py-2.5 bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 text-xs font-mono-code transition-colors cursor-pointer"
+                className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 font-syne font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
-                {copied ? "Copiado" : "Copiar"}
+                <span>{copied ? "Copiado" : "Copiar"}</span>
+                {copied ? <Check className="w-4 h-4 text-emerald-700" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -934,7 +925,7 @@ function ContactSlide({ onCopyEmail, copied }) {
           {/* WhatsApp / teléfono */}
           <div className={card}>
             <div>
-              <ContactCardHeader label="02 / CANAL DIRECTO" icon={MessageCircle} accent />
+              <ContactCardHeader label="02 / CANAL DIRECTO" icon={Chat} />
               <a
                 href={CONTACT.whatsappUrl}
                 target="_blank"
@@ -961,7 +952,7 @@ function ContactSlide({ onCopyEmail, copied }) {
                 className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 font-syne font-bold text-xs uppercase tracking-wider transition-colors"
               >
                 <span>Llamar</span>
-                <PhoneCall className="w-4 h-4" />
+                <Phone className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -969,7 +960,7 @@ function ContactSlide({ onCopyEmail, copied }) {
           {/* Ubicación */}
           <div className={card}>
             <div>
-              <ContactCardHeader label="03 / CON PRESENCIA EN" icon={Earth} />
+              <ContactCardHeader label="03 / COBERTURA" icon={Pin} />
               <div className="font-syne text-lg sm:text-xl font-bold uppercase text-stone-950 mb-2">{CONTACT.location}</div>
             </div>
           </div>
@@ -1010,7 +1001,7 @@ function SlideNav({ activeIndex, onNavigate }) {
   return (
     <aside
       aria-label="Navegación de diapositivas"
-      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#f7faf8]/90 backdrop-blur-xs p-2 rounded-full border border-stone-300 shadow-md"
+      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#f7faf8]/90 backdrop-blur-xs p-2 border border-stone-300 shadow-md"
     >
       {SLIDE_LABELS.map((label, i) => {
         const active = activeIndex === i;
@@ -1023,13 +1014,13 @@ function SlideNav({ activeIndex, onNavigate }) {
             title={`Ir a la sección 0${i + 1}: ${label}`}
           >
             <span
-              className={`transition-all duration-300 rounded-full ${
+              className={`transition-all duration-300 ${
                 active
                   ? "w-3 h-3 bg-stone-950 ring-2 ring-emerald-600 ring-offset-2 ring-offset-[#f7faf8]"
                   : "w-2 h-2 bg-stone-400 group-hover:bg-stone-700"
               }`}
             />
-            <span className="pointer-events-none absolute right-7 px-2 py-1 bg-stone-900 text-white font-mono-code text-[10px] uppercase font-bold tracking-wider rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm">
+            <span className="pointer-events-none absolute right-7 px-2 py-1 bg-stone-900 text-white font-mono-code text-[10px] uppercase font-bold tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm">
               0{i + 1} · {label}
             </span>
           </button>
@@ -1061,7 +1052,7 @@ function MobileHero() {
           />
           <div className="flex items-center justify-center gap-2.5">
             <span className="font-extrabold tracking-tight text-stone-950 text-6xl font-syne uppercase">{BRAND.name}</span>
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
+            <span className="w-2.5 h-2.5 bg-emerald-600 animate-pulse" />
           </div>
         </div>
         <div className="flex flex-col items-center gap-4">
@@ -1119,9 +1110,9 @@ function MobileAreasCarousel() {
         ))}
       </div>
       <div className="relative z-10 flex items-center justify-center gap-2 mb-8 px-4">
-        <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full shrink-0" />
+        <span className="w-1.5 h-1.5 bg-emerald-600 shrink-0" />
         <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500 text-center">
-          Conocé nuestros servicios
+          Servicios
         </span>
       </div>
       <div className="relative">
@@ -1194,9 +1185,7 @@ function MobileProcess() {
       <div className="relative z-10 flex flex-col gap-3">
         {PROCESS_STEPS.map(({ icon: Icon, lead, rest }, i) => (
           <div key={i} className="bg-white border-2 border-stone-800 p-4 flex gap-3 items-start">
-            <div className="w-9 h-9 bg-slate-700 text-emerald-300 flex items-center justify-center shrink-0">
-              <Icon className="w-4 h-4" />
-            </div>
+            <Icon className="w-8 h-8 text-[var(--e-icon)] shrink-0" />
             <p className="text-[13px] text-stone-700 leading-relaxed font-light pt-1.5">
               <span className="font-bold text-stone-950">{lead}</span>
               {rest}
@@ -1225,9 +1214,7 @@ function MobileSectors() {
       <div className="relative z-10 grid grid-cols-2 gap-2.5">
         {SECTORS.items.map(({ id, name, icon: Icon }) => (
           <div key={id} className="bg-white border-2 border-stone-800 p-3 flex flex-col gap-2">
-            <div className="w-8 h-8 bg-slate-700 text-white flex items-center justify-center">
-              <Icon className="w-4 h-4" />
-            </div>
+            <Icon className="w-8 h-8 text-[var(--e-icon)]" />
             <h3 className="font-syne text-[12px] font-bold uppercase text-stone-950 leading-tight">{name}</h3>
           </div>
         ))}
@@ -1240,7 +1227,7 @@ function MobileTeam() {
   return (
     <section className="px-4 py-8 border-b-2 border-stone-800">
       <div className="flex items-center gap-2 mb-1">
-        <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
+        <span className="w-1.5 h-1.5 bg-emerald-600" />
         <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500">{TEAM.subtitle}</span>
       </div>
       <h2 className="font-syne text-2xl font-extrabold uppercase text-stone-950 tracking-tight mb-4">{TEAM.title}</h2>
@@ -1250,7 +1237,7 @@ function MobileTeam() {
           <div key={member.id} className="bg-white border-2 border-stone-800 p-4">
             <div className="flex items-center gap-3 mb-3">
               <div
-                className="w-20 h-20 rounded-full bg-cover bg-center border-2 border-stone-300 shadow-sm shrink-0"
+                className="w-20 h-20 bg-cover bg-center border-2 border-stone-300 shadow-sm shrink-0"
                 style={bgImage(IMAGES.team[member.id])}
               />
               <div>
@@ -1263,7 +1250,7 @@ function MobileTeam() {
               </div>
             </div>
             <div className="flex items-start gap-2 pb-2.5 mb-3 border-b border-stone-200">
-              <GraduationCap className="w-3.5 h-3.5 text-stone-500 shrink-0 mt-0.5" />
+              <Graduation className="w-3.5 h-3.5 text-stone-500 shrink-0 mt-0.5" />
               <span className="text-[11px] text-stone-600 font-mono-code leading-relaxed">{member.credential}</span>
             </div>
             <a
@@ -1301,8 +1288,8 @@ function MobileContact({ onCopyEmail, copied }) {
         {/* Correo */}
         <div className="bg-white border-2 border-stone-800 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold">Correo oficial</span>
-            <Mail className="w-4 h-4 text-stone-900" />
+            <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold">Correo</span>
+            <Mail className="w-6 h-6 text-[var(--e-icon)]" />
           </div>
           <a href={`mailto:${CONTACT.email}`} className="font-mono-code text-sm font-bold text-stone-950 break-all block mb-3">
             {CONTACT.email}
@@ -1329,9 +1316,7 @@ function MobileContact({ onCopyEmail, copied }) {
         {/* WhatsApp / teléfono */}
         <div className="bg-white border-2 border-stone-800 p-4">
           <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-8 h-8 bg-emerald-700 text-white flex items-center justify-center shrink-0">
-              <MessageCircle className="w-4 h-4" />
-            </div>
+            <Chat className="w-7 h-7 text-[var(--e-icon)] shrink-0" />
             <div>
               <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold block">Canal directo</span>
               <span className="font-syne text-sm font-bold text-stone-950 block">{CONTACT.phoneDisplay}</span>
@@ -1359,11 +1344,9 @@ function MobileContact({ onCopyEmail, copied }) {
 
         {/* Ubicación */}
         <div className="bg-white border-2 border-stone-800 p-4 flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-stone-950 text-white flex items-center justify-center shrink-0">
-            <MapPin className="w-4 h-4" />
-          </div>
+          <Pin className="w-7 h-7 text-[var(--e-icon)] shrink-0" />
           <div>
-            <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold block">Con presencia en</span>
+            <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold block">Cobertura</span>
             <span className="font-syne text-sm font-bold text-stone-950">{CONTACT.location}</span>
           </div>
         </div>
@@ -1440,7 +1423,7 @@ function MobileLanding({ onCopyEmail, copied }) {
         <MobileSlideArrows up onUp={() => goTo(4)} />
       </div>
       {copied && (
-        <CopiedToast className="fixed bottom-5 left-4 right-4 z-50 flex items-center justify-center gap-2 px-4 py-3 bg-stone-950 text-white font-syne font-bold rounded-md shadow-2xl text-xs uppercase tracking-wider border-2 border-stone-900" />
+        <CopiedToast className="fixed bottom-5 left-4 right-4 z-50 flex items-center justify-center gap-2 px-4 py-3 bg-stone-950 text-white font-syne font-bold shadow-2xl text-xs uppercase tracking-wider border-2 border-stone-900" />
       )}
     </div>
   );
@@ -1498,7 +1481,7 @@ export default function VaguadaLanding() {
       {!isTouchTablet && <SlideNav activeIndex={activeSlide} onNavigate={goToSlide} />}
 
       {copied && (
-        <CopiedToast className="fixed bottom-6 left-6 z-50 flex items-center gap-2.5 px-5 py-3.5 bg-stone-950 text-white font-syne font-bold rounded-md shadow-2xl text-xs uppercase tracking-wider animate-bounce border-2 border-stone-900" />
+        <CopiedToast className="fixed bottom-6 left-6 z-50 flex items-center gap-2.5 px-5 py-3.5 bg-stone-950 text-white font-syne font-bold shadow-2xl text-xs uppercase tracking-wider animate-bounce border-2 border-stone-900" />
       )}
     </div>
   );

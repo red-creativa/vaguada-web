@@ -138,7 +138,7 @@ html {
 
 /* ── Capa de tema ─────────────────────────────────────────
  * El JSX usa clases "stone/emerald" con bordes gruesos; esta capa las
- * reinterpreta como tarjetas de vidrio redondeadas en azul pizarra.
+ * reinterpreta como tarjetas de vidrio de cantos vivos en azul pizarra.
  * Borra este bloque si prefieres el estilo crudo (beige + bordes negros).
  */
 :root {
@@ -150,6 +150,8 @@ html {
   --e-accent: #147a8a;
   --e-accent-soft: #bfeaf2;
   --e-glass: #ffffffe8;
+  --e-radius: 2px;
+  --e-icon: #4f97a6;
 }
 
 .text-stone-950,
@@ -166,7 +168,7 @@ html {
   -webkit-backdrop-filter: blur(20px) !important;
   backdrop-filter: blur(20px) !important;
   border: 1px solid #12303622 !important;
-  border-radius: 28px !important;
+  border-radius: var(--e-radius) !important;
   box-shadow: 0 14px 34px #12303622, 0 2px 10px #12303614 !important;
 }
 
@@ -174,7 +176,7 @@ html {
 .bg-stone-950 {
   background-color: var(--e-box) !important;
   border: 1px solid #ffffff1f !important;
-  border-radius: 22px !important;
+  border-radius: var(--e-radius) !important;
   box-shadow: 0 10px 24px #10202b40 !important;
 }
 
@@ -196,5 +198,13 @@ a.font-syne,
 button.font-syne,
 a.font-mono-code,
 button.font-mono-code {
-  border-radius: 999px !important;
+  border-radius: var(--e-radius) !important;
+}
+
+/* Los textos saltan de línea entre palabras, nunca cortándolas. */
+h1,
+h2,
+h3,
+p {
+  hyphens: manual;
 }
