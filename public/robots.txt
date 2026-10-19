@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vaguada.pages.dev/sitemap.xml
+Sitemap: https://uilka.pages.dev/sitemap.xml
