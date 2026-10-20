@@ -13,10 +13,12 @@ import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
 const SUGGESTIONS = [
-  "Quiero mejorar el uso del agua en mi empresa o proyecto",
-  "Tengo un proyecto en mente y quiero conocer sus aspectos ambientales",
-  "Quiero mejorar la sustentabilidad de mi organización",
-  "Quiero aprovechar mejor mis residuos y recursos",
+  "Necesito regularizar ambientalmente mi empresa o actividad",
+  "Tengo una inspección o intimación ambiental y necesito orientación",
+  "Necesito una evaluación de impacto ambiental para un proyecto",
+  "Quiero mejorar la gestión de residuos de mi empresa",
+  "Quiero reducir el consumo de agua y mejorar el manejo de efluentes",
+  "Quiero medir y mejorar el desempeño ambiental de mi organización",
 ];
 
 const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar o recargar esta pestaña.";
