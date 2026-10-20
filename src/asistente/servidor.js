@@ -41,8 +41,11 @@ export const PRESETS = {
 };
 export const DEFAULT_PRESET = "gemma";
 
-/** Modelo que arma el mensaje para el operador: tarea chica, el más barato alcanza. */
-export const MENSAJE_PRESET = PRESETS.gemma;
+/** El mensaje es una tarea breve: usa Gemma sin razonamiento adicional. */
+export const MENSAJE_PRESET = {
+  model: PRESETS.gemma.model,
+  params: { chat_template_kwargs: { enable_thinking: false }, store: false },
+};
 
 export function pickPreset(request, env) {
   const requested = request.headers.get("x-uilka-modelo");

@@ -116,11 +116,10 @@ function Markdown({ text }) {
     <div className="flex flex-col gap-3">
       {blocks.map((b, i) =>
         b.type === "ol" ? (
-          // El plan: pasos numerados con la cinta del logo a la izquierda.
-          // Numeración nativa de la lista: se ve una vez y se copia bien ("1. …").
+          // Numeración nativa para listas puntuales que ayuden a explicar algo.
           <ol
             key={i}
-            className="flex flex-col gap-2 pl-9 border-l-2 [border-image:var(--e-ribbon)_1] list-decimal marker:font-semibold marker:text-[var(--e-accent)] marker:text-[13px]"
+            className="flex flex-col gap-2 pl-6 list-decimal marker:font-semibold marker:text-[var(--e-accent)] marker:text-[13px]"
           >
             {b.lines.map((l, k) => (
               <li key={k} className="pl-1">
