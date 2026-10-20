@@ -157,13 +157,14 @@ function Markdown({ text }) {
       {blocks.map((b, i) =>
         b.type === "ol" ? (
           // El plan: pasos numerados con la cinta del logo a la izquierda.
-          <ol key={i} className="flex flex-col gap-2 pl-3 border-l-2 [border-image:var(--e-ribbon)_1]">
+          // Numeración nativa de la lista: se ve una vez y se copia bien ("1. …").
+          <ol
+            key={i}
+            className="flex flex-col gap-2 pl-9 border-l-2 [border-image:var(--e-ribbon)_1] list-decimal marker:font-semibold marker:text-[var(--e-accent)] marker:text-[13px]"
+          >
             {b.lines.map((l, k) => (
-              <li key={k} className="flex gap-2.5">
-                <span className="w-5 shrink-0 font-mono-code text-xs leading-[1.75rem] text-[var(--e-accent)]">{k + 1}</span>
-                <span>
-                  <Inline text={l} />
-                </span>
+              <li key={k} className="pl-1">
+                <Inline text={l} />
               </li>
             ))}
           </ol>
