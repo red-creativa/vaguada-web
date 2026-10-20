@@ -1,0 +1,210 @@
+/*
+ * vaguada.css — estilos propios que usa VaguadaLanding.jsx
+ * (extraídos del CSS compilado de la página original).
+ *
+ * Si tu proyecto ya importa Tailwind v4 en otro CSS global, puedes quitar
+ * la línea @import "tailwindcss" de aquí.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+/* ── Base ─────────────────────────────────────────────── */
+@layer base {
+  body {
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--e-text);
+  }
+}
+
+body {
+  background-image:
+    radial-gradient(640px at 8% 10%, #e3eeea, #0000 60%),
+    radial-gradient(560px at 92% 16%, #e7f0ec, #0000 60%),
+    radial-gradient(680px at 50% 96%, #edf4f0, #0000 60%),
+    linear-gradient(#fbfdfc 0%, #f1f5f3 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Diapositivas con scroll-snap ─────────────────────── */
+.slides-container {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100dvh;
+  overflow-y: auto;
+}
+
+.slide-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Tablets táctiles: sin snap, altura libre */
+.slides-container.no-snap {
+  scroll-snap-type: none;
+  height: auto;
+  overflow-y: visible;
+}
+
+.no-snap .slide-section {
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+/* ── Móvil: slides a pantalla completa con transición de fundido ──────
+ * Cada slide ocupa toda la pantalla y está apilada (position: absolute);
+ * cambiar de sección esfuma la actual y aparece la siguiente ya centrada,
+ * en vez de desplazar físicamente el scroll.
+ */
+.mobile-slides-container {
+  position: relative;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Solo en la primera sección se permite el pull-to-refresh nativo del navegador. */
+.mobile-slides-container.mobile-slides--refreshable {
+  overscroll-behavior-y: auto;
+  touch-action: pan-y;
+}
+
+.mobile-slides-container:not(.mobile-slides--refreshable) {
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+.mobile-slide {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  transition: opacity 0.5s cubic-bezier(0.33, 1, 0.68, 1), transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: opacity, transform;
+}
+
+/* Slides de una sola sección: se centran verticalmente en la pantalla. */
+.mobile-slide--center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Flechitas que invitan a deslizar el carrusel de servicios. */
+@keyframes swipe-left {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50% { transform: translateX(-4px); opacity: 1; }
+}
+@keyframes swipe-right {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+.animate-swipe-left {
+  animation: swipe-left 1.4s ease-in-out infinite;
+}
+.animate-swipe-right {
+  animation: swipe-right 1.4s ease-in-out infinite;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Tipografías ──────────────────────────────────────── */
+.font-syne {
+  font-family: Manrope, "Plus Jakarta Sans", sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.font-mono-code {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* ── Capa de tema ─────────────────────────────────────────
+ * El JSX usa clases "stone/emerald" con bordes gruesos; esta capa las
+ * reinterpreta como tarjetas de vidrio de cantos vivos en azul pizarra.
+ * Borra este bloque si prefieres el estilo crudo (beige + bordes negros).
+ */
+:root {
+  --e-box: #10202b;
+  --e-text: #142530;
+  --e-body: #3c4c57;
+  --e-dim: #5b6b74;
+  --e-faint: #8a98a1;
+  --e-accent: #147a8a;
+  --e-accent-soft: #bfeaf2;
+  --e-glass: #ffffffe8;
+  --e-radius: 2px;
+  --e-icon: #4f97a6;
+}
+
+.text-stone-950,
+.text-stone-900 { color: var(--e-text) !important; }
+.text-stone-800,
+.text-stone-700 { color: var(--e-body) !important; }
+.text-stone-600,
+.text-stone-500 { color: var(--e-dim) !important; }
+.text-stone-400 { color: var(--e-faint) !important; }
+
+.border-2.border-stone-800,
+.bg-white\/95 {
+  background: var(--e-glass) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid #12303622 !important;
+  border-radius: var(--e-radius) !important;
+  box-shadow: 0 14px 34px #12303622, 0 2px 10px #12303614 !important;
+}
+
+.border-2.border-stone-900,
+.bg-stone-950 {
+  background-color: var(--e-box) !important;
+  border: 1px solid #ffffff1f !important;
+  border-radius: var(--e-radius) !important;
+  box-shadow: 0 10px 24px #10202b40 !important;
+}
+
+.border-b-2,
+.border-b-4 { border-bottom: 1px solid #12303622 !important; }
+.border-l-4 { border-left-width: 2px !important; }
+.border-l-4.border-stone-800 { border-left-color: #12303622 !important; }
+.border-l-4.border-emerald-600 { border-left-color: var(--e-accent) !important; }
+
+.text-emerald-700,
+.text-emerald-800,
+.text-emerald-900 { color: var(--e-accent) !important; }
+.bg-emerald-700,
+.bg-emerald-800,
+.bg-emerald-600 { background-color: var(--e-accent) !important; }
+.text-emerald-400 { color: var(--e-accent-soft) !important; }
+
+a.font-syne,
+button.font-syne,
+a.font-mono-code,
+button.font-mono-code {
+  border-radius: var(--e-radius) !important;
+}
+
+/* Los textos saltan de línea entre palabras, nunca cortándolas. */
+h1,
+h2,
+h3,
+p {
+  hyphens: manual;
+}
