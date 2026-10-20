@@ -34,8 +34,10 @@ export async function onRequestPost({ request, env }) {
   const messages = sanitize(body?.messages, { userLast: false });
   if (!messages) return json({ error: "pedido" }, 400);
 
-  // La conversación va como texto (y no como chat) para que el modelo no la "continúe".
-  const transcript = messages.map((m) => `${m.role === "user" ? "PERSONA" : "ASISTENTE"}: ${m.content}`).join("\n\n");
+  // Excluir al asistente evita que sus sugerencias pasen al resumen como pedidos del cliente.
+  const customerMessages = messages.filter((message) => message.role === "user");
+  if (!customerMessages.length) return json({ error: "pedido" }, 400);
+  const transcript = customerMessages.map((message) => `PERSONA: ${message.content}`).join("\n\n");
 
   try {
     const out = await env.AI.run(MENSAJE_PRESET.model, {
