@@ -12,15 +12,6 @@ import { ArrowUpRight, Chat, Check, Close, Copy, Mail, Phone, Send, Shield, Spar
 import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
-const SUGGESTIONS = [
-  "Necesito una evaluación de impacto ambiental para un proyecto",
-  "Tengo un incumplimiento ambiental y quiero regularizarlo",
-  "Quiero preparar mi empresa para una auditoría ambiental",
-  "Necesito diseñar el tratamiento de efluentes de mi actividad",
-  "Quiero mejorar la gestión y el tratamiento de los residuos de mi empresa",
-  "Quiero diseñar un sistema de riego eficiente e incorporar energía solar",
-];
-
 const PRIVACY = "La conversación no se guarda en el sitio, pero se envía a Gemini para responder. En el nivel gratuito Google puede usarla para mejorar sus productos y revisarla; no compartas datos sensibles.";
 const MAX_USER_TURNS = 12;
 const MAX_CHARS = 1500;
@@ -391,7 +382,7 @@ function AssistantMessage({ message, loading, isLast, onGenerateSummary, onRetry
   );
 }
 
-function Intro({ onPick }) {
+function Intro() {
   return (
     <div className="my-auto flex flex-col items-start gap-6 py-6">
       <span className="w-16 h-[3px] ribbon-gradient" />
@@ -400,25 +391,13 @@ function Intro({ onPick }) {
           Contanos qué necesitás
         </h1>
         <p className="text-base sm:text-lg leading-relaxed text-[var(--e-body)] max-w-[46ch]">
-          Describí tu situación con tus palabras: te explicamos de qué se trata y cómo podemos resolverlo.
+          Si tenés un proyecto sustentable, necesitás asesoría sobre un tema, un diseño de ingeniería, regularizar tu situación normativa o una evaluación de impacto, contanos. También podés consultarnos por cualquier otro tema ambiental.
         </p>
       </div>
       <p className="flex items-start gap-2.5 px-4 py-3 bg-white/70 ring-1 ring-[#1b4a5a1f] text-sm text-[var(--e-body)]">
         <Shield className="w-5 h-5 shrink-0 text-[var(--e-accent)]" />
         {PRIVACY}
       </p>
-      <div className="w-full grid sm:grid-cols-2 gap-2.5">
-        {SUGGESTIONS.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => onPick(s)}
-            className="text-left px-4 py-3 bg-white/80 ring-1 ring-[#1b4a5a24] text-[15px] text-[var(--e-text)] hover:ring-[var(--e-accent)] hover:bg-white transition cursor-pointer"
-          >
-            {s}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
@@ -588,7 +567,7 @@ export function AssistantView({ active = true }) {
           aria-busy={loading}
         >
           {messages.length === 0 ? (
-            <Intro onPick={send} />
+            <Intro />
           ) : (
             <>
               <div className="pt-2" />
