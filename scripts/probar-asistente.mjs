@@ -44,7 +44,7 @@ const CASOS = [
       "pasado mañana puedo mejor",
     ],
     chequeos: [SIMULA_ACCION, PIDE_DIRECCION],
-    final: [enResumen(/8|15|pasado/i, "el mensaje para el operador no incluye la disponibilidad")],
+    final: [enResumen(/8|15|pasado/i, "el resumen no incluye la disponibilidad")],
   },
   { cat: "acciones", turnos: ["mandame el presupuesto por mail para un EIA"], chequeos: [SIMULA_ACCION, PIDE_DIRECCION] },
   { cat: "precios", turnos: ["cuánto sale más o menos un permiso de vuelco?"], chequeos: [no(/\$\s?\d|\d+\s?(pesos|d[oó]lares|usd|mil)\b/i, "da un precio")] },
@@ -109,7 +109,10 @@ const CASOS = [
 const GENERALES = [
   no(/no podemos (ayudarte|hacer eso|con eso|encargarnos)|no hacemos eso|no (est[áa]|entra) dentro de nuestros servicios/i, "cierra la puerta"),
   no(/<\s*\/?\s*resumen/i, "se filtra el bloque resumen"),
+  no(/plan sugerido/i, "propone un plan de pasos"),
 ];
+const RESUMEN_NEUTRAL = (_v, r) =>
+  /^(quiero|necesito|tengo|mi|mis|nosotros|nosotras)\b/i.test(r) ? "el resumen está escrito en primera persona" : null;
 const palabras = (t) => t.split(/\s+/).filter(Boolean).length;
 
 console.log(`Probando ${BASE}${MODELO ? ` con el modelo "${MODELO}"` : ""}`);
@@ -129,22 +132,22 @@ for (const caso of CASOS) {
     const raw = await res.text();
     const [visible] = raw.split(/<\s*resumen\s*>/i);
     historia.push({ role: "assistant", content: visible });
-    // El mensaje para el operador lo arma otra función, igual que en la web.
+    // El resumen se prepara aparte, igual que en la web.
     let resumen = "";
     if (visible.trim()) {
-      const m = await fetch(`${BASE}/api/mensaje`, {
+      const m = await fetch(`${BASE}/api/resumen`, {
         method: "POST",
         headers: { "content-type": "application/json", origin: BASE },
         body: JSON.stringify({ messages: historia }),
       });
-      resumen = m.ok ? ((await m.json()).mensaje ?? "").trim() : "";
+      resumen = m.ok ? ((await m.json()).resumen ?? "").trim() : "";
     }
     const esUltimo = n === caso.turnos.length - 1;
 
-    const reglas = [...GENERALES, ...caso.chequeos, ...(esUltimo ? caso.final ?? [] : [])];
+    const reglas = [...GENERALES, RESUMEN_NEUTRAL, ...caso.chequeos, ...(esUltimo ? caso.final ?? [] : [])];
     const avisos = reglas.map((f) => f(visible, resumen)).filter(Boolean);
     if (!res.ok || !raw.trim()) avisos.push(`sin respuesta (HTTP ${res.status}) ${raw.slice(0, 120)}`);
-    if (!caso.sinMensaje && !resumen) avisos.push("falta el mensaje para el operador");
+    if (!caso.sinMensaje && !resumen) avisos.push("falta el resumen de consulta");
     if (palabras(visible) > 130) avisos.push(`muy largo (${palabras(visible)} palabras)`);
     problemas += avisos.length;
 
@@ -152,7 +155,7 @@ for (const caso of CASOS) {
     console.log(`PERSONA: ${turno}   (${((Date.now() - t0) / 1000).toFixed(1)} s · ${palabras(visible)} palabras)`);
     console.log("─".repeat(70));
     console.log(visible.trim());
-    if (resumen) console.log(`\n[Mensaje para el operador] ${resumen}`);
+    if (resumen) console.log(`\n[Resumen de consulta] ${resumen}`);
     if (avisos.length) console.log(`\n⚠ ${avisos.join(" · ")}`);
   }
 }

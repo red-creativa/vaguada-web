@@ -87,12 +87,14 @@ El switch **Sitio / Asistente** (arriba a la derecha) transforma la página en u
 
 | Archivo | Qué hace |
 |---|---|
-| `src/asistente/Asistente.jsx` | El switch, la conversación y el botón para generar el mensaje al operador |
+| `src/asistente/Asistente.jsx` | El switch, la conversación, el reintento de respuestas y el resumen con opciones de contacto |
 | `src/asistente/conocimiento.js` | El propósito e instrucciones del asistente, los servicios y las **fichas de trámites** |
 | `functions/api/chat.js` | Función de Cloudflare Pages que consulta Workers AI (Gemma 4 con razonamiento habilitado por defecto) |
-| `functions/api/mensaje.js` | Genera, cuando la persona lo pide, un resumen de toda la conversación para WhatsApp |
+| `functions/api/resumen.js` | Prepara, cuando la persona lo pide, un resumen de la consulta para WhatsApp o correo |
 
-**Privacidad:** no se guarda nada. La conversación vive solo en la pestaña (sin cookies ni almacenamiento), la función no registra el contenido y Workers AI no conserva entradas ni salidas. No activar AI Gateway con registros.
+Cuando el asistente ya entiende el caso, explica cómo ÜILKA puede encauzarlo y ofrece llamar al equipo o preparar un resumen neutral. El resumen se muestra antes de compartirlo; permite agregar nombre y apellido opcionalmente, y abrir WhatsApp o el cliente de correo configurado con el resumen listo para enviar.
+
+**Privacidad:** no se guarda nada. La conversación vive solo en la pestaña (sin cookies ni almacenamiento), la función no registra el contenido y Workers AI no conserva entradas ni salidas. El resumen y el nombre opcional solo se incluyen en el enlace de WhatsApp o correo cuando la persona elige compartirlos. No activar AI Gateway con registros.
 
 **Activarlo en Cloudflare** (una sola vez): Workers & Pages → el proyecto → Settings → Bindings → Add → **Workers AI**, nombre de variable `AI`, en Preview y en Production. Después, volver a desplegar.
 

@@ -1,19 +1,19 @@
 /**
- * POST /api/mensaje — arma el "Mensaje para el operador" a partir de la conversación.
+ * POST /api/resumen — prepara un resumen de la consulta a partir de la conversación.
  *
  * Es una tarea aparte de la conversación (así el modelo que conversa no
  * tiene que acordarse de un formato) y la hace el modelo más barato.
- * Devuelve { mensaje }. No guarda nada.
+ * Devuelve { resumen }. No guarda nada.
  */
 
-import { MENSAJE_PROMPT } from "../../src/asistente/conocimiento.js";
-import { MENSAJE_PRESET, foreignOrigin, json, sanitize, textOf } from "../../src/asistente/servidor.js";
+import { RESUMEN_PROMPT } from "../../src/asistente/conocimiento.js";
+import { RESUMEN_PRESET, foreignOrigin, json, sanitize, textOf } from "../../src/asistente/servidor.js";
 
 /** Limpia lo que a veces agregan los modelos: comillas, saludo, prefijos. */
 function tidy(text) {
   return text
     .trim()
-    .replace(/^(mensaje( para el operador)?\s*:\s*)/i, "")
+    .replace(/^(resumen( de (tu )?consulta)?\s*:\s*)/i, "")
     .replace(/^["“'«]+|["”'»]+$/g, "")
     .replace(/^hola[^.!?\n]{0,20}[.!,]?\s*/i, "")
     .trim()
@@ -40,17 +40,17 @@ export async function onRequestPost({ request, env }) {
   const transcript = customerMessages.map((message) => `PERSONA: ${message.content}`).join("\n\n");
 
   try {
-    const out = await env.AI.run(MENSAJE_PRESET.model, {
+    const out = await env.AI.run(RESUMEN_PRESET.model, {
       messages: [
-        { role: "system", content: MENSAJE_PROMPT },
-        { role: "user", content: `CONVERSACIÓN:\n\n${transcript}\n\nEscribí ahora el mensaje.` },
+        { role: "system", content: RESUMEN_PROMPT },
+        { role: "user", content: `CONVERSACIÓN:\n\n${transcript}\n\nPrepará ahora el resumen.` },
       ],
       temperature: 0.2,
-      ...MENSAJE_PRESET.params,
+      ...RESUMEN_PRESET.params,
       max_completion_tokens: 350,
     });
-    const mensaje = tidy(textOf(out));
-    return mensaje ? json({ mensaje }) : json({ error: "vacio" }, 502);
+    const resumen = tidy(textOf(out));
+    return resumen ? json({ resumen }) : json({ error: "vacio" }, 502);
   } catch {
     return json({ error: "ia" }, 503);
   }

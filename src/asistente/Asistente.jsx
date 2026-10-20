@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Chat, Check, Close, Copy, Send, Shield, Spark } from "../icons";
+import { ArrowUpRight, Chat, Check, Close, Copy, Mail, Phone, Send, Shield, Spark } from "../icons";
 import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
@@ -186,15 +186,19 @@ async function copyText(text) {
 }
 
 /**
- * El mensaje para el operador solo se genera cuando la persona lo solicita.
+ * El resumen se prepara a pedido y se muestra antes de elegir cómo contactar.
  */
-function OperatorNote({ operator, onGenerate }) {
+function ContactSummary({ summary, onGenerate }) {
   const [copied, setCopied] = useState(false);
-  const generating = operator === "loading";
-  const text = typeof operator === "string" ? `Hola ÜILKA. ${operator}` : "";
+  const [name, setName] = useState("");
+  const generating = summary === "loading";
+  const ready = typeof summary === "string";
+  const contactName = name.trim().replace(/\s+/g, " ").slice(0, 100);
+  const sharedText = ready ? `${summary}${contactName ? `\n\nNombre: ${contactName}` : ""}` : "";
+  const emailUrl = `mailto:${CONTACT.email}?subject=${encodeURIComponent("Consulta para ÜILKA")}&body=${encodeURIComponent(sharedText)}`;
 
   const onCopy = async () => {
-    if (await copyText(text)) {
+    if (await copyText(summary)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -205,52 +209,81 @@ function OperatorNote({ operator, onGenerate }) {
 
   return (
     <div className="mt-4 pt-3 border-t border-[#1b4a5a1a]">
-      {typeof operator === "string" ? (
+      <p className="mb-2 text-[13px] font-semibold text-[var(--e-body)]">¿Querés avanzar con el equipo?</p>
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+        <a href={CONTACT.phoneHref} className={action} aria-label="Llamar al equipo de ÜILKA">
+          <Phone className="w-4 h-4" />
+          Llamar al equipo
+        </a>
+        {!ready && (
+          <button type="button" onClick={onGenerate} disabled={generating} className={action}>
+            {generating ? <Typing /> : <Chat className="w-4 h-4" />}
+            {generating ? "Preparando resumen…" : summary === null ? "Reintentar resumen" : "Preparar resumen para enviar"}
+          </button>
+        )}
+      </div>
+      {ready ? (
         <>
-          <p className="text-[13px] leading-relaxed italic text-[var(--e-dim)]">
-            <span className="not-italic font-semibold text-[var(--e-body)]">Mensaje para el operador:</span> “{text}”
-          </p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1">
+          <div className="mt-3 p-3 bg-[#f4f9fb] ring-1 ring-[#1b4a5a1a]">
+            <p className="mb-1 font-mono-code text-[10px] uppercase tracking-wider text-[var(--e-dim)]">Resumen de tu consulta</p>
+            <p className="text-[14px] leading-relaxed text-[var(--e-body)]">{summary}</p>
+          </div>
+          <label htmlFor="asistente-nombre-contacto" className="mt-3 block text-[12px] text-[var(--e-dim)]">
+            Nombre y apellido (opcional)
+          </label>
+          <input
+            id="asistente-nombre-contacto"
+            type="text"
+            autoComplete="name"
+            maxLength={100}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Tu nombre y apellido"
+            className="mt-1 w-full bg-white px-3 py-2 text-sm text-[var(--e-text)] ring-1 ring-[#1b4a5a24] outline-none focus:ring-2 focus:ring-[var(--e-accent)]"
+          />
+          <p className="mt-1 text-[11px] text-[var(--e-dim)]">Si lo agregás, se incluirá aparte del resumen.</p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1">
             <a
-              href={whatsappUrl(text)}
+              href={whatsappUrl(sharedText)}
               target="_blank"
               rel="noopener noreferrer"
-              title="Se abre WhatsApp con este mensaje; podés editarlo antes de enviar"
+              title="Se abre WhatsApp con el resumen visible arriba"
               className={action}
             >
               <Chat className="w-4 h-4" />
-              Enviar por WhatsApp
+              Enviar resumen por WhatsApp
+              <ArrowUpRight className="w-3 h-3" />
+            </a>
+            <a href={emailUrl} className={action} title={`Abrir un correo dirigido a ${CONTACT.email}`}>
+              <Mail className="w-4 h-4" />
+              Enviar resumen por correo
               <ArrowUpRight className="w-3 h-3" />
             </a>
             <button type="button" onClick={onCopy} className={action} aria-live="polite">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copiado" : "Copiar"}
+              {copied ? "Copiado" : "Copiar resumen"}
             </button>
           </div>
         </>
       ) : (
         <>
-          {operator === null && (
-            <p role="alert" className="mb-2 text-[13px] text-[var(--e-body)]">
-              No pudimos generar el mensaje. Probá de nuevo.
+          {summary === null && (
+            <p role="alert" className="mt-2 text-[13px] text-[var(--e-body)]">
+              No pudimos preparar el resumen. Probá de nuevo o llamá al equipo.
             </p>
           )}
-          <button type="button" onClick={onGenerate} disabled={generating} className={action}>
-            {generating ? <Typing /> : <Chat className="w-4 h-4" />}
-            {generating ? "Generando mensaje…" : operator === null ? "Reintentar" : "Generar mensaje para el operador"}
-          </button>
         </>
       )}
       {generating && (
         <span className="sr-only" role="status">
-          Generando el mensaje para el operador
+          Preparando el resumen de tu consulta
         </span>
       )}
     </div>
   );
 }
 
-function AssistantMessage({ message, loading, isLast, onGenerateOperator }) {
+function AssistantMessage({ message, loading, isLast, onGenerateSummary, onRetry }) {
   return (
     <div className="self-start w-full max-w-[94%] flex gap-3">
       <span className="mt-1 grid place-items-center w-8 h-8 shrink-0 bg-white ring-1 ring-[#1b4a5a24]">
@@ -258,13 +291,24 @@ function AssistantMessage({ message, loading, isLast, onGenerateOperator }) {
       </span>
       <div className="min-w-0 flex-1 bg-white/95 px-4 py-3 text-[15px] leading-relaxed text-[var(--e-body)]">
         {message.error ? (
-          <p>Ahora no puedo responderte. Podés generar un mensaje con lo que nos contaste y enviárselo al equipo.</p>
+          <div className="flex flex-col items-start gap-2">
+            <p>Hubo un problema temporal al responder. Podés reintentar la consulta.</p>
+            <button
+              type="button"
+              onClick={onRetry}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 py-1 font-mono-code text-[11px] uppercase text-[var(--e-accent)] hover:text-[var(--e-text)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-default"
+            >
+              <Chat className="w-4 h-4" />
+              Reintentar respuesta
+            </button>
+          </div>
         ) : message.content ? (
           <Markdown text={message.content} />
         ) : (
           loading && <Typing />
         )}
-        {isLast && !loading && <OperatorNote operator={message.operator} onGenerate={onGenerateOperator} />}
+        {isLast && !loading && <ContactSummary summary={message.summary} onGenerate={onGenerateSummary} />}
       </div>
     </div>
   );
@@ -355,10 +399,10 @@ export function AssistantView({ active = true }) {
   // Actualiza una respuesta puntual (por id), aunque mientras tanto haya cambiado la lista.
   const patchMessage = (id, patch) => setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
 
-  const requestOperatorMessage = async (id) => {
-    patchMessage(id, { operator: "loading" });
+  const requestSummary = async (id) => {
+    patchMessage(id, { summary: "loading" });
     try {
-      const res = await fetch("/api/mensaje", {
+      const res = await fetch("/api/resumen", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -370,25 +414,30 @@ export function AssistantView({ active = true }) {
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      if (typeof data?.mensaje !== "string" || !data.mensaje.trim()) throw new Error("Respuesta vacía");
-      patchMessage(id, { operator: data.mensaje.trim() });
+      if (typeof data?.resumen !== "string" || !data.resumen.trim()) throw new Error("Respuesta vacía");
+      patchMessage(id, { summary: data.resumen.trim() });
     } catch {
-      patchMessage(id, { operator: null });
+      patchMessage(id, { summary: null });
     }
   };
 
-  const send = async (text) => {
+  const send = async (text, retry = null) => {
     const content = text.trim().slice(0, MAX_CHARS);
-    if (!content || loading || limitReached) return;
+    if (!content || loading || (limitReached && !retry)) return;
 
+    const previousMessages = retry ? messages.slice(0, retry.userIndex) : messages;
     const history = [
-      ...messages.filter((m) => !m.error && m.content).map(({ role, content }) => ({ role, content })),
+      ...previousMessages.filter((m) => !m.error && m.content).map(({ role, content }) => ({ role, content })),
       { role: "user", content },
     ];
-    const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    setMessages([...messages, { role: "user", content }, { role: "assistant", content: "", id }]);
-    setInput("");
-    requestAnimationFrame(autosize);
+    const id = retry?.assistantId ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    if (retry) {
+      patchMessage(id, { content: "", error: false, summary: undefined });
+    } else {
+      setMessages([...messages, { role: "user", content }, { role: "assistant", content: "", id }]);
+      setInput("");
+      requestAnimationFrame(autosize);
+    }
     setLoading(true);
 
     const controller = new AbortController();
@@ -428,8 +477,7 @@ export function AssistantView({ active = true }) {
     send(input);
   };
 
-  // La cruz borra la última pregunta y su respuesta: todo vuelve a como
-  // estaba antes (incluido el mensaje para el operador).
+  // La cruz borra la última pregunta y su respuesta, incluido el resumen generado.
   const deleteLast = (index) => {
     abortRef.current?.abort();
     setLoading(false);
@@ -491,7 +539,11 @@ export function AssistantView({ active = true }) {
                     message={m}
                     loading={loading && i === messages.length - 1}
                     isLast={i === messages.length - 1}
-                    onGenerateOperator={() => requestOperatorMessage(m.id)}
+                    onGenerateSummary={() => requestSummary(m.id)}
+                    onRetry={() => {
+                      const previous = messages[i - 1];
+                      if (previous?.role === "user") send(previous.content, { assistantId: m.id, userIndex: i - 1 });
+                    }}
                   />
                 ),
               )}
@@ -504,7 +556,7 @@ export function AssistantView({ active = true }) {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           {limitReached ? (
             <p className="py-2 text-sm text-[var(--e-body)]">
-              Llegaste al límite de esta conversación. Generá un mensaje para el operador y seguí por WhatsApp.
+              Llegaste al límite de esta conversación. Podés llamar al equipo o preparar el resumen para enviarlo.
             </p>
           ) : (
             <div className="flex items-end gap-2 p-1.5 bg-white ring-1 ring-[#1b4a5a33] focus-within:ring-2 focus-within:ring-[var(--e-accent)] transition">

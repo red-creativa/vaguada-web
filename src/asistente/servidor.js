@@ -1,6 +1,6 @@
 /**
  * servidor.js — piezas compartidas por las funciones del asistente
- * (functions/api/chat.js y functions/api/mensaje.js). Corre en Cloudflare,
+ * (functions/api/chat.js y functions/api/resumen.js). Corre en Cloudflare,
  * no en el navegador.
  *
  * Privacidad: nada de esto guarda ni registra el contenido de los mensajes.
@@ -41,8 +41,8 @@ export const PRESETS = {
 };
 export const DEFAULT_PRESET = "gemma";
 
-/** El mensaje es una tarea breve: usa Gemma sin razonamiento adicional. */
-export const MENSAJE_PRESET = {
+/** El resumen es una tarea breve: usa Gemma sin razonamiento adicional. */
+export const RESUMEN_PRESET = {
   model: PRESETS.gemma.model,
   params: { chat_template_kwargs: { enable_thinking: false }, store: false },
 };

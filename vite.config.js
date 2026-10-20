@@ -8,27 +8,15 @@ import tailwindcss from "@tailwindcss/vite";
  * a poco, igual que la respuesta real. En producción responde
  * functions/api/chat.js.
  */
-const SAMPLE_VUELCO = `¡Genial, podemos ayudarte! La **habilitación de vuelco** es el permiso para descargar tus efluentes a la red, un cauce o el suelo, demostrando que cumplen los límites.
-
-**Plan sugerido**
-1. Visitamos la planta y relevamos cada salida de efluente.
-2. Tomamos muestras y coordinamos los análisis.
-3. Si no cumple, diseñamos e instalamos el tratamiento.
-4. Completamos y presentamos la documentación hasta obtener el permiso.
+const SAMPLE_VUELCO = `Sí, ÜILKA puede ayudar con la habilitación de vuelco. El equipo identifica qué requisitos aplican a la actividad y a la ubicación, y desde ahí encauza el trámite y las soluciones técnicas que hagan falta.
 
 ¿A qué se dedica la empresa y en qué localidad está?
 
 (Respuesta de prueba: en modo local no hay IA.)`;
 
-const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontaminados** no pueden ir con la basura común y el servicio municipal no los retira: conviene resolverlo rápido.
+const SAMPLE_RESIDUOS = `ÜILKA puede ayudar a ordenar la gestión de estos residuos y definir una solución acorde al tipo y la cantidad que generan.
 
-**Plan sugerido**
-1. Limpiamos el predio y retiramos lo acumulado.
-2. Separamos y acondicionamos los residuos según su tipo.
-3. Coordinamos transporte y tratamiento con empresas habilitadas.
-4. Dejamos armado un circuito para que no vuelva a pasar.
-
-¿En qué localidad está el predio?
+¿Qué tipo de residuos son y en qué localidad está el predio?
 
 (Respuesta de prueba: en modo local no hay IA.)`;
 
@@ -77,21 +65,25 @@ function assistantDevMock() {
         });
       });
 
-      // Mensaje para el operador simulado: junta lo que escribió la persona.
-      server.middlewares.use("/api/mensaje", (req, res) => {
+      // Resumen simulado para compartir con el equipo en modo local.
+      server.middlewares.use("/api/resumen", (req, res) => {
+        if (req.method !== "POST") {
+          res.statusCode = 405;
+          return res.end();
+        }
         let raw = "";
         req.on("data", (c) => (raw += c));
         req.on("end", () => {
-          let mensaje = "Quiero hacer una consulta.";
+          let resumen = "Consulta general.";
           try {
-            const pedidos = JSON.parse(raw).messages.filter((m) => m.role === "user").map((m) => m.content.trim());
-            if (pedidos.length) mensaje = `${pedidos.join(". ")} (mensaje de prueba)`.slice(0, 240);
+            const consultas = JSON.parse(raw).messages.filter((m) => m.role === "user").map((m) => m.content.trim());
+            if (consultas.length) resumen = `Resumen de prueba: ${consultas.join(" ")}`.slice(0, 400);
           } catch {
-            // se deja el mensaje genérico
+            // se deja el resumen genérico
           }
           setTimeout(() => {
             res.setHeader("content-type", "application/json");
-            res.end(JSON.stringify({ mensaje }));
+            res.end(JSON.stringify({ resumen }));
           }, 600);
         });
       });

@@ -3,7 +3,7 @@
  *
  * Recibe la conversación, le agrega lo que sabe el asistente y devuelve la
  * respuesta de Workers AI como texto que va llegando de a poco. El mensaje
- * para el operador lo arma aparte /api/mensaje.
+ * el resumen de contacto se arma aparte en /api/resumen.
  *
  * Privacidad: esta función NO guarda nada. No hay base de datos, no se
  * escribe en logs el contenido de los mensajes y no se usa AI Gateway.
