@@ -113,9 +113,18 @@ for (const caso of CASOS) {
       body: JSON.stringify({ messages: historia }),
     });
     const raw = await res.text();
-    historia.push({ role: "assistant", content: raw });
-    const [visible, resto = ""] = raw.split(/<\s*resumen\s*>/i);
-    const resumen = resto.replace(/<\s*\/\s*resumen\s*>[\s\S]*/i, "").trim();
+    const [visible] = raw.split(/<\s*resumen\s*>/i);
+    historia.push({ role: "assistant", content: visible });
+    // El mensaje para el operador lo arma otra función, igual que en la web.
+    let resumen = "";
+    if (visible.trim()) {
+      const m = await fetch(`${BASE}/api/mensaje`, {
+        method: "POST",
+        headers: { "content-type": "application/json", origin: BASE },
+        body: JSON.stringify({ messages: historia }),
+      });
+      resumen = m.ok ? ((await m.json()).mensaje ?? "").trim() : "";
+    }
     const esUltimo = n === caso.turnos.length - 1;
 
     const reglas = [...GENERALES, ...caso.chequeos, ...(esUltimo ? caso.final ?? [] : [])];

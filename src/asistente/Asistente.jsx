@@ -250,9 +250,19 @@ async function copyText(text) {
  * Pie de la última respuesta: el mensaje para el operador, chiquito y en
  * cursiva, completo, con las acciones para enviarlo por WhatsApp o copiarlo.
  */
-function OperatorNote({ summary, question }) {
+function OperatorNote({ summary, question, preparing }) {
   const [copied, setCopied] = useState(false);
   const text = whatsappText(summary, question);
+
+  if (preparing) {
+    return (
+      <div className="mt-4 pt-3 border-t border-[#1b4a5a1a] flex items-center gap-2 text-[13px] italic text-[var(--e-dim)]">
+        <span className="not-italic font-semibold text-[var(--e-body)]">Mensaje para el operador:</span>
+        armándolo…
+        <Typing />
+      </div>
+    );
+  }
 
   const onCopy = async () => {
     if (await copyText(text)) {
@@ -291,7 +301,8 @@ function OperatorNote({ summary, question }) {
 }
 
 function AssistantMessage({ message, loading, isLast, summary, firstQuestion }) {
-  const { visible, summary: own } = splitAnswer(message.content);
+  const { visible } = splitAnswer(message.content);
+  const preparing = message.operator === undefined && !splitAnswer(message.content).summary;
   return (
     <div className="self-start w-full max-w-[94%] flex gap-3">
       <span className="mt-1 grid place-items-center w-8 h-8 shrink-0 bg-white ring-1 ring-[#1b4a5a24]">
@@ -310,7 +321,7 @@ function AssistantMessage({ message, loading, isLast, summary, firstQuestion }) 
         ) : visible ? (
           <>
             <Markdown text={visible} />
-            {isLast && !loading && <OperatorNote summary={own || summary} question={firstQuestion} />}
+            {isLast && !loading && <OperatorNote summary={summary} question={firstQuestion} preparing={preparing} />}
           </>
         ) : (
           loading && <Typing />
@@ -365,11 +376,12 @@ export function AssistantView({ active = true }) {
   const userTurns = messages.filter((m) => m.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
   const firstQuestion = messages.find((m) => m.role === "user")?.content ?? "";
-  // Último resumen que armó la IA (el más completo): va en el mensaje de WhatsApp.
+  // Último mensaje para el operador que se pudo armar (el más completo): va en WhatsApp.
+  const operatorOf = (m) => m.operator || splitAnswer(m.content).summary;
   const summary =
     messages
       .filter((m) => m.role === "assistant" && m.content)
-      .map((m) => splitAnswer(m.content).summary)
+      .map(operatorOf)
       .filter(Boolean)
       .at(-1) ?? "";
 
@@ -410,27 +422,43 @@ export function AssistantView({ active = true }) {
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
   };
 
+  // Actualiza una respuesta puntual (por id), aunque mientras tanto haya cambiado la lista.
+  const patchMessage = (id, patch) => setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+
+  // Después de cada respuesta, otra llamada arma el "Mensaje para el operador".
+  // operator: undefined = armándose · string = listo · null = no se pudo (se usa el anterior).
+  const requestOperatorMessage = async (id, conversation) => {
+    try {
+      const res = await fetch("/api/mensaje", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ messages: conversation }),
+        cache: "no-store",
+      });
+      const data = res.ok ? await res.json() : null;
+      patchMessage(id, { operator: data?.mensaje?.trim() || null });
+    } catch {
+      patchMessage(id, { operator: null });
+    }
+  };
+
   const send = async (text) => {
     const content = text.trim().slice(0, MAX_CHARS);
     if (!content || loading || limitReached) return;
 
     const history = [
-      ...messages.filter((m) => !m.error && m.content).map(({ role, content: c }) => ({ role, content: c })),
+      ...messages.filter((m) => !m.error && m.content).map(({ role, content: c }) => ({ role, content: splitAnswer(c).visible })),
       { role: "user", content },
     ];
-    setMessages([...messages, { role: "user", content }, { role: "assistant", content: "" }]);
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setMessages([...messages, { role: "user", content }, { role: "assistant", content: "", id }]);
     setInput("");
     requestAnimationFrame(autosize);
     setLoading(true);
 
     const controller = new AbortController();
     abortRef.current = controller;
-    const setLast = (patch) =>
-      setMessages((prev) => {
-        const next = [...prev];
-        next[next.length - 1] = { role: "assistant", content: "", ...patch };
-        return next;
-      });
+    let answer = "";
 
     try {
       const res = await fetch("/api/chat", {
@@ -444,18 +472,22 @@ export function AssistantView({ active = true }) {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let answer = "";
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
         answer += decoder.decode(value, { stream: true });
-        setLast({ content: answer });
+        patchMessage(id, { content: answer });
       }
       if (!answer.trim()) throw new Error("vacío");
     } catch {
-      if (!controller.signal.aborted) setLast({ error: true });
+      answer = "";
+      if (!controller.signal.aborted) patchMessage(id, { error: true });
     } finally {
       if (!controller.signal.aborted) setLoading(false);
+    }
+
+    if (answer && !controller.signal.aborted) {
+      requestOperatorMessage(id, [...history, { role: "assistant", content: splitAnswer(answer).visible }]);
     }
   };
 

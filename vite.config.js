@@ -18,10 +18,7 @@ const SAMPLE_VUELCO = `¡Genial, podemos ayudarte! La **habilitación de vuelco*
 
 ¿A qué se dedica la empresa y en qué localidad está?
 
-(Respuesta de prueba: en modo local no hay IA.)
-<resumen>
-Necesito tramitar la habilitación de vuelco de efluentes de mi establecimiento.
-</resumen>`;
+(Respuesta de prueba: en modo local no hay IA.)`;
 
 const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontaminados** no pueden ir con la basura común y el servicio municipal no los retira: conviene resolverlo rápido.
 
@@ -33,10 +30,7 @@ const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontamina
 
 ¿En qué localidad está el predio?
 
-(Respuesta de prueba: en modo local no hay IA.)
-<resumen>
-Se están acumulando residuos biocontaminados en mi predio y la municipalidad no los retira. Necesito que los retiren y armar un circuito para que no vuelva a pasar.
-</resumen>`;
+(Respuesta de prueba: en modo local no hay IA.)`;
 
 const SAMPLE_GENERAL = `Esta es una respuesta de prueba fija: en tu compu no hay IA, así que el simulador solo tiene ejemplos para consultas sobre vuelco de efluentes y residuos.
 
@@ -80,6 +74,25 @@ function assistantDevMock() {
           }, 45);
           // Si la persona sale del chat a mitad de respuesta, se corta.
           res.on("close", () => clearInterval(tick));
+        });
+      });
+
+      // Mensaje para el operador simulado: junta lo que escribió la persona.
+      server.middlewares.use("/api/mensaje", (req, res) => {
+        let raw = "";
+        req.on("data", (c) => (raw += c));
+        req.on("end", () => {
+          let mensaje = "Quiero hacer una consulta.";
+          try {
+            const pedidos = JSON.parse(raw).messages.filter((m) => m.role === "user").map((m) => m.content.trim());
+            if (pedidos.length) mensaje = `${pedidos.join(". ")} (mensaje de prueba)`.slice(0, 240);
+          } catch {
+            // se deja el mensaje genérico
+          }
+          setTimeout(() => {
+            res.setHeader("content-type", "application/json");
+            res.end(JSON.stringify({ mensaje }));
+          }, 600);
         });
       });
     },

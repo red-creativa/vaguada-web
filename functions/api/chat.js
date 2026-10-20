@@ -2,7 +2,8 @@
  * POST /api/chat — asistente de ÜILKA (Cloudflare Pages Function).
  *
  * Recibe la conversación, le agrega lo que sabe el asistente y devuelve la
- * respuesta de Workers AI como texto que va llegando de a poco.
+ * respuesta de Workers AI como texto que va llegando de a poco. El mensaje
+ * para el operador lo arma aparte /api/mensaje.
  *
  * Privacidad: esta función NO guarda nada. No hay base de datos, no se
  * escribe en logs el contenido de los mensajes y no se usa AI Gateway.
@@ -13,104 +14,12 @@
  */
 
 import { SYSTEM_PROMPT } from "../../src/asistente/conocimiento.js";
+import { foreignOrigin, json, pickPreset, sanitize, sseToText, textOf } from "../../src/asistente/servidor.js";
 
-/**
- * Modelos disponibles. Se usa el de la variable de entorno ASISTENTE_MODELO
- * (Cloudflare → Settings → Variables) o, si no está, "gemma".
- * Para comparar sin cambiar la web: encabezado `x-uilka-modelo: <nombre>`
- * (solo acepta estos nombres).
- */
-const PRESETS = {
-  // Gemma 4 sin razonamiento: rápido y el más barato.
-  gemma: {
-    model: "@cf/google/gemma-4-26b-a4b-it",
-    params: { max_completion_tokens: 900, chat_template_kwargs: { enable_thinking: false }, store: false },
-  },
-  // Gemma 4 pensando antes de responder: más criterio, un poco más lento.
-  "gemma-razona": {
-    model: "@cf/google/gemma-4-26b-a4b-it",
-    params: { max_completion_tokens: 3000, chat_template_kwargs: { enable_thinking: true }, store: false },
-  },
-  // Llama 3.3 70B: modelo más grande, gasta más cupo.
-  llama70: {
-    model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-    params: { max_tokens: 900 },
-  },
-};
-const DEFAULT_PRESET = "gemma";
-
-const MAX_MESSAGES = 16; // últimos mensajes que se envían al modelo
-const MAX_CHARS = 1500; // largo máximo de cada mensaje
-
-const json = (body, status) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: { "content-type": "application/json", "cache-control": "no-store" },
-  });
-
-/** Deja pasar solo mensajes de usuario/asistente, recortados. */
-function sanitize(messages) {
-  if (!Array.isArray(messages) || messages.length === 0) return null;
-  const clean = messages
-    .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
-    .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_CHARS) }))
-    .filter((m) => m.content.trim())
-    .slice(-MAX_MESSAGES);
-  return clean.length && clean.at(-1).role === "user" ? clean : null;
-}
-
-/** Texto de la respuesta en cualquiera de los formatos de Workers AI (nunca el razonamiento). */
-function textOf(obj) {
-  const choice = obj?.choices?.[0];
-  const content = choice?.delta?.content ?? choice?.message?.content;
-  const fromContent = Array.isArray(content)
-    ? content.map((part) => (typeof part === "string" ? part : part?.text ?? "")).join("")
-    : content;
-  // `||` y no `??`: algunos fragmentos traen `response: ""` junto al texto real.
-  return obj?.response || fromContent || choice?.text || "";
-}
-
-/**
- * Convierte el stream SSE de Workers AI en texto plano. Acepta los formatos
- * `{ response }` (clásico) y `{ choices[0].delta.content }` (compatible con OpenAI).
- */
-function sseToText() {
-  const decoder = new TextDecoder();
-  const encoder = new TextEncoder();
-  let buffer = "";
-
-  const handle = (line, controller) => {
-    if (!line.startsWith("data:")) return;
-    const data = line.slice(5).trim();
-    if (!data || data === "[DONE]") return;
-    try {
-      const text = textOf(JSON.parse(data));
-      if (text) controller.enqueue(encoder.encode(text));
-    } catch {
-      // Fragmento incompleto o línea que no es JSON: se ignora.
-    }
-  };
-
-  return new TransformStream({
-    transform(chunk, controller) {
-      buffer += decoder.decode(chunk, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-      for (const line of lines) handle(line, controller);
-    },
-    flush(controller) {
-      if (buffer) handle(buffer, controller);
-    },
-  });
-}
+const TEXT = { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" };
 
 export async function onRequestPost({ request, env }) {
-  // Solo desde la propia web (evita que otros sitios usen el cupo).
-  const origin = request.headers.get("origin");
-  if (origin && new URL(origin).host !== new URL(request.url).host) {
-    return json({ error: "origen" }, 403);
-  }
-
+  if (foreignOrigin(request)) return json({ error: "origen" }, 403);
   if (!env.AI) return json({ error: "sin-ia" }, 503);
 
   let body;
@@ -123,9 +32,7 @@ export async function onRequestPost({ request, env }) {
   const messages = sanitize(body?.messages);
   if (!messages) return json({ error: "pedido" }, 400);
 
-  const requested = request.headers.get("x-uilka-modelo");
-  const presetName = [requested, env.ASISTENTE_MODELO].find((n) => n && PRESETS[n]) ?? DEFAULT_PRESET;
-  const preset = PRESETS[presetName];
+  const preset = pickPreset(request, env);
 
   let upstream;
   try {
@@ -143,23 +50,11 @@ export async function onRequestPost({ request, env }) {
   // Diagnóstico: con el encabezado `x-uilka-diagnostico: 1` se devuelve la
   // respuesta cruda del modelo (útil si cambia el formato). No guarda nada.
   if (request.headers.get("x-uilka-diagnostico") === "1") {
-    return new Response(upstream instanceof ReadableStream ? upstream : JSON.stringify(upstream), {
-      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-    });
+    return new Response(upstream instanceof ReadableStream ? upstream : JSON.stringify(upstream), { headers: TEXT });
   }
 
   // Si el modelo no devolvió un stream (respuesta completa), se entrega igual.
-  if (!(upstream instanceof ReadableStream)) {
-    return new Response(textOf(upstream), {
-      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
-    });
-  }
+  if (!(upstream instanceof ReadableStream)) return new Response(textOf(upstream), { headers: TEXT });
 
-  return new Response(upstream.pipeThrough(sseToText()), {
-    headers: {
-      "content-type": "text/plain; charset=utf-8",
-      "cache-control": "no-store",
-      "x-content-type-options": "nosniff",
-    },
-  });
+  return new Response(upstream.pipeThrough(sseToText()), { headers: TEXT });
 }
