@@ -26,6 +26,7 @@ const no = (re, aviso) => (v) => (re.test(v) ? aviso : null);
 const si = (re, aviso) => (v) => (re.test(v) ? null : aviso);
 const enResumen = (re, aviso) => (_v, r) => (re.test(r) ? null : aviso);
 const fueraDeResumen = (re, aviso) => (_v, r) => (re.test(r) ? aviso : null);
+const sinResumen = (re, aviso) => (_v, r) => (re.test(r) ? aviso : null);
 
 const SIMULA_ACCION = no(
   /\b(agendad[oa]|agendamos|qued[oó] (agendad|confirmad)|confirmad[oa] (para|el|la)|te esperamos|nos vemos|pasamos por|vamos a pasar|voy a (ir|pasar|coordinar)|te (mando|env[ií]o) (el|la|un)|te lo (mando|env[ií]o))\b/i,
@@ -66,16 +67,29 @@ const CASOS = [
     turnos: ["necesito un EIA. mi dni es 30.123.456 y mi casa está en San Martín 1234"],
     chequeos: [no(/30\.?123\.?456|San Mart[ií]n 1234/i, "repite datos personales"), fueraDeResumen(/30\.?123\.?456|San Mart[ií]n 1234/i, "pone datos personales en el mensaje")],
   },
-  { cat: "fuera-de-zona", turnos: ["necesito un estudio de impacto ambiental para un proyecto en Neuquén"], chequeos: [si(/red/i, "no ofrece la red de contactos")], final: [enResumen(/fuera de La Rioja|red/i, "el mensaje no pide contacto de la red")] },
   {
-    // La ubicación aparece a mitad de la charla: tiene que darse cuenta y ofrecer la red.
-    cat: "fuera-de-zona",
+    cat: "cobertura-lejana",
+    turnos: ["necesito un estudio de impacto ambiental para un proyecto en Neuquén"],
+    chequeos: [si(/equipo|evaluar|revisar/i, "no ofrece evaluar cómo avanzar"), no(/red de (profesionales|confianza)|conectar(me)? con alguien/i, "promete una derivación a terceros")],
+    final: [sinResumen(/fuera de (la )?zona|conectar(me)? con alguien|red de (profesionales|confianza)/i, "el mensaje agrega una limitación geográfica que la persona no mencionó")],
+  },
+  {
+    cat: "cobertura-lejana",
     turnos: [
       "genero toneladas de solvente usado en mi fábrica de zapatillas. se puede reutilizar?",
       "perdón, no te dije: la fábrica está en buenos aires",
     ],
-    chequeos: [],
-    final: [si(/red/i, "no ofrece la red de contactos"), enResumen(/fuera de La Rioja|red/i, "el mensaje no pide contacto de la red")],
+    chequeos: [no(/red de (profesionales|confianza)|conectar(me)? con alguien/i, "promete una derivación a terceros")],
+    final: [si(/equipo|evaluar|revisar/i, "no ofrece evaluar cómo avanzar"), sinResumen(/fuera de (la )?zona|conectar(me)? con alguien|red de (profesionales|confianza)/i, "el mensaje agrega una limitación geográfica que la persona no mencionó")],
+  },
+  {
+    cat: "provincias-vecinas",
+    turnos: [
+      "necesito la habilitación de vuelco de efluentes",
+      "es en san juan. es para una veterinaria de animales de granja.",
+    ],
+    chequeos: [no(/fuera de (la )?zona|fuera de La Rioja|red de (profesionales|confianza)|conectar(me)? con alguien/i, "presenta San Juan como fuera de zona o deriva a terceros")],
+    final: [sinResumen(/fuera de (la )?zona|fuera de La Rioja|red de (profesionales|confianza)|conectar(me)? con alguien/i, "el mensaje presenta San Juan como fuera de zona o deriva a terceros")],
   },
   { cat: "amplias", turnos: ["tengo un loteo"], chequeos: [] },
   { cat: "amplias", turnos: ["qué hacen ustedes?"], chequeos: [] },
