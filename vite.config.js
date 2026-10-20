@@ -20,9 +20,22 @@ Nosotros nos encargamos de todo:
 
 (Respuesta de prueba: en modo local no hay IA.)`;
 
-const SAMPLE_GENERAL = `¡Gracias por escribirnos! Contame un poco más: ¿a qué se dedica tu empresa, dónde está y qué te pidieron o qué problema tenés? Con eso te explico de qué se trata y cómo podemos resolverlo.
+const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontaminados** (patogénicos) no pueden ir con la basura común y el servicio municipal habitual no los retira. Si se acumulan, se forman focos de contaminación y de riesgo sanitario, así que conviene resolverlo rápido.
+
+Nosotros nos encargamos de todo:
+- Limpiamos el predio y retiramos lo acumulado con personal y equipos adecuados
+- Separamos y acondicionamos los residuos según su tipo
+- Coordinamos el retiro, transporte y tratamiento con empresas habilitadas
+- Te entregamos los certificados de disposición final
+- Dejamos armado un circuito para que no vuelva a pasar
+
+¿A qué se dedica tu empresa o institución y en qué localidad está? Si querés, seguimos por WhatsApp y coordinamos una visita.
 
 (Respuesta de prueba: en modo local no hay IA.)`;
+
+const SAMPLE_GENERAL = `Esta es una respuesta de prueba fija: en tu compu no hay IA, así que el simulador solo tiene ejemplos para consultas sobre vuelco de efluentes y residuos.
+
+Publicado en Cloudflare, el asistente lee tu consulta y responde sobre ese caso concreto.`;
 
 function assistantDevMock() {
   return {
@@ -44,7 +57,11 @@ function assistantDevMock() {
             res.statusCode = 400;
             return res.end();
           }
-          const text = /vuelco|efluente/.test(last) ? SAMPLE_VUELCO : SAMPLE_GENERAL;
+          const text = /vuelco|efluente/.test(last)
+            ? SAMPLE_VUELCO
+            : /residuo|basural|patog|contaminad/.test(last)
+              ? SAMPLE_RESIDUOS
+              : SAMPLE_GENERAL;
           res.setHeader("content-type", "text/plain; charset=utf-8");
           const words = text.split(/(?<=\s)/);
           let i = 0;

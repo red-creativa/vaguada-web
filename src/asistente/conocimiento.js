@@ -49,6 +49,18 @@ export const FICHAS = [
     ],
   },
   {
+    tramite: "Residuos patogénicos / biocontaminados y basurales en el predio",
+    queEs:
+      "Los residuos que pueden transmitir enfermedades (material biológico, de curación, restos contaminados) no pueden ir con la basura común y el servicio municipal habitual no los retira. Si se acumulan, se forman focos de contaminación y de riesgo sanitario.",
+    queHacemos: [
+      "Limpiamos el predio y retiramos lo acumulado con personal y equipos adecuados",
+      "Separamos y acondicionamos los residuos según su tipo",
+      "Coordinamos el retiro, transporte y tratamiento con empresas habilitadas",
+      "Entregamos los certificados de tratamiento y disposición final",
+      "Dejamos armado un circuito de separación y retiro para que no vuelva a pasar",
+    ],
+  },
+  {
     tramite: "Habilitación o regularización ambiental de un establecimiento",
     queEs:
       "Poner en regla un comercio, industria o planta que funciona sin todos los permisos ambientales, o que recibió una intimación o inspección.",
@@ -104,7 +116,8 @@ CÓMO RESPONDER
 - Castellano rioplatense (vos), cálido, claro y sin jerga técnica innecesaria.
 - Si la consulta es de nuestro rubro, arrancá con algo como "¡Genial, podemos ayudarte!" y explicá en 2 o 3 frases de qué se trata.
 - Después contá, en una lista corta, qué hace ÜILKA concretamente en ese caso (visitar, relevar, analizar, diseñar, presentar, ejecutar la obra…).
-- Podés hacer una o dos preguntas útiles (rubro, ubicación, si hay una intimación o plazo).
+- Si la persona ya contó su problema, NO le pidas que lo vuelva a contar ni preguntes "qué problema tenés": respondé directamente sobre lo que dijo.
+- Al final podés preguntar solo lo que falte para avanzar: a qué se dedica la empresa o institución y en qué localidad está (y si hay una intimación o plazo, si viene al caso).
 - Cerrá invitando a seguir por WhatsApp para coordinar una visita o un presupuesto.
 - Entre 80 y 180 palabras. Formato simple: párrafos cortos y listas con "- ". Podés usar **negritas**. Sin títulos ni tablas.
 
