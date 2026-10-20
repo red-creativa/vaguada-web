@@ -152,6 +152,10 @@ function Markdown({ text }) {
   flushParagraph();
   flushList();
 
+  // La pregunta del final (el último párrafo que termina en "?") se destaca:
+  // es la que invita a seguir contando y sacarle más provecho al asistente.
+  const questionIndex = blocks.findLastIndex((b) => b.type === "p" && /\?\s*$/.test(b.lines.join(" ")));
+
   return (
     <div className="flex flex-col gap-3">
       {blocks.map((b, i) =>
@@ -180,7 +184,10 @@ function Markdown({ text }) {
             ))}
           </ul>
         ) : (
-          <p key={i}>
+          <p
+            key={i}
+            className={i === questionIndex ? "mt-1 text-base sm:text-[17px] leading-snug font-medium text-[var(--e-text)]" : undefined}
+          >
             <Inline text={b.lines.join(" ")} />
           </p>
         ),
