@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Chat, Send, Shield, Spark } from "../icons";
+import { ArrowUpRight, Chat, Check, Copy, Send, Shield, Spark } from "../icons";
 import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
@@ -19,14 +19,14 @@ const SUGGESTIONS = [
   "Recibí una intimación ambiental",
 ];
 
-const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar esta pestaña.";
+const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar o recargar esta pestaña.";
 const MAX_USER_TURNS = 12;
 const MAX_CHARS = 1500;
 
-/* ── Resumen para WhatsApp ────────────────────────────────────────────────
- * Cada respuesta de la IA termina con un bloque <resumen>…</resumen> que la
- * persona no ve: lo usamos para que el mensaje de WhatsApp le llegue al
- * equipo con lo que necesita, su situación y el plan, sin repetir nada.
+/* ── Mensaje para WhatsApp ────────────────────────────────────────────────
+ * Cada respuesta de la IA termina con un bloque <resumen>…</resumen>: no se
+ * muestra en el chat, sino en la barra "Tu mensaje para WhatsApp" (junto a la
+ * caja de texto), que se actualiza con cada respuesta.
  */
 // Tolera mayúsculas y espacios: "<resumen>", "< Resumen >", "</resumen >"…
 const OPEN_RE = /<\s*resumen\s*>/i;
@@ -63,11 +63,11 @@ function clientMessage(summary, question) {
   return (text || question).slice(0, 600);
 }
 
-/** Mensaje de WhatsApp: saludo + lo que necesita el cliente (lo mismo que muestra la tarjeta). */
-function whatsappUrl(summary, question) {
-  const text = `Hola ÜILKA, les escribo desde el asistente de la web.\n\n${clientMessage(summary, question)}`;
-  return `${CONTACT.whatsappUrl}?text=${encodeURIComponent(text)}`;
-}
+/** El texto completo que se envía (y que se ve y se copia desde la barra). */
+const whatsappText = (summary, question) => `Hola ÜILKA. ${clientMessage(summary, question)}`;
+
+const whatsappUrl = (summary, question) =>
+  `${CONTACT.whatsappUrl}?text=${encodeURIComponent(whatsappText(summary, question))}`;
 
 /* ── Switch Sitio / Asistente ─────────────────────────────────────────── */
 
@@ -221,35 +221,75 @@ function WhatsAppLink({ summary, question, children = "Seguir por WhatsApp" }) {
   );
 }
 
+/** Copia al portapapeles; si el navegador no deja, usa el método clásico. */
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.cssText = "position:fixed;opacity:0";
+    document.body.append(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+    return ok;
+  }
+}
+
 /**
- * Tarjeta "Consulta para el operador": se completa con cada respuesta y
- * muestra exactamente lo que se envía por WhatsApp.
+ * Barra "Tu mensaje para WhatsApp", pegada a la caja de texto: muestra el
+ * mensaje que se va a enviar (se actualiza con cada respuesta) y deja
+ * copiarlo o enviarlo. Tocando el texto se despliega completo.
  */
-function OperatorCard({ summary, question, onReset }) {
+function WhatsAppBar({ summary, question, busy }) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const text = whatsappText(summary, question);
+
+  const onCopy = async () => {
+    if (await copyText(text)) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
-    <div className="sm:ml-11 flex flex-col gap-3 px-4 py-4 bg-white/70 ring-1 ring-[#1b4a5a24]">
-      <span className="flex items-center gap-2 font-mono-code text-[11px] uppercase text-[var(--e-dim)]">
-        <span className="w-4 h-[3px] ribbon-gradient" />
-        Consulta para el operador
-      </span>
-      <p className="pl-3 border-l-2 border-[#1b4a5a24] text-sm leading-relaxed text-[var(--e-text)]">
-        “{clientMessage(summary, question)}”
-      </p>
-      <p className="text-xs text-[var(--e-dim)]">
-        Se completa con lo que nos vas contando. Al tocar el botón se abre WhatsApp con este texto y podés editarlo antes de enviar.
-      </p>
-      <div className="flex flex-wrap items-center gap-3">
-        <WhatsAppLink summary={summary} question={question}>
-          Enviar por WhatsApp
-        </WhatsAppLink>
-        <button
-          type="button"
-          onClick={onReset}
-          className="px-2 py-2 font-mono-code text-xs uppercase text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors cursor-pointer"
-        >
-          Nueva consulta
-        </button>
-      </div>
+    <div className={`mb-2.5 flex items-center gap-2 sm:gap-3 pl-3 pr-1.5 py-1.5 bg-white/80 ring-1 ring-[#1b4a5a24] transition-opacity ${busy ? "opacity-60" : ""}`}>
+      <Chat className="w-5 h-5 shrink-0 text-[var(--e-accent)]" />
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="min-w-0 flex-1 py-1 text-left cursor-pointer"
+        title={open ? "Ver menos" : "Ver el mensaje completo"}
+      >
+        <span className="block font-mono-code text-[10px] uppercase text-[var(--e-dim)]">
+          Tu mensaje para WhatsApp{busy ? " · actualizando…" : ""}
+        </span>
+        <span className={`block text-sm leading-snug text-[var(--e-text)] ${open ? "whitespace-pre-wrap py-1" : "truncate"}`}>{text}</span>
+      </button>
+      <button
+        type="button"
+        onClick={onCopy}
+        aria-label={copied ? "Mensaje copiado" : "Copiar mensaje"}
+        title={copied ? "Copiado" : "Copiar"}
+        className="grid place-items-center w-10 h-10 shrink-0 text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors cursor-pointer"
+      >
+        {copied ? <Check className="w-5 h-5 text-[var(--e-accent)]" /> : <Copy className="w-5 h-5" />}
+      </button>
+      <a
+        href={whatsappUrl(summary, question)}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Se abre WhatsApp con este mensaje; podés editarlo antes de enviar"
+        className="group inline-flex items-center gap-1.5 h-10 px-3 sm:px-4 shrink-0 bg-[var(--e-box)] text-white font-syne text-xs uppercase tracking-wider hover:brightness-125 transition"
+      >
+        Enviar
+        <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </a>
     </div>
   );
 }
@@ -315,7 +355,7 @@ function Intro({ onPick }) {
 
 /* ── Vista principal ──────────────────────────────────────────────────── */
 
-export function AssistantView() {
+export function AssistantView({ active = true }) {
   const [messages, setMessages] = useState([]); // { role, content, error? }
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -335,8 +375,20 @@ export function AssistantView() {
       .filter(Boolean)
       .at(-1) ?? "";
 
-  // Al salir del modo Asistente se corta cualquier respuesta en curso.
+  // Si se cierra la página a mitad de una respuesta, se corta.
   useEffect(() => () => abortRef.current?.abort(), []);
+
+  // Hay una consulta en curso: antes de recargar o cerrar la pestaña, el
+  // navegador pregunta si de verdad querés salir (la conversación no se guarda).
+  useEffect(() => {
+    if (!messages.length) return;
+    const warn = (e) => {
+      e.preventDefault();
+      e.returnValue = "Si salís, se borra tu consulta.";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [messages.length > 0]);
 
   // Siempre mostrar lo último.
   useEffect(() => {
@@ -345,9 +397,13 @@ export function AssistantView() {
   }, [messages]);
 
   // En compu, el cursor arranca en la caja de texto (en celular no, para no abrir el teclado).
+  // También al volver desde "Sitio", con la conversación donde había quedado.
   useEffect(() => {
+    if (!active) return;
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
     if (window.matchMedia("(pointer: fine)").matches) inputRef.current?.focus({ preventScroll: true });
-  }, []);
+  }, [active]);
 
   const autosize = () => {
     const el = inputRef.current;
@@ -405,13 +461,6 @@ export function AssistantView() {
     }
   };
 
-  const reset = () => {
-    abortRef.current?.abort();
-    setMessages([]);
-    setInput("");
-    setLoading(false);
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
     send(input);
@@ -424,7 +473,9 @@ export function AssistantView() {
     }
   };
 
-  const showFollowUp = !loading && last?.role === "assistant" && last.content && !last.error;
+  // La barra de WhatsApp aparece desde la primera respuesta (y no si hubo error: ese mensaje ya trae su botón).
+  const hasAnswer = messages.some((m) => m.role === "assistant" && m.content);
+  const showWhatsAppBar = hasAnswer && !last?.error;
 
   return (
     <div className="relative isolate h-[100dvh] flex flex-col slide-bg-light overflow-hidden selection:bg-[#bfe9f5] selection:text-[#0f2a33]">
@@ -466,7 +517,6 @@ export function AssistantView() {
                   />
                 ),
               )}
-              {showFollowUp && <OperatorCard summary={summary} question={firstQuestion} onReset={reset} />}
             </>
           )}
         </div>
@@ -474,11 +524,11 @@ export function AssistantView() {
 
       <form onSubmit={onSubmit} className="shrink-0 bg-[#f4f9fb]/85 backdrop-blur-md border-t border-[#1b4a5a1a]">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          {showWhatsAppBar && <WhatsAppBar summary={summary} question={firstQuestion} busy={loading} />}
           {limitReached ? (
-            <div className="flex flex-wrap items-center gap-3 py-1 text-sm text-[var(--e-body)]">
-              <span>Llegaste al límite de esta conversación. Para seguir, escribinos.</span>
-              <WhatsAppLink summary={summary} question={firstQuestion} />
-            </div>
+            <p className="py-2 text-sm text-[var(--e-body)]">
+              Llegaste al límite de esta conversación. Para seguir, enviá tu mensaje por WhatsApp con el botón de arriba.
+            </p>
           ) : (
             <div className="flex items-end gap-2 p-1.5 bg-white ring-1 ring-[#1b4a5a33] focus-within:ring-2 focus-within:ring-[var(--e-accent)] transition">
               <label htmlFor="asistente-consulta" className="sr-only">

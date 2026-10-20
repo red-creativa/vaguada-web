@@ -1379,42 +1379,45 @@ export default function UilkaLanding() {
     else scrollerRef.current.scrollTo({ top: target.offsetTop, behavior: "smooth" });
   };
 
-  const toggle = <AssistantToggle active={assistant} onChange={toggleAssistant} />;
+  // El chat se monta la primera vez que se abre y después solo se oculta:
+  // así, al pasar a "Sitio" y volver, la conversación sigue ahí.
+  const [assistantOpened, setAssistantOpened] = useState(assistant);
+  useEffect(() => {
+    if (assistant) setAssistantOpened(true);
+  }, [assistant]);
 
-  if (assistant) {
-    return (
-      <>
-        <AssistantView />
-        {toggle}
-      </>
-    );
-  }
+  let site = null;
+  if (!assistant) {
+    site = isMobile ? (
+      <MobileLanding onCopyEmail={copyEmail} copied={copied} />
+    ) : (
+      <div
+        className={`w-screen font-sans bg-[#f4f9fb] text-stone-900 selection:bg-[#bfe9f5] selection:text-[#0f2a33] ${
+          isTouchTablet ? "min-h-screen" : "h-screen overflow-hidden flex flex-col"
+        }`}
+      >
+        <div ref={scrollerRef} className={`slides-container no-scrollbar ${isTouchTablet ? "no-snap" : "flex-1"}`}>
+          <DesktopSlides onCopyEmail={copyEmail} copied={copied} onContact={() => goToSlide(SLIDE_LABELS.length - 1)} />
+        </div>
 
-  if (isMobile) {
-    return (
-      <>
-        <MobileLanding onCopyEmail={copyEmail} copied={copied} />
-        {toggle}
-      </>
+        {!isTouchTablet && <SlideNav activeIndex={activeSlide} onNavigate={goToSlide} />}
+
+        {copied && (
+          <CopiedToast className="fixed bottom-6 left-6 z-50 flex items-center gap-2.5 px-5 py-3.5 bg-stone-950 text-white font-syne font-bold shadow-2xl text-xs uppercase tracking-wider animate-bounce border-2 border-stone-900" />
+        )}
+      </div>
     );
   }
 
   return (
-    <div
-      className={`w-screen font-sans bg-[#f4f9fb] text-stone-900 selection:bg-[#bfe9f5] selection:text-[#0f2a33] ${
-        isTouchTablet ? "min-h-screen" : "h-screen overflow-hidden flex flex-col"
-      }`}
-    >
-      <div ref={scrollerRef} className={`slides-container no-scrollbar ${isTouchTablet ? "no-snap" : "flex-1"}`}>
-        <DesktopSlides onCopyEmail={copyEmail} copied={copied} onContact={() => goToSlide(SLIDE_LABELS.length - 1)} />
-      </div>
-
-      {!isTouchTablet && <SlideNav activeIndex={activeSlide} onNavigate={goToSlide} />}
-      {toggle}
-
-      {copied && (
-        <CopiedToast className="fixed bottom-6 left-6 z-50 flex items-center gap-2.5 px-5 py-3.5 bg-stone-950 text-white font-syne font-bold shadow-2xl text-xs uppercase tracking-wider animate-bounce border-2 border-stone-900" />
+    <>
+      {(assistant || assistantOpened) && (
+        <div hidden={!assistant}>
+          <AssistantView active={assistant} />
+        </div>
       )}
-    </div>
+      {site}
+      <AssistantToggle active={assistant} onChange={toggleAssistant} />
+    </>
   );
 }
