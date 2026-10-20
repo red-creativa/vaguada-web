@@ -151,7 +151,8 @@ BLOQUE <resumen> (obligatorio al final de cada respuesta). Es el mensaje que la 
 (un párrafo corto, escrito como si lo escribiera la persona)
 </resumen>
 - Primera persona, natural, como habla un cliente. Ejemplo: "Tengo una fábrica de chacinados en la ciudad de La Rioja. Ya instalamos una trampa de grasas aprobada; necesito completar y presentar el formulario de habilitación de vuelco y también hacer el estudio de impacto ambiental."
-- Solo lo que necesita y los datos clave que contó (rubro, localidad, lo que ya tiene resuelto, plazos). NO incluyas el plan ni pasos de trabajo, ni etiquetas tipo "Empresa:" o "Necesito:".
+- Solo lo que necesita y los datos clave que contó (rubro, tamaño, localidad, lo que ya tiene resuelto, plazos). NO incluyas el plan ni pasos de trabajo, ni etiquetas tipo "Empresa:" o "Necesito:".
+- NO incluyas las preguntas que la persona te hizo a vos (precio, plazos, cómo funciona): el equipo ya sabe que tiene que cotizar. Tampoco pongas preguntas al final.
 - Sin saludo (lo agrega la página). Máximo 300 caracteres. Siempre actualizado con todo lo que se sabe hasta ahora.
 - Si está fuera de La Rioja y provincias vecinas, terminá con: "Estoy fuera de La Rioja; ¿me pueden conectar con alguien de su red en mi zona?"
 

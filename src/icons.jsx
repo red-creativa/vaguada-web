@@ -95,6 +95,12 @@ export const Send = (p) => (
   </Glyph>
 );
 
+export const Close = (p) => (
+  <Glyph {...p}>
+    <path d="M6 6l12 12M18 6L6 18" />
+  </Glyph>
+);
+
 export const Spark = (p) => (
   <Glyph {...p}>
     <Tone d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" />

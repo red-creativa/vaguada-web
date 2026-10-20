@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Chat, Check, Copy, Send, Shield, Spark } from "../icons";
+import { ArrowUpRight, Chat, Check, Close, Copy, Send, Shield, Spark } from "../icons";
 import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
@@ -457,6 +457,15 @@ export function AssistantView({ active = true }) {
     send(input);
   };
 
+  // La cruz borra la última pregunta y su respuesta: todo vuelve a como
+  // estaba antes (incluido el mensaje para el operador).
+  const deleteLast = (index) => {
+    abortRef.current?.abort();
+    setLoading(false);
+    setMessages(messages.slice(0, index));
+  };
+  const lastUserIndex = messages.findLastIndex((m) => m.role === "user");
+
   const onKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
@@ -489,11 +498,21 @@ export function AssistantView({ active = true }) {
               <div className="pt-2" />
               {messages.map((m, i) =>
                 m.role === "user" ? (
-                  <div
-                    key={i}
-                    className="self-end max-w-[85%] bg-stone-950 text-white px-4 py-3 text-[15px] leading-relaxed whitespace-pre-wrap break-words"
-                  >
-                    {m.content}
+                  <div key={i} className="self-end max-w-[85%] flex items-start gap-1.5">
+                    {i === lastUserIndex && (
+                      <button
+                        type="button"
+                        onClick={() => deleteLast(i)}
+                        aria-label="Borrar esta pregunta y su respuesta"
+                        title="Borrar esta pregunta y su respuesta"
+                        className="mt-2 grid place-items-center w-7 h-7 shrink-0 text-[var(--e-dim)] ring-1 ring-[#1b4a5a24] bg-white/60 hover:text-[var(--e-text)] hover:bg-white transition-colors cursor-pointer"
+                      >
+                        <Close className="w-4 h-4" />
+                      </button>
+                    )}
+                    <div className="min-w-0 bg-stone-950 text-white px-4 py-3 text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                      {m.content}
+                    </div>
                   </div>
                 ) : (
                   <AssistantMessage
