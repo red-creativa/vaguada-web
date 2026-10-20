@@ -316,13 +316,16 @@ ${mapa}`;
  * Instrucciones para armar el "Mensaje para el operador" (functions/api/mensaje.js).
  * Es lo que la persona le manda al equipo por WhatsApp: acá sí van reglas estrictas.
  */
-export const MENSAJE_PROMPT = `Vas a leer una conversación entre una PERSONA y el ASISTENTE de ÜILKA, una consultora ambiental de La Rioja, Argentina. Escribí el mensaje que la PERSONA le va a mandar por WhatsApp al equipo de ÜILKA.
+export const MENSAJE_PROMPT = `Vas a leer únicamente los mensajes escritos por una PERSONA que consulta a ÜILKA, una consultora ambiental de La Rioja, Argentina. Escribí un mensaje breve para que el equipo entienda qué necesita resolver la persona.
 
 Reglas:
-- Resumí la necesidad principal y los datos importantes que la persona aportó a lo largo de TODA la conversación: objetivo, ubicación, rol, etapa, alcance, requisitos o dificultades y qué necesita del equipo.
-- Escribí en primera persona, como un mensaje natural y claro para WhatsApp. Incluí los detalles que ayuden al equipo a entender el caso, sin repetir ideas ni agregar datos.
-- Usá solo información que aportó la persona. No conviertas sugerencias del asistente en decisiones o pedidos de la persona; no inventes información ni afirmes que ya se contrató o acordó un trabajo. No agregues interpretaciones sobre cobertura, distancia, zona de trabajo ni derivaciones a terceros que la persona no haya mencionado.
-- Sin preguntas, explicaciones ni comillas. Máximo 600 caracteres.
+- Resumí la necesidad concreta usando los datos que la persona dio en TODA la conversación: trámite o problema, tipo y escala del proyecto, ubicación, actividad, etapa y requisitos que mencionó.
+- El objetivo es que el operador entienda QUÉ necesita resolverse. Priorizá el trámite, el trabajo requerido y las características del proyecto; omití detalles que no ayuden a entender el alcance.
+- La única fuente son los mensajes de la persona que aparecen abajo. No agregues propuestas, tareas, servicios, alcances ni conclusiones que no haya pedido o confirmado explícitamente.
+- No incluyas preferencias sobre quién hará el trabajo, decisiones de contratación ni frases como "quiero trabajar con ustedes" o "que se encarguen de todo". Aunque la persona lo haya dicho, el mensaje es para describir su necesidad, no para confirmar con quién quiere trabajar.
+- Nunca agregues visitas, relevamientos, análisis, gestiones u otros pasos sugeridos por ÜILKA, salvo que la persona los haya pedido expresamente como parte de lo que necesita.
+- No inventes escala, volumen, datos ni urgencia. No agregues interpretaciones sobre cobertura, distancia, zona de trabajo ni derivaciones a terceros.
+- Escribí en primera persona, natural y directo. Sin saludo, preguntas, explicaciones ni comillas. Máximo 400 caracteres.
 - Si la persona todavía no contó una necesidad concreta (solo saluda, pregunta quién sos o algo fuera de tema), escribí exactamente: Quiero hacer una consulta.
 - Respondé SOLO con el mensaje, nada más.
 
@@ -330,6 +333,10 @@ Ejemplos:
 - Conversación: La persona quiere un programa de arbolado público en La Rioja. Trabaja en el área municipal de arbolado. Ya definieron dos zonas y necesitan determinar qué especies corresponden según normativa dispersa.
   Mensaje: Trabajo en el área de arbolado de la Municipalidad de La Rioja. Necesitamos definir qué especies plantar en dos zonas ya establecidas según la normativa, que está dispersa en varias leyes.
 - Conversación: La persona necesita habilitar el vuelco de efluentes de una veterinaria de animales de granja en San Juan.
+  Mensaje: Necesito la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
+- Conversación: La persona necesita una habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan. El asistente le ofrece una visita y hacer el relevamiento.
+  Mensaje: Necesito la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
+- Conversación: La persona necesita la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan. En la charla dice que quiere trabajar con ÜILKA. El asistente propone ocuparse de todo y visitar el establecimiento.
   Mensaje: Necesito la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
 - Conversación: La persona pregunta cuánto cuesta un estudio de impacto ambiental.
   Mensaje: Quiero consultar cuánto cuesta un estudio de impacto ambiental.
