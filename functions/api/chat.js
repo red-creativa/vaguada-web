@@ -14,11 +14,33 @@
 
 import { SYSTEM_PROMPT } from "../../src/asistente/conocimiento.js";
 
-// Gemma 4: buen castellano y bajo consumo del cupo gratuito diario.
-const MODEL = "@cf/google/gemma-4-26b-a4b-it";
+/**
+ * Modelos disponibles. Se usa el de la variable de entorno ASISTENTE_MODELO
+ * (Cloudflare → Settings → Variables) o, si no está, "gemma".
+ * Para comparar sin cambiar la web: encabezado `x-uilka-modelo: <nombre>`
+ * (solo acepta estos nombres).
+ */
+const PRESETS = {
+  // Gemma 4 sin razonamiento: rápido y el más barato.
+  gemma: {
+    model: "@cf/google/gemma-4-26b-a4b-it",
+    params: { max_completion_tokens: 900, chat_template_kwargs: { enable_thinking: false }, store: false },
+  },
+  // Gemma 4 pensando antes de responder: más criterio, un poco más lento.
+  "gemma-razona": {
+    model: "@cf/google/gemma-4-26b-a4b-it",
+    params: { max_completion_tokens: 3000, chat_template_kwargs: { enable_thinking: true }, store: false },
+  },
+  // Llama 3.3 70B: modelo más grande, gasta más cupo.
+  llama70: {
+    model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    params: { max_tokens: 900 },
+  },
+};
+const DEFAULT_PRESET = "gemma";
+
 const MAX_MESSAGES = 16; // últimos mensajes que se envían al modelo
 const MAX_CHARS = 1500; // largo máximo de cada mensaje
-const MAX_OUTPUT_TOKENS = 900;
 
 const json = (body, status) =>
   new Response(JSON.stringify(body), {
@@ -101,16 +123,17 @@ export async function onRequestPost({ request, env }) {
   const messages = sanitize(body?.messages);
   if (!messages) return json({ error: "pedido" }, 400);
 
+  const requested = request.headers.get("x-uilka-modelo");
+  const presetName = [requested, env.ASISTENTE_MODELO].find((n) => n && PRESETS[n]) ?? DEFAULT_PRESET;
+  const preset = PRESETS[presetName];
+
   let upstream;
   try {
-    upstream = await env.AI.run(MODEL, {
+    upstream = await env.AI.run(preset.model, {
       messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
       stream: true,
-      max_completion_tokens: MAX_OUTPUT_TOKENS,
       temperature: 0.4,
-      // Sin "modo razonamiento": si no, el modelo gasta el límite pensando y la respuesta llega vacía.
-      chat_template_kwargs: { enable_thinking: false },
-      store: false,
+      ...preset.params,
     });
   } catch (err) {
     // Cupo diario agotado u otro error del servicio. No se registra el contenido.
