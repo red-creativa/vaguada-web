@@ -26,9 +26,11 @@ const MAX_CHARS = 1500;
 const whatsappUrl = (text) => `${CONTACT.whatsappUrl}?text=${encodeURIComponent(text)}`;
 const emailSubject = encodeURIComponent("Consulta para ÜILKA");
 const gmailUrl = (text) =>
-  `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT.email)}&su=${emailSubject}&body=${encodeURIComponent(text)}`;
+  `https://mail.google.com/mail/u/0/?view=cm&to=${encodeURIComponent(CONTACT.email)}&su=${emailSubject}&body=${encodeURIComponent(text)}`;
 const outlookUrl = (text) =>
   `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(CONTACT.email)}&subject=${emailSubject}&body=${encodeURIComponent(text)}`;
+const emailBody = (summary, name) =>
+  `Estimados/as:\n\n${name ? `Mi nombre es ${name}.\n\n` : ""}Me comunico para consultar sobre lo siguiente:\n\n${summary}\n\nSaludos cordiales,${name ? `\n${name}` : ""}`;
 
 /* ── Switch Sitio / Asistente ─────────────────────────────────────────── */
 
@@ -172,6 +174,27 @@ function Typing() {
   );
 }
 
+function ThinkingStatus({ waitingLong }) {
+  return (
+    <div className="flex flex-col items-start gap-2" role="status" aria-live="polite">
+      <span className="inline-flex items-center gap-1.5" aria-hidden="true">
+        {[0, 150, 300].map((d) => (
+          <span
+            key={d}
+            className="w-2 h-2 rounded-full bg-[var(--e-blue)] opacity-70 animate-bounce"
+            style={{ animationDelay: `${d}ms` }}
+          />
+        ))}
+      </span>
+      <p className="text-sm text-[var(--e-dim)]">
+        {waitingLong
+          ? "Esta respuesta está tardando un poco más de lo habitual. Sigo trabajando en ella; no hace falta que envíes otra consulta."
+          : "Estoy revisando lo que me contaste para darte una orientación útil."}
+      </p>
+    </div>
+  );
+}
+
 function SummaryLoading() {
   return (
     <div
@@ -230,6 +253,7 @@ function ContactSummary({ summary, onGenerate }) {
   const ready = typeof summary === "string" && !generating;
   const contactName = name.trim().replace(/\s+/g, " ").slice(0, 100);
   const sharedText = ready ? `${summary}${contactName ? `\n\nNombre: ${contactName}` : ""}` : "";
+  const emailText = ready ? emailBody(summary, contactName) : "";
 
   const onCopy = async () => {
     if (await copyText(summary)) {
@@ -288,12 +312,12 @@ function ContactSummary({ summary, onGenerate }) {
               Enviar resumen por WhatsApp
               <ArrowUpRight className="w-3 h-3" />
             </a>
-            <a href={gmailUrl(sharedText)} target="_blank" rel="noopener noreferrer" className={action} title={`Abrir Gmail con un correo dirigido a ${CONTACT.email}`}>
+            <a href={gmailUrl(emailText)} target="_blank" rel="noopener noreferrer" className={action} title={`Abrir Gmail con un correo dirigido a ${CONTACT.email}`}>
               <Mail className="w-4 h-4" />
               Abrir Gmail
               <ArrowUpRight className="w-3 h-3" />
             </a>
-            <a href={outlookUrl(sharedText)} target="_blank" rel="noopener noreferrer" className={action} title={`Abrir Outlook en el navegador con un correo dirigido a ${CONTACT.email}`}>
+            <a href={outlookUrl(emailText)} target="_blank" rel="noopener noreferrer" className={action} title={`Abrir Outlook en el navegador con un correo dirigido a ${CONTACT.email}`}>
               <Mail className="w-4 h-4" />
               Abrir Outlook
               <ArrowUpRight className="w-3 h-3" />
@@ -324,6 +348,17 @@ function ContactSummary({ summary, onGenerate }) {
 }
 
 function AssistantMessage({ message, loading, isLast, onGenerateSummary, onRetry }) {
+  const [waitingLong, setWaitingLong] = useState(false);
+
+  useEffect(() => {
+    if (!loading || message.content) {
+      setWaitingLong(false);
+      return undefined;
+    }
+    const timeout = window.setTimeout(() => setWaitingLong(true), 8000);
+    return () => window.clearTimeout(timeout);
+  }, [loading, message.content]);
+
   return (
     <div className="self-start w-full max-w-[94%] flex gap-3">
       <span className="mt-1 grid place-items-center w-8 h-8 shrink-0 bg-white ring-1 ring-[#1b4a5a24]">
@@ -346,7 +381,7 @@ function AssistantMessage({ message, loading, isLast, onGenerateSummary, onRetry
         ) : message.content ? (
           <Markdown text={message.content} />
         ) : (
-          loading && <Typing />
+          loading && <ThinkingStatus waitingLong={waitingLong} />
         )}
         {isLast && !loading && <ContactSummary summary={message.summary} onGenerate={onGenerateSummary} />}
       </div>
