@@ -8,6 +8,8 @@
 @source not "../piezas-graficas";
 @source not "../_sin-usar";
 @source not "../dist";
+@source not "../_versiones";
+@source not "../diseno-anterior";
 
 /* ── Base ─────────────────────────────────────────────── */
 @layer base {

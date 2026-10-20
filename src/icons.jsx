@@ -79,6 +79,29 @@ export const Copy = (p) => (
   </Glyph>
 );
 
+/* ── Asistente ────────────────────────────────────────────── */
+
+export const Shield = (p) => (
+  <Glyph {...p}>
+    <Tone d="M12 2l8 3v7l-3 6-5 4-5-4-3-6V5z" />
+    <path d="M12 2l8 3v7l-3 6-5 4-5-4-3-6V5zM8.5 12l2.5 2.5 4.5-5" />
+  </Glyph>
+);
+
+export const Send = (p) => (
+  <Glyph {...p}>
+    <Tone d="M3 11L21 3l-6 18-3-7z" />
+    <path d="M3 11L21 3l-6 18-3-7zM12 14l9-11" />
+  </Glyph>
+);
+
+export const Spark = (p) => (
+  <Glyph {...p}>
+    <Tone d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" />
+    <path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" />
+  </Glyph>
+);
+
 /* ── Contacto ─────────────────────────────────────────────── */
 
 export const Mail = (p) => (

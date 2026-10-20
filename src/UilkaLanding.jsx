@@ -50,6 +50,9 @@ import {
   Waste,
   Water,
 } from "./icons";
+import { AREAS, BRAND, CONTACT, SECTORS, TEAM } from "./contenido";
+import { Bubbles, Microscope } from "./decoracion";
+import { AssistantToggle, AssistantView } from "./asistente/Asistente";
 import "./uilka.css";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -84,129 +87,8 @@ const IMAGES = {
 
 const bgImage = (url) => (url ? { backgroundImage: `url('${url}')` } : undefined);
 /* ────────────────────────────────────────────────────────────────────────── */
-/* Contenido                                                                  */
+/* Íconos del contenido (los textos están en contenido.js)                    */
 /* ────────────────────────────────────────────────────────────────────────── */
-
-const BRAND = {
-  name: "üilka",
-  email: "salvadoresfrancisco@gmail.com",
-  tagline: "Soluciones ambientales para industrias e instituciones",
-  description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
-  location: "La Rioja y provincias vecinas, Argentina",
-  footerBadge: "ÜILKA — Soluciones ambientales para industrias e instituciones",
-};
-
-// `items`: lo que se ejecuta y se entrega (obras, servicios, resultados).
-// El diagnóstico vive solo en su tarjeta; el resto va directo a la solución.
-const AREAS = [
-  {
-    id: "ingenieria-diagnostico",
-    title: "Diagnóstico y eficiencia",
-    subtitle: "Detectamos pérdidas y oportunidades de ahorro en tu operación.",
-    items: [
-      "Relevamiento en planta y puntos críticos",
-      "Riesgos de multa o clausura, priorizados",
-      "Alternativas de solución con costos",
-      "Soluciones urgentes, listas para ejecutar",
-      "Devolución clara para la dirección",
-    ],
-  },
-  {
-    id: "cumplimiento-ambiental",
-    title: "Cumplimiento ambiental",
-    subtitle: "Permisos en regla sin frenar la operación.",
-    items: [
-      "Estudios de Impacto Ambiental (EIA)",
-      "Permisos, licencias y habilitaciones",
-      "Regularización de establecimientos",
-      "Planes de gestión ambiental",
-    ],
-  },
-  {
-    id: "agua-saneamiento",
-    title: "Agua y efluentes",
-    subtitle: "Diseño y obra, de la captación al vuelco.",
-    items: [
-      "Obras de captación y almacenamiento",
-      "Plantas potabilizadoras",
-      "Plantas de tratamiento de efluentes",
-      "Redes de agua y cloacas",
-      "Sistemas de reúso de agua",
-      "Dragado y limpieza de lagunas",
-    ],
-  },
-  {
-    id: "residuos",
-    title: "Gestión de residuos",
-    subtitle: "Nos hacemos cargo de tus residuos, de la generación a la disposición final.",
-    items: [
-      "Urbanos, industriales y peligrosos",
-      "Orgánicos, de obra y voluminosos",
-      "Separación y acopio en tu predio",
-      "Retiro y transporte",
-      "Reciclado, tratamiento y disposición final",
-    ],
-  },
-  {
-    id: "circularidad-sustentabilidad",
-    title: "Sustentabilidad Empresarial y Modelos de Negocio Circulares",
-    subtitle: "Residuos convertidos en valor y desempeño ambiental medible.",
-    items: [
-      "Subproductos convertidos en ingresos",
-      "Simbiosis con otras empresas, en marcha",
-      "Indicadores ambientales medidos",
-      "Reportes de sustentabilidad",
-      "Certificaciones (ISO, B Corp, etc.)",
-    ],
-  },
-  {
-    id: "emisiones-atmosfericas",
-    title: "Emisiones atmosféricas",
-    subtitle: "Medición, modelación y control.",
-    items: [
-      "Monitoreo en chimenea y en el entorno",
-      "Modelación de dispersión",
-      "Sistemas de control y tratamiento instalados",
-      "Ajustes de proceso que bajan emisiones",
-    ],
-  },
-  {
-    id: "riesgo-climatico",
-    title: "Riesgo climático y adaptación",
-    subtitle: "Datos climáticos para decidir inversiones.",
-    items: [
-      "Tendencias y eventos extremos de tu zona",
-      "Riesgo físico sobre tus activos",
-      "Escenarios de sequía, calor y tormentas",
-      "Medidas y obras de adaptación",
-    ],
-  },
-  {
-    id: "remediacion-restauracion",
-    title: "Remediación y restauración",
-    subtitle: "Suelos, aguas y ecosistemas afectados.",
-    items: [
-      "Delimitación de la zona afectada",
-      "Tratamiento de suelos in situ y ex situ",
-      "Saneamiento de aguas superficiales y subterráneas",
-      "Restauración y revegetación",
-      "Cierre con muestreo de verificación",
-    ],
-  },
-  {
-    id: "modelado-hidraulico",
-    title: "Modelado hidráulico e hidrológico",
-    // ‑: guion que no se separa de línea.
-    subtitle: "Crecidas y escurrimientos simulados con HEC‑RAS y HEC‑HMS.",
-    items: [
-      "Estudios de inundabilidad con mapas",
-      "Caudales de diseño para tus obras",
-      "Modelación 1D y 2D",
-      "Líneas de ribera",
-      "Drenaje pluvial",
-    ],
-  },
-];
 
 const AREA_ICONS = {
   "ingenieria-diagnostico": Diagnosis,
@@ -220,54 +102,19 @@ const AREA_ICONS = {
   "modelado-hidraulico": Hydraulics,
 };
 
-const SECTORS = {
-  title: "Sectores de aplicación",
-  items: [
-    { id: "mineria", name: "Minería", icon: Mining },
-    { id: "energia", name: "Energía", icon: Energy },
-    { id: "hidrocarburos", name: "Hidrocarburos", icon: Oil },
-    { id: "industria", name: "Industria manufacturera", icon: Manufacturing },
-    { id: "agroindustria", name: "Agroindustria", icon: Agro },
-    { id: "infraestructura", name: "Infraestructura y construcción", icon: Infrastructure },
-    { id: "logistica", name: "Logística", icon: Logistics },
-    { id: "grandes-instalaciones", name: "Parques y grandes instalaciones", icon: Facility },
-    { id: "sector-publico", name: "Sector público", icon: PublicSector },
-  ],
+// Ícono de cada sector (los nombres están en contenido.js).
+const SECTOR_ICONS = {
+  mineria: Mining,
+  energia: Energy,
+  hidrocarburos: Oil,
+  industria: Manufacturing,
+  agroindustria: Agro,
+  infraestructura: Infrastructure,
+  logistica: Logistics,
+  "grandes-instalaciones": Facility,
+  "sector-publico": PublicSector,
 };
-
-const TEAM = {
-  title: "Quiénes somos",
-  subtitle: "Equipo",
-  members: [
-    {
-      id: "francisco-salvadores",
-      name: "Francisco Salvadores",
-      role: "Responsable de Operaciones",
-      credential: "Ingeniero Ambiental — Universidad Nacional del Litoral",
-      linkedin: "https://linkedin.com/in/fransalva2res/",
-      bio: "Experiencia en evaluación de impacto ambiental, líneas de base, gestión integral de residuos y sistemas de gestión ISO 14001 / ISO 9001. Coordinación de equipos interdisciplinarios y articulación con organismos públicos y privados.",
-    },
-    {
-      id: "luca-parquet",
-      name: "Luca Parquet",
-      displayName: "Luca PARQUET",
-      role: "Responsable de SIG y Modelado",
-      credential: "Ingénieur — École des Ponts ParisTech, Francia · Ingeniero en Recursos Hídricos, UNL",
-      linkedin: "https://linkedin.com/in/luca-parquet/",
-      bio: "Especialista en modelación hidráulica e hidrológica (HEC-RAS, HEC-HMS, TELEMAC-MASCARET) y sistemas de información geográfica. Experiencia en Francia y Argentina en dimensionamiento de obras y gestión del riesgo de inundación.",
-    },
-  ],
-};
-
-const CONTACT = {
-  title: "Contanos tu proyecto",
-  email: "salvadoresfrancisco@gmail.com",
-  phoneDisplay: "+54 3804 49-4798",
-  phoneHref: "tel:+543804494798",
-  whatsappUrl: "https://wa.me/543804494798",
-  location: "La Rioja y provincias vecinas, Argentina",
-  signature: "ÜILKA — Soluciones ambientales para industrias e instituciones",
-};
+const SECTOR_ITEMS = SECTORS.items.map((s) => ({ ...s, icon: SECTOR_ICONS[s.id] }));
 
 const PROCESS_STEPS = [
   { icon: Design, lead: "Diseño", rest: ": ingeniería y documentación a medida." },
@@ -464,138 +311,6 @@ function LinkedinIcon({ className = "" }) {
       <rect width="4" height="12" x="2" y="9" />
       <circle cx="4" cy="4" r="2" />
     </svg>
-  );
-}
-
-/* ── Guiños de proceso: burbujas y microscopio ─────────────────────────── */
-
-/** Generador pseudoaleatorio con semilla: el dibujo sale siempre igual. */
-function seeded(seed) {
-  let s = seed >>> 0;
-  return () => {
-    s = (s + 0x6d2b79f5) >>> 0;
-    let t = s;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const BUBBLES = (() => {
-  const r = seeded(7);
-  return Array.from({ length: 14 }, () => ({
-    left: 3 + r() * 94,
-    size: 5 + Math.round(r() * 12),
-    duration: 14 + r() * 14,
-    delay: -r() * 28, // negativas: al cargar ya hay burbujas a distintas alturas
-    drift: Math.round((r() - 0.5) * 28),
-    opacity: 0.5 + r() * 0.35,
-  }));
-})();
-
-/** Burbujas de oxigenación que suben despacio, como en un reactor aireado. */
-function Bubbles({ className = "" }) {
-  return (
-    <div aria-hidden="true" className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
-      {BUBBLES.map((b, i) => (
-        <span
-          key={i}
-          className="bubble"
-          style={{
-            left: `${b.left}%`,
-            width: b.size,
-            height: b.size,
-            animationDuration: `${b.duration}s`,
-            animationDelay: `${b.delay}s`,
-            "--drift": `${b.drift}px`,
-            "--bubble-opacity": b.opacity,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/** Formas de la muestra: bacilos, cadenas de cocos, flóculos y partículas sueltas. */
-const MICROSCOPE_SHAPES = (() => {
-  const r = seeded(21);
-  const W = 600;
-  const H = 400;
-  const bacilli = Array.from({ length: 30 }, () => {
-    const h = 4 + r() * 2.5;
-    return { x: r() * W, y: r() * H, a: r() * 180, l: 12 + r() * 16, h };
-  });
-  const chains = Array.from({ length: 9 }, () => {
-    const n = 3 + Math.floor(r() * 4);
-    const a = r() * Math.PI * 2;
-    const bend = (r() - 0.5) * 0.5;
-    const x0 = r() * W;
-    const y0 = r() * H;
-    return Array.from({ length: n }, (_, k) => ({
-      x: x0 + Math.cos(a + bend * k) * 6.6 * k,
-      y: y0 + Math.sin(a + bend * k) * 6.6 * k,
-    }));
-  });
-  const flocs = Array.from({ length: 4 }, () => {
-    const cx = r() * W;
-    const cy = r() * H;
-    return {
-      cx,
-      cy,
-      rx: 18 + r() * 14,
-      ry: 12 + r() * 10,
-      a: r() * 180,
-      cells: Array.from({ length: 14 }, () => {
-        const ang = r() * Math.PI * 2;
-        const d = Math.sqrt(r()) * 20;
-        return { x: cx + Math.cos(ang) * d, y: cy + Math.sin(ang) * d * 0.7, rad: 1.5 + r() * 2.5 };
-      }),
-    };
-  });
-  const dots = Array.from({ length: 45 }, () => ({ x: r() * W, y: r() * H, rad: 0.7 + r() * 1.1 }));
-  return { W, H, bacilli, chains, flocs, dots };
-})();
-
-/** Fondo tipo microscopio: una muestra con bacterias trabajando, muy tenue y quieta. */
-function Microscope({ className = "" }) {
-  const { W, H, bacilli, chains, flocs, dots } = MICROSCOPE_SHAPES;
-  return (
-    <div aria-hidden="true" className={`microscope absolute inset-0 overflow-hidden pointer-events-none opacity-[0.16] text-[var(--e-teal)] ${className}`}>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" className="w-full h-full" fill="currentColor" stroke="currentColor">
-        {flocs.map((f, i) => (
-          <g key={`f${i}`}>
-            <ellipse cx={f.cx} cy={f.cy} rx={f.rx} ry={f.ry} transform={`rotate(${f.a} ${f.cx} ${f.cy})`} fillOpacity="0.12" strokeOpacity="0.35" strokeWidth="0.8" />
-            {f.cells.map((c, k) => (
-              <circle key={k} cx={c.x} cy={c.y} r={c.rad} fillOpacity="0.45" stroke="none" />
-            ))}
-          </g>
-        ))}
-        {bacilli.map((b, i) => (
-          <rect
-            key={`b${i}`}
-            x={b.x - b.l / 2}
-            y={b.y - b.h / 2}
-            width={b.l}
-            height={b.h}
-            rx={b.h / 2}
-            transform={`rotate(${b.a} ${b.x} ${b.y})`}
-            fillOpacity="0.3"
-            strokeOpacity="0.8"
-            strokeWidth="0.9"
-          />
-        ))}
-        {chains.map((c, i) => (
-          <g key={`c${i}`} fillOpacity="0.35" strokeOpacity="0.8" strokeWidth="0.8">
-            {c.map((p, k) => (
-              <circle key={k} cx={p.x} cy={p.y} r="3" />
-            ))}
-          </g>
-        ))}
-        {dots.map((d, i) => (
-          <circle key={`d${i}`} cx={d.x} cy={d.y} r={d.rad} fillOpacity="0.6" stroke="none" />
-        ))}
-      </svg>
-    </div>
   );
 }
 
@@ -960,7 +675,7 @@ function SectorsSlide() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-          {SECTORS.items.map(({ id, name, icon: Icon }) => (
+          {SECTOR_ITEMS.map(({ id, name, icon: Icon }) => (
             <div
               key={id}
               className="bg-white/95 border-2 border-stone-800 p-3.5 flex items-center gap-3 hover:bg-stone-100 transition-all shadow-2xs group cursor-default"
@@ -1400,7 +1115,7 @@ function MobileSectors() {
         </h2>
       </div>
       <div className="relative z-10 grid grid-cols-2 gap-2.5">
-        {SECTORS.items.map(({ id, name, icon: Icon }) => (
+        {SECTOR_ITEMS.map(({ id, name, icon: Icon }) => (
           <div key={id} className="bg-white border-2 border-stone-800 p-3 flex flex-col gap-2">
             <Icon className="w-8 h-8 text-[var(--e-icon)]" />
             <h3 className="font-syne text-[13px] font-bold uppercase text-stone-950 leading-tight">{name}</h3>
@@ -1594,6 +1309,15 @@ export default function UilkaLanding() {
   // Tablets táctiles: página continua sin scroll-snap ni navegación lateral.
   const isTouchTablet = !isMobile && isTouch;
 
+  // Modo Asistente: la página se transforma en un chat. Se puede abrir
+  // directo con el enlace …/#asistente.
+  const [assistant, setAssistant] = useState(() => window.location.hash === "#asistente");
+  const toggleAssistant = useCallback((on) => {
+    setAssistant(on);
+    const url = on ? "#asistente" : window.location.pathname + window.location.search;
+    window.history.replaceState(null, "", url);
+  }, []);
+
   const copyEmail = useCallback(() => {
     navigator.clipboard
       ?.writeText(BRAND.email)
@@ -1626,12 +1350,13 @@ export default function UilkaLanding() {
         setActiveSlide(index);
       });
     };
+    onScroll();
     scroller.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       scroller.removeEventListener("scroll", onScroll);
     };
-  }, [isMobile, isTouchTablet]);
+  }, [isMobile, isTouchTablet, assistant]);
 
   // Entrada suave del contenido de cada slide al llegar a ella.
   useEffect(() => {
@@ -1645,7 +1370,7 @@ export default function UilkaLanding() {
     );
     slides().forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [isMobile, isTouchTablet]);
+  }, [isMobile, isTouchTablet, assistant]);
 
   const goToSlide = (index) => {
     const target = slides()[index];
@@ -1654,8 +1379,24 @@ export default function UilkaLanding() {
     else scrollerRef.current.scrollTo({ top: target.offsetTop, behavior: "smooth" });
   };
 
+  const toggle = <AssistantToggle active={assistant} onChange={toggleAssistant} />;
+
+  if (assistant) {
+    return (
+      <>
+        <AssistantView />
+        {toggle}
+      </>
+    );
+  }
+
   if (isMobile) {
-    return <MobileLanding onCopyEmail={copyEmail} copied={copied} />;
+    return (
+      <>
+        <MobileLanding onCopyEmail={copyEmail} copied={copied} />
+        {toggle}
+      </>
+    );
   }
 
   return (
@@ -1669,6 +1410,7 @@ export default function UilkaLanding() {
       </div>
 
       {!isTouchTablet && <SlideNav activeIndex={activeSlide} onNavigate={goToSlide} />}
+      {toggle}
 
       {copied && (
         <CopiedToast className="fixed bottom-6 left-6 z-50 flex items-center gap-2.5 px-5 py-3.5 bg-stone-950 text-white font-syne font-bold shadow-2xl text-xs uppercase tracking-wider animate-bounce border-2 border-stone-900" />
