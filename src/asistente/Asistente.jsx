@@ -240,12 +240,10 @@ async function copyText(text) {
 }
 
 /**
- * Barra "Tu mensaje para WhatsApp", pegada a la caja de texto: muestra el
- * mensaje que se va a enviar (se actualiza con cada respuesta) y deja
- * copiarlo o enviarlo. Tocando el texto se despliega completo.
+ * Pie de la última respuesta: el mensaje para el operador, chiquito y en
+ * cursiva, completo, con las acciones para enviarlo por WhatsApp o copiarlo.
  */
-function WhatsAppBar({ summary, question, busy }) {
-  const [open, setOpen] = useState(false);
+function OperatorNote({ summary, question }) {
   const [copied, setCopied] = useState(false);
   const text = whatsappText(summary, question);
 
@@ -256,46 +254,37 @@ function WhatsAppBar({ summary, question, busy }) {
     }
   };
 
+  const action =
+    "inline-flex items-center gap-1.5 py-1 font-mono-code text-[11px] uppercase text-[var(--e-accent)] hover:text-[var(--e-text)] transition-colors cursor-pointer";
+
   return (
-    <div className={`mb-2.5 flex items-center gap-2 sm:gap-3 pl-3 pr-1.5 py-1.5 bg-white/80 ring-1 ring-[#1b4a5a24] transition-opacity ${busy ? "opacity-60" : ""}`}>
-      <Chat className="w-5 h-5 shrink-0 text-[var(--e-accent)]" />
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="min-w-0 flex-1 py-1 text-left cursor-pointer"
-        title={open ? "Ver menos" : "Ver el mensaje completo"}
-      >
-        <span className="block font-mono-code text-[10px] uppercase text-[var(--e-dim)]">
-          Tu mensaje para WhatsApp{busy ? " · actualizando…" : ""}
-        </span>
-        <span className={`block text-sm leading-snug text-[var(--e-text)] ${open ? "whitespace-pre-wrap py-1" : "truncate"}`}>{text}</span>
-      </button>
-      <button
-        type="button"
-        onClick={onCopy}
-        aria-label={copied ? "Mensaje copiado" : "Copiar mensaje"}
-        title={copied ? "Copiado" : "Copiar"}
-        className="grid place-items-center w-10 h-10 shrink-0 text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors cursor-pointer"
-      >
-        {copied ? <Check className="w-5 h-5 text-[var(--e-accent)]" /> : <Copy className="w-5 h-5" />}
-      </button>
-      <a
-        href={whatsappUrl(summary, question)}
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Se abre WhatsApp con este mensaje; podés editarlo antes de enviar"
-        className="group inline-flex items-center gap-1.5 h-10 px-3 sm:px-4 shrink-0 bg-[var(--e-box)] text-white font-syne text-xs uppercase tracking-wider hover:brightness-125 transition"
-      >
-        Enviar
-        <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-      </a>
+    <div className="mt-4 pt-3 border-t border-[#1b4a5a1a]">
+      <p className="text-[13px] leading-relaxed italic text-[var(--e-dim)]">
+        <span className="not-italic font-semibold text-[var(--e-body)]">Mensaje para el operador:</span> “{text}”
+      </p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1">
+        <a
+          href={whatsappUrl(summary, question)}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Se abre WhatsApp con este mensaje; podés editarlo antes de enviar"
+          className={action}
+        >
+          <Chat className="w-4 h-4" />
+          Enviar por WhatsApp
+          <ArrowUpRight className="w-3 h-3" />
+        </a>
+        <button type="button" onClick={onCopy} className={action} aria-live="polite">
+          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {copied ? "Copiado" : "Copiar"}
+        </button>
+      </div>
     </div>
   );
 }
 
-function AssistantMessage({ message, loading, summary, firstQuestion }) {
-  const { visible } = splitAnswer(message.content);
+function AssistantMessage({ message, loading, isLast, summary, firstQuestion }) {
+  const { visible, summary: own } = splitAnswer(message.content);
   return (
     <div className="self-start w-full max-w-[94%] flex gap-3">
       <span className="mt-1 grid place-items-center w-8 h-8 shrink-0 bg-white ring-1 ring-[#1b4a5a24]">
@@ -312,7 +301,10 @@ function AssistantMessage({ message, loading, summary, firstQuestion }) {
             </div>
           </div>
         ) : visible ? (
-          <Markdown text={visible} />
+          <>
+            <Markdown text={visible} />
+            {isLast && !loading && <OperatorNote summary={own || summary} question={firstQuestion} />}
+          </>
         ) : (
           loading && <Typing />
         )}
@@ -366,7 +358,6 @@ export function AssistantView({ active = true }) {
   const userTurns = messages.filter((m) => m.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
   const firstQuestion = messages.find((m) => m.role === "user")?.content ?? "";
-  const last = messages.at(-1);
   // Último resumen que armó la IA (el más completo): va en el mensaje de WhatsApp.
   const summary =
     messages
@@ -473,9 +464,6 @@ export function AssistantView({ active = true }) {
     }
   };
 
-  // La barra de WhatsApp aparece desde la primera respuesta (y no si hubo error: ese mensaje ya trae su botón).
-  const hasAnswer = messages.some((m) => m.role === "assistant" && m.content);
-  const showWhatsAppBar = hasAnswer && !last?.error;
 
   return (
     <div className="relative isolate h-[100dvh] flex flex-col slide-bg-light overflow-hidden selection:bg-[#bfe9f5] selection:text-[#0f2a33]">
@@ -512,6 +500,7 @@ export function AssistantView({ active = true }) {
                     key={i}
                     message={m}
                     loading={loading && i === messages.length - 1}
+                    isLast={i === messages.length - 1}
                     summary={summary}
                     firstQuestion={firstQuestion}
                   />
@@ -524,10 +513,9 @@ export function AssistantView({ active = true }) {
 
       <form onSubmit={onSubmit} className="shrink-0 bg-[#f4f9fb]/85 backdrop-blur-md border-t border-[#1b4a5a1a]">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          {showWhatsAppBar && <WhatsAppBar summary={summary} question={firstQuestion} busy={loading} />}
           {limitReached ? (
             <p className="py-2 text-sm text-[var(--e-body)]">
-              Llegaste al límite de esta conversación. Para seguir, enviá tu mensaje por WhatsApp con el botón de arriba.
+              Llegaste al límite de esta conversación. Para seguir, enviá el mensaje para el operador por WhatsApp.
             </p>
           ) : (
             <div className="flex items-end gap-2 p-1.5 bg-white ring-1 ring-[#1b4a5a33] focus-within:ring-2 focus-within:ring-[var(--e-accent)] transition">
