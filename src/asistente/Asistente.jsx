@@ -28,34 +28,44 @@ const MAX_CHARS = 1500;
  * persona no ve: lo usamos para que el mensaje de WhatsApp le llegue al
  * equipo con lo que necesita, su situación y el plan, sin repetir nada.
  */
-const OPEN = "<resumen>";
-const CLOSE = "</resumen>";
+// Tolera mayúsculas y espacios: "<resumen>", "< Resumen >", "</resumen >"…
+const OPEN_RE = /<\s*resumen\s*>/i;
+const CLOSE_RE = /<\s*\/\s*resumen\s*>/i;
 
 /** Separa lo que se muestra del resumen oculto (también mientras va llegando el texto). */
 function splitAnswer(raw) {
-  const i = raw.indexOf(OPEN);
-  if (i >= 0) {
-    const rest = raw.slice(i + OPEN.length);
-    const j = rest.indexOf(CLOSE);
-    return { visible: raw.slice(0, i).trimEnd(), summary: (j >= 0 ? rest.slice(0, j) : rest).trim() };
+  const tidy = (s) => s.replace(/[\s*_`]+$/, ""); // por si lo envolvió en **negritas**
+  const open = raw.match(OPEN_RE);
+  if (open) {
+    const rest = raw.slice(open.index + open[0].length);
+    const close = rest.match(CLOSE_RE);
+    return { visible: tidy(raw.slice(0, open.index)), summary: (close ? rest.slice(0, close.index) : rest).trim() };
   }
   // Mientras llega el texto, no mostrar un "<resu" a medio escribir.
-  for (let k = OPEN.length - 1; k > 0; k--) {
-    if (raw.endsWith(OPEN.slice(0, k))) return { visible: raw.slice(0, -k), summary: "" };
+  const lt = raw.lastIndexOf("<");
+  if (lt >= 0 && raw.length - lt <= 12 && "<resumen>".startsWith(raw.slice(lt).toLowerCase().replace(/\s/g, ""))) {
+    return { visible: tidy(raw.slice(0, lt)), summary: "" };
   }
   return { visible: raw, summary: "" };
 }
 
-/** Mensaje de WhatsApp: el último resumen; si no hay, la primera consulta. */
+/**
+ * La consulta, en primera persona como si la escribiera el cliente (la arma
+ * la IA en el bloque <resumen>). Si todavía no hay, la primera pregunta.
+ */
+function clientMessage(summary, question) {
+  const text = summary
+    .split("\n")
+    .map((l) => l.replace(/^[-•*]\s*/, "").trim())
+    .filter(Boolean)
+    .join(" ")
+    .replace(/^"|"$/g, "");
+  return (text || question).slice(0, 600);
+}
+
+/** Mensaje de WhatsApp: saludo + lo que necesita el cliente (lo mismo que muestra la tarjeta). */
 function whatsappUrl(summary, question) {
-  const lines = summary
-    ? summary
-        .split("\n")
-        .map((l) => l.trim())
-        .filter((l) => l && !/^[^:]{1,20}:\s*$/.test(l)) // sin líneas vacías tipo "Empresa:"
-        .map((l) => `• ${l}`)
-    : [`Mi consulta: ${question.slice(0, 300)}`];
-  const text = ["Hola ÜILKA, les escribo desde el asistente de la web.", ...lines].join("\n").slice(0, 800);
+  const text = `Hola ÜILKA, les escribo desde el asistente de la web.\n\n${clientMessage(summary, question)}`;
   return `${CONTACT.whatsappUrl}?text=${encodeURIComponent(text)}`;
 }
 
@@ -207,6 +217,39 @@ function WhatsAppLink({ summary, question, children = "Seguir por WhatsApp" }) {
       {children}
       <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
     </a>
+  );
+}
+
+/**
+ * Tarjeta "Consulta para el operador": se completa con cada respuesta y
+ * muestra exactamente lo que se envía por WhatsApp.
+ */
+function OperatorCard({ summary, question, onReset }) {
+  return (
+    <div className="sm:ml-11 flex flex-col gap-3 px-4 py-4 bg-white/70 ring-1 ring-[#1b4a5a24]">
+      <span className="flex items-center gap-2 font-mono-code text-[11px] uppercase text-[var(--e-dim)]">
+        <span className="w-4 h-[3px] ribbon-gradient" />
+        Consulta para el operador
+      </span>
+      <p className="pl-3 border-l-2 border-[#1b4a5a24] text-sm leading-relaxed text-[var(--e-text)]">
+        “{clientMessage(summary, question)}”
+      </p>
+      <p className="text-xs text-[var(--e-dim)]">
+        Se completa con lo que nos vas contando. Al tocar el botón se abre WhatsApp con este texto y podés editarlo antes de enviar.
+      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        <WhatsAppLink summary={summary} question={question}>
+          Enviar por WhatsApp
+        </WhatsAppLink>
+        <button
+          type="button"
+          onClick={onReset}
+          className="px-2 py-2 font-mono-code text-xs uppercase text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors cursor-pointer"
+        >
+          Nueva consulta
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -422,18 +465,7 @@ export function AssistantView() {
                   />
                 ),
               )}
-              {showFollowUp && (
-                <div className="pl-11 flex flex-wrap items-center gap-3">
-                  <WhatsAppLink summary={summary} question={firstQuestion} />
-                  <button
-                    type="button"
-                    onClick={reset}
-                    className="px-2 py-2 font-mono-code text-xs uppercase text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors cursor-pointer"
-                  >
-                    Nueva consulta
-                  </button>
-                </div>
-              )}
+              {showFollowUp && <OperatorCard summary={summary} question={firstQuestion} onReset={reset} />}
             </>
           )}
         </div>

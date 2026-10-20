@@ -20,8 +20,7 @@ const SAMPLE_VUELCO = `¡Genial, podemos ayudarte! La **habilitación de vuelco*
 
 (Respuesta de prueba: en modo local no hay IA.)
 <resumen>
-Necesito: habilitación de vuelco de efluentes.
-Plan: relevamiento; muestreo y análisis; tratamiento si hace falta; presentación del trámite.
+Necesito tramitar la habilitación de vuelco de efluentes de mi establecimiento.
 </resumen>`;
 
 const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontaminados** no pueden ir con la basura común y el servicio municipal no los retira: conviene resolverlo rápido.
@@ -36,9 +35,7 @@ const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontamina
 
 (Respuesta de prueba: en modo local no hay IA.)
 <resumen>
-Necesito: retirar residuos biocontaminados acumulados en el predio.
-Situación: la municipalidad no los retira.
-Plan: limpieza y retiro; separación; transporte y tratamiento habilitados; circuito de retiro.
+Se están acumulando residuos biocontaminados en mi predio y la municipalidad no los retira. Necesito que los retiren y armar un circuito para que no vuelva a pasar.
 </resumen>`;
 
 const SAMPLE_GENERAL = `Esta es una respuesta de prueba fija: en tu compu no hay IA, así que el simulador solo tiene ejemplos para consultas sobre vuelco de efluentes y residuos.
