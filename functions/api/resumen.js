@@ -1,13 +1,14 @@
 /**
  * POST /api/resumen — prepara un resumen de la consulta a partir de la conversación.
  *
- * Es una tarea aparte de la conversación (así el modelo que conversa no
- * tiene que acordarse de un formato) y la hace el modelo más barato.
- * Devuelve { resumen }. No guarda nada.
+ * Devuelve { resumen }. No guarda ni registra el contenido. En el nivel
+ * gratuito, Gemini puede usar prompts y respuestas para mejorar sus productos.
  */
 
 import { RESUMEN_PROMPT } from "../../src/asistente/conocimiento.js";
-import { RESUMEN_PRESET, foreignOrigin, json, sanitize, textOf } from "../../src/asistente/servidor.js";
+import { foreignOrigin, geminiTextOf, json, sanitize } from "../../src/asistente/servidor.js";
+
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 /** Limpia lo que a veces agregan los modelos: comillas, saludo, prefijos. */
 function tidy(text) {
@@ -22,7 +23,7 @@ function tidy(text) {
 
 export async function onRequestPost({ request, env }) {
   if (foreignOrigin(request)) return json({ error: "origen" }, 403);
-  if (!env.AI) return json({ error: "sin-ia" }, 503);
+  if (!env.GEMINI_API_KEY) return json({ error: "sin-ia" }, 503);
 
   let body;
   try {
@@ -40,16 +41,21 @@ export async function onRequestPost({ request, env }) {
   const transcript = customerMessages.map((message) => `PERSONA: ${message.content}`).join("\n\n");
 
   try {
-    const out = await env.AI.run(RESUMEN_PRESET.model, {
-      messages: [
-        { role: "system", content: RESUMEN_PROMPT },
-        { role: "user", content: `CONVERSACIÓN:\n\n${transcript}\n\nPrepará ahora el resumen.` },
-      ],
-      temperature: 0.2,
-      ...RESUMEN_PRESET.params,
-      max_completion_tokens: 350,
+    const response = await fetch(GEMINI_URL, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: RESUMEN_PROMPT }] },
+        contents: [{ role: "user", parts: [{ text: `CONVERSACIÓN:\n\n${transcript}\n\nPrepará ahora el resumen.` }] }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 350,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+      }),
     });
-    const resumen = tidy(textOf(out));
+    if (!response.ok) return json({ error: "ia", detalle: (await response.text()).slice(0, 200) }, 503);
+    const resumen = tidy(geminiTextOf(await response.json()));
     return resumen ? json({ resumen }) : json({ error: "vacio" }, 502);
   } catch {
     return json({ error: "ia" }, 503);

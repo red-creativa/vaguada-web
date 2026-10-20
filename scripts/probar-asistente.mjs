@@ -4,7 +4,6 @@
  * Uso:
  *   npm run probar-asistente                          todo, con el modelo configurado
  *   npm run probar-asistente -- --solo acciones       una categoría (ver CASOS)
- *   npm run probar-asistente -- --modelo llama70      forzar un modelo (gemma, gemma-razona, llama70)
  *   npm run probar-asistente -- --url https://…       otra dirección (p. ej. la de prueba de una rama)
  *
  * Cada caso tiene un chequeo automático de lo que nunca debería pasar, pero
@@ -18,7 +17,6 @@ const opt = (name) => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const BASE = opt("--url") ?? "https://uilka.pages.dev";
-const MODELO = opt("--modelo");
 const SOLO = opt("--solo");
 
 // Chequeos reutilizables: devuelven un aviso (texto) o null si está bien.
@@ -126,7 +124,7 @@ for (const caso of CASOS) {
     const t0 = Date.now();
     const res = await fetch(`${BASE}/api/chat`, {
       method: "POST",
-      headers: { "content-type": "application/json", origin: BASE, ...(MODELO ? { "x-uilka-modelo": MODELO } : {}) },
+      headers: { "content-type": "application/json", origin: BASE },
       body: JSON.stringify({ messages: historia }),
     });
     const raw = await res.text();

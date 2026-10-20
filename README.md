@@ -89,15 +89,15 @@ El switch **Sitio / Asistente** (arriba a la derecha) transforma la página en u
 |---|---|
 | `src/asistente/Asistente.jsx` | El switch, la conversación, el reintento de respuestas y el resumen con opciones de contacto |
 | `src/asistente/conocimiento.js` | El propósito e instrucciones del asistente, los servicios y las **fichas de trámites** |
-| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Workers AI (Gemma 4 con razonamiento habilitado por defecto) |
+| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Gemini 2.5 Flash |
 | `functions/api/resumen.js` | Prepara, cuando la persona lo pide, un resumen de la consulta para WhatsApp o correo |
 
 Cuando el asistente ya entiende el caso, explica cómo ÜILKA puede encauzarlo y ofrece llamar al equipo o preparar un resumen neutral. Mientras se genera, aparece una animación de carga. El resumen se muestra antes de compartirlo; permite agregar nombre y apellido opcionalmente, abrir WhatsApp con el resumen o redactar un correo formal en la ventana de composición habitual de Gmail o Outlook web.
 
-**Privacidad:** no se guarda nada. La conversación vive solo en la pestaña (sin cookies ni almacenamiento), la función no registra el contenido y Workers AI no conserva entradas ni salidas. El resumen y el nombre opcional solo se incluyen en el enlace de WhatsApp o correo cuando la persona elige compartirlos. No activar AI Gateway con registros.
+**Privacidad:** la conversación vive solo en la pestaña y el sitio no la guarda en cookies ni almacenamiento. Para generar respuestas y resúmenes, se envía a Gemini API. En el nivel gratuito, Google puede usar las entradas y respuestas para mejorar sus productos y puede hacer que revisores humanos las lean; no enviar datos sensibles, confidenciales ni personales. La función no registra el contenido. El resumen y el nombre opcional solo se incluyen en el enlace de WhatsApp o correo cuando la persona elige compartirlos.
 
-**Activarlo en Cloudflare** (una sola vez): Workers & Pages → el proyecto → Settings → Bindings → Add → **Workers AI**, nombre de variable `AI`, en Preview y en Production. Después, volver a desplegar.
+**Activarlo en Cloudflare** (una sola vez): crear una API key de Gemini en Google AI Studio; en Cloudflare Pages → proyecto → Settings → Variables and Secrets → Add → **Secret**, nombre `GEMINI_API_KEY`, valor la clave creada. Configurarlo para Preview y Production y volver a desplegar. La clave solo se usa en las funciones del servidor; nunca se incluye en el navegador.
 
-**Cupo y modelos:** Workers AI incluye 10.000 neurons diarios sin cargo; el consumo por respuesta varía según el modelo y el uso de razonamiento. El modelo predeterminado, Gemma 4, admite razonamiento y no requiere facturación adicional. Los presets `glm` y `deepseek-razona` requieren Workers Paid o créditos prepagos de AI Gateway. `ASISTENTE_MODELO` puede cambiar el preset predeterminado desde las variables de Cloudflare.
+**Cupo:** Gemini API tiene cuotas gratuitas por proyecto (solicitudes por minuto, tokens por minuto y solicitudes por día). Los límites dependen del modelo y del proyecto, pueden cambiar y se consultan en la página Rate limits de Google AI Studio. Las cuotas diarias se reinician a medianoche del Pacífico. El asistente usa Gemini 2.5 Flash con el razonamiento desactivado para reducir la demora.
 
 **En la compu:** `npm run dev` responde con un texto de prueba (no hay IA local).

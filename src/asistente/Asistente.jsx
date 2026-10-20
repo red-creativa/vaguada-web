@@ -21,7 +21,7 @@ const SUGGESTIONS = [
   "Quiero medir y mejorar el desempeño ambiental de mi organización",
 ];
 
-const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar o recargar esta pestaña.";
+const PRIVACY = "La conversación no se guarda en el sitio, pero se envía a Gemini para responder. En el nivel gratuito Google puede usarla para mejorar sus productos y revisarla; no compartas datos sensibles.";
 const MAX_USER_TURNS = 12;
 const MAX_CHARS = 1500;
 
