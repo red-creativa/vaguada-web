@@ -23,10 +23,41 @@ const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar e
 const MAX_USER_TURNS = 12;
 const MAX_CHARS = 1500;
 
-const whatsappWith = (text) =>
-  `${CONTACT.whatsappUrl}?text=${encodeURIComponent(
-    `Hola ÜILKA, les escribo desde la web. Mi consulta: ${text.slice(0, 300)}`,
-  )}`;
+/* ── Resumen para WhatsApp ────────────────────────────────────────────────
+ * Cada respuesta de la IA termina con un bloque <resumen>…</resumen> que la
+ * persona no ve: lo usamos para que el mensaje de WhatsApp le llegue al
+ * equipo con lo que necesita, su situación y el plan, sin repetir nada.
+ */
+const OPEN = "<resumen>";
+const CLOSE = "</resumen>";
+
+/** Separa lo que se muestra del resumen oculto (también mientras va llegando el texto). */
+function splitAnswer(raw) {
+  const i = raw.indexOf(OPEN);
+  if (i >= 0) {
+    const rest = raw.slice(i + OPEN.length);
+    const j = rest.indexOf(CLOSE);
+    return { visible: raw.slice(0, i).trimEnd(), summary: (j >= 0 ? rest.slice(0, j) : rest).trim() };
+  }
+  // Mientras llega el texto, no mostrar un "<resu" a medio escribir.
+  for (let k = OPEN.length - 1; k > 0; k--) {
+    if (raw.endsWith(OPEN.slice(0, k))) return { visible: raw.slice(0, -k), summary: "" };
+  }
+  return { visible: raw, summary: "" };
+}
+
+/** Mensaje de WhatsApp: el último resumen; si no hay, la primera consulta. */
+function whatsappUrl(summary, question) {
+  const lines = summary
+    ? summary
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .map((l) => `• ${l}`)
+    : [`Mi consulta: ${question.slice(0, 300)}`];
+  const text = ["Hola ÜILKA, les escribo desde el asistente de la web.", ...lines].join("\n").slice(0, 800);
+  return `${CONTACT.whatsappUrl}?text=${encodeURIComponent(text)}`;
+}
 
 /* ── Switch Sitio / Asistente ─────────────────────────────────────────── */
 
@@ -77,18 +108,20 @@ function Inline({ text }) {
 }
 
 const LIST_ITEM = /^\s*(?:[-*•]|\d+[.)])\s+/;
+const NUMBERED = /^\s*\d+[.)]\s+/;
 
 function Markdown({ text }) {
   const blocks = [];
   let paragraph = [];
   let list = [];
+  let ordered = false;
 
   const flushParagraph = () => {
     if (paragraph.length) blocks.push({ type: "p", lines: paragraph });
     paragraph = [];
   };
   const flushList = () => {
-    if (list.length) blocks.push({ type: "ul", lines: list });
+    if (list.length) blocks.push({ type: ordered ? "ol" : "ul", lines: list });
     list = [];
   };
 
@@ -99,6 +132,7 @@ function Markdown({ text }) {
       flushList();
     } else if (LIST_ITEM.test(line)) {
       flushParagraph();
+      if (!list.length) ordered = NUMBERED.test(line);
       list.push(line.replace(LIST_ITEM, ""));
     } else {
       flushList();
@@ -111,7 +145,19 @@ function Markdown({ text }) {
   return (
     <div className="flex flex-col gap-3">
       {blocks.map((b, i) =>
-        b.type === "ul" ? (
+        b.type === "ol" ? (
+          // El plan: pasos numerados con la cinta del logo a la izquierda.
+          <ol key={i} className="flex flex-col gap-2 pl-3 border-l-2 [border-image:var(--e-ribbon)_1]">
+            {b.lines.map((l, k) => (
+              <li key={k} className="flex gap-2.5">
+                <span className="w-5 shrink-0 font-mono-code text-xs leading-[1.75rem] text-[var(--e-accent)]">{k + 1}</span>
+                <span>
+                  <Inline text={l} />
+                </span>
+              </li>
+            ))}
+          </ol>
+        ) : b.type === "ul" ? (
           <ul key={i} className="flex flex-col gap-1.5">
             {b.lines.map((l, k) => (
               <li key={k} className="flex gap-2.5">
@@ -148,10 +194,11 @@ function Typing() {
   );
 }
 
-function WhatsAppLink({ text, children = "Seguir por WhatsApp" }) {
+function WhatsAppLink({ summary, question, children = "Seguir por WhatsApp" }) {
   return (
     <a
-      href={whatsappWith(text)}
+      href={whatsappUrl(summary, question)}
+      title="Se abre WhatsApp con un resumen de tu consulta; podés editarlo antes de enviar"
       target="_blank"
       rel="noopener noreferrer"
       className="group inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--e-box)] text-white font-syne text-xs uppercase tracking-wider hover:brightness-125 transition"
@@ -163,7 +210,8 @@ function WhatsAppLink({ text, children = "Seguir por WhatsApp" }) {
   );
 }
 
-function AssistantMessage({ message, loading, firstQuestion }) {
+function AssistantMessage({ message, loading, summary, firstQuestion }) {
+  const { visible } = splitAnswer(message.content);
   return (
     <div className="self-start w-full max-w-[94%] flex gap-3">
       <span className="mt-1 grid place-items-center w-8 h-8 shrink-0 bg-white ring-1 ring-[#1b4a5a24]">
@@ -176,11 +224,11 @@ function AssistantMessage({ message, loading, firstQuestion }) {
               Ahora no puedo responderte. Escribinos por WhatsApp y te respondemos nosotros.
             </p>
             <div>
-              <WhatsAppLink text={firstQuestion} />
+              <WhatsAppLink summary={summary} question={firstQuestion} />
             </div>
           </div>
-        ) : message.content ? (
-          <Markdown text={message.content} />
+        ) : visible ? (
+          <Markdown text={visible} />
         ) : (
           loading && <Typing />
         )}
@@ -235,6 +283,13 @@ export function AssistantView() {
   const limitReached = userTurns >= MAX_USER_TURNS;
   const firstQuestion = messages.find((m) => m.role === "user")?.content ?? "";
   const last = messages.at(-1);
+  // Último resumen que armó la IA (el más completo): va en el mensaje de WhatsApp.
+  const summary =
+    messages
+      .filter((m) => m.role === "assistant" && m.content)
+      .map((m) => splitAnswer(m.content).summary)
+      .filter(Boolean)
+      .at(-1) ?? "";
 
   // Al salir del modo Asistente se corta cualquier respuesta en curso.
   useEffect(() => () => abortRef.current?.abort(), []);
@@ -362,13 +417,14 @@ export function AssistantView() {
                     key={i}
                     message={m}
                     loading={loading && i === messages.length - 1}
+                    summary={summary}
                     firstQuestion={firstQuestion}
                   />
                 ),
               )}
               {showFollowUp && (
                 <div className="pl-11 flex flex-wrap items-center gap-3">
-                  <WhatsAppLink text={firstQuestion} />
+                  <WhatsAppLink summary={summary} question={firstQuestion} />
                   <button
                     type="button"
                     onClick={reset}
@@ -388,7 +444,7 @@ export function AssistantView() {
           {limitReached ? (
             <div className="flex flex-wrap items-center gap-3 py-1 text-sm text-[var(--e-body)]">
               <span>Llegaste al límite de esta conversación. Para seguir, escribinos.</span>
-              <WhatsAppLink text={firstQuestion} />
+              <WhatsAppLink summary={summary} question={firstQuestion} />
             </div>
           ) : (
             <div className="flex items-end gap-2 p-1.5 bg-white ring-1 ring-[#1b4a5a33] focus-within:ring-2 focus-within:ring-[var(--e-accent)] transition">

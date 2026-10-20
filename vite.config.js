@@ -8,30 +8,38 @@ import tailwindcss from "@tailwindcss/vite";
  * a poco, igual que la respuesta real. En producción responde
  * functions/api/chat.js.
  */
-const SAMPLE_VUELCO = `¡Genial, podemos ayudarte! La **habilitación de vuelco** es el permiso para descargar tus efluentes líquidos a la red, a un cauce o al suelo. Para obtenerla hay que demostrar que el efluente cumple los límites para ese destino.
+const SAMPLE_VUELCO = `¡Genial, podemos ayudarte! La **habilitación de vuelco** es el permiso para descargar tus efluentes a la red, un cauce o el suelo, demostrando que cumplen los límites.
 
-Nosotros nos encargamos de todo:
-- Visitamos tus instalaciones y relevamos de dónde sale cada efluente
-- Tomamos muestras y coordinamos los análisis
-- Si hace falta, diseñamos e instalamos el tratamiento
-- Completamos la documentación y la presentamos ante el organismo que corresponde
+**Plan sugerido**
+1. Visitamos la planta y relevamos cada salida de efluente.
+2. Tomamos muestras y coordinamos los análisis.
+3. Si no cumple, diseñamos e instalamos el tratamiento.
+4. Completamos y presentamos la documentación hasta obtener el permiso.
 
-¿A qué se dedica tu empresa y en qué localidad está? Si querés, seguimos por WhatsApp y coordinamos una visita.
+¿A qué se dedica la empresa y en qué localidad está?
 
-(Respuesta de prueba: en modo local no hay IA.)`;
+(Respuesta de prueba: en modo local no hay IA.)
+<resumen>
+Necesito: habilitación de vuelco de efluentes.
+Plan: relevamiento; muestreo y análisis; tratamiento si hace falta; presentación del trámite.
+</resumen>`;
 
-const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontaminados** (patogénicos) no pueden ir con la basura común y el servicio municipal habitual no los retira. Si se acumulan, se forman focos de contaminación y de riesgo sanitario, así que conviene resolverlo rápido.
+const SAMPLE_RESIDUOS = `¡Genial, podemos ayudarte! Los residuos **biocontaminados** no pueden ir con la basura común y el servicio municipal no los retira: conviene resolverlo rápido.
 
-Nosotros nos encargamos de todo:
-- Limpiamos el predio y retiramos lo acumulado con personal y equipos adecuados
-- Separamos y acondicionamos los residuos según su tipo
-- Coordinamos el retiro, transporte y tratamiento con empresas habilitadas
-- Te entregamos los certificados de disposición final
-- Dejamos armado un circuito para que no vuelva a pasar
+**Plan sugerido**
+1. Limpiamos el predio y retiramos lo acumulado.
+2. Separamos y acondicionamos los residuos según su tipo.
+3. Coordinamos transporte y tratamiento con empresas habilitadas.
+4. Dejamos armado un circuito para que no vuelva a pasar.
 
-¿A qué se dedica tu empresa o institución y en qué localidad está? Si querés, seguimos por WhatsApp y coordinamos una visita.
+¿En qué localidad está el predio?
 
-(Respuesta de prueba: en modo local no hay IA.)`;
+(Respuesta de prueba: en modo local no hay IA.)
+<resumen>
+Necesito: retirar residuos biocontaminados acumulados en el predio.
+Situación: la municipalidad no los retira.
+Plan: limpieza y retiro; separación; transporte y tratamiento habilitados; circuito de retiro.
+</resumen>`;
 
 const SAMPLE_GENERAL = `Esta es una respuesta de prueba fija: en tu compu no hay IA, así que el simulador solo tiene ejemplos para consultas sobre vuelco de efluentes y residuos.
 
