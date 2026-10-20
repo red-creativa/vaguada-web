@@ -18,7 +18,7 @@ import { SYSTEM_PROMPT } from "../../src/asistente/conocimiento.js";
 const MODEL = "@cf/google/gemma-4-26b-a4b-it";
 const MAX_MESSAGES = 16; // últimos mensajes que se envían al modelo
 const MAX_CHARS = 1500; // largo máximo de cada mensaje
-const MAX_OUTPUT_TOKENS = 700;
+const MAX_OUTPUT_TOKENS = 900;
 
 const json = (body, status) =>
   new Response(JSON.stringify(body), {
@@ -37,10 +37,20 @@ function sanitize(messages) {
   return clean.length && clean.at(-1).role === "user" ? clean : null;
 }
 
+/** Texto de la respuesta en cualquiera de los formatos de Workers AI (nunca el razonamiento). */
+function textOf(obj) {
+  const choice = obj?.choices?.[0];
+  const content = choice?.delta?.content ?? choice?.message?.content;
+  const fromContent = Array.isArray(content)
+    ? content.map((part) => (typeof part === "string" ? part : part?.text ?? "")).join("")
+    : content;
+  // `||` y no `??`: algunos fragmentos traen `response: ""` junto al texto real.
+  return obj?.response || fromContent || choice?.text || "";
+}
+
 /**
- * Convierte el stream SSE de Workers AI en texto plano. Acepta los dos
- * formatos posibles: `{ response }` (clásico) y `{ choices[0].delta.content }`
- * (compatible con OpenAI).
+ * Convierte el stream SSE de Workers AI en texto plano. Acepta los formatos
+ * `{ response }` (clásico) y `{ choices[0].delta.content }` (compatible con OpenAI).
  */
 function sseToText() {
   const decoder = new TextDecoder();
@@ -52,8 +62,7 @@ function sseToText() {
     const data = line.slice(5).trim();
     if (!data || data === "[DONE]") return;
     try {
-      const obj = JSON.parse(data);
-      const text = obj.response ?? obj.choices?.[0]?.delta?.content ?? obj.choices?.[0]?.text ?? "";
+      const text = textOf(JSON.parse(data));
       if (text) controller.enqueue(encoder.encode(text));
     } catch {
       // Fragmento incompleto o línea que no es JSON: se ignora.
@@ -99,10 +108,28 @@ export async function onRequestPost({ request, env }) {
       stream: true,
       max_completion_tokens: MAX_OUTPUT_TOKENS,
       temperature: 0.4,
+      // Sin "modo razonamiento": si no, el modelo gasta el límite pensando y la respuesta llega vacía.
+      chat_template_kwargs: { enable_thinking: false },
+      store: false,
     });
-  } catch {
+  } catch (err) {
     // Cupo diario agotado u otro error del servicio. No se registra el contenido.
-    return json({ error: "ia" }, 503);
+    return json({ error: "ia", detalle: String(err?.message ?? err).slice(0, 200) }, 503);
+  }
+
+  // Diagnóstico: con el encabezado `x-uilka-diagnostico: 1` se devuelve la
+  // respuesta cruda del modelo (útil si cambia el formato). No guarda nada.
+  if (request.headers.get("x-uilka-diagnostico") === "1") {
+    return new Response(upstream instanceof ReadableStream ? upstream : JSON.stringify(upstream), {
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+    });
+  }
+
+  // Si el modelo no devolvió un stream (respuesta completa), se entrega igual.
+  if (!(upstream instanceof ReadableStream)) {
+    return new Response(textOf(upstream), {
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+    });
   }
 
   return new Response(upstream.pipeThrough(sseToText()), {
