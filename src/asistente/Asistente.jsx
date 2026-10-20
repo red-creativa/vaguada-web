@@ -13,10 +13,10 @@ import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
 const SUGGESTIONS = [
-  "Necesito la habilitación de vuelco de efluentes",
-  "Me pidieron un estudio de impacto ambiental",
-  "Genero residuos peligrosos y no sé qué hacer",
-  "Recibí una intimación ambiental",
+  "Quiero mejorar el uso del agua en mi empresa o proyecto",
+  "Tengo un proyecto en mente y quiero conocer sus aspectos ambientales",
+  "Quiero mejorar la sustentabilidad de mi organización",
+  "Quiero aprovechar mejor mis residuos y recursos",
 ];
 
 const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar o recargar esta pestaña.";
