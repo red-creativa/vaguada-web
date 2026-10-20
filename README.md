@@ -92,7 +92,7 @@ El switch **Sitio / Asistente** (arriba a la derecha) transforma la página en u
 | `functions/api/chat.js` | Función de Cloudflare Pages que consulta Workers AI (Gemma 4 con razonamiento habilitado por defecto) |
 | `functions/api/resumen.js` | Prepara, cuando la persona lo pide, un resumen de la consulta para WhatsApp o correo |
 
-Cuando el asistente ya entiende el caso, explica cómo ÜILKA puede encauzarlo y ofrece llamar al equipo o preparar un resumen neutral. El resumen se muestra antes de compartirlo; permite agregar nombre y apellido opcionalmente, y abrir WhatsApp o el cliente de correo configurado con el resumen listo para enviar.
+Cuando el asistente ya entiende el caso, explica cómo ÜILKA puede encauzarlo y ofrece llamar al equipo o preparar un resumen neutral. Mientras se genera, aparece una animación de carga. El resumen se muestra antes de compartirlo; permite agregar nombre y apellido opcionalmente, abrir WhatsApp o elegir Gmail/Outlook web con el resumen listo para enviar.
 
 **Privacidad:** no se guarda nada. La conversación vive solo en la pestaña (sin cookies ni almacenamiento), la función no registra el contenido y Workers AI no conserva entradas ni salidas. El resumen y el nombre opcional solo se incluyen en el enlace de WhatsApp o correo cuando la persona elige compartirlos. No activar AI Gateway con registros.
 

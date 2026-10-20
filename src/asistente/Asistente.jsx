@@ -24,6 +24,11 @@ const MAX_USER_TURNS = 12;
 const MAX_CHARS = 1500;
 
 const whatsappUrl = (text) => `${CONTACT.whatsappUrl}?text=${encodeURIComponent(text)}`;
+const emailSubject = encodeURIComponent("Consulta para ÜILKA");
+const gmailUrl = (text) =>
+  `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT.email)}&su=${emailSubject}&body=${encodeURIComponent(text)}`;
+const outlookUrl = (text) =>
+  `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(CONTACT.email)}&subject=${emailSubject}&body=${encodeURIComponent(text)}`;
 
 /* ── Switch Sitio / Asistente ─────────────────────────────────────────── */
 
@@ -167,6 +172,36 @@ function Typing() {
   );
 }
 
+function SummaryLoading() {
+  return (
+    <div
+      className="mt-3 p-4 bg-[#f4f9fb] ring-1 ring-[#1b4a5a1a]"
+      role="status"
+      aria-live="polite"
+      aria-label="Preparando el resumen de tu consulta"
+    >
+      <div className="flex items-center gap-3">
+        <span className="grid place-items-center w-9 h-9 shrink-0 bg-white ring-1 ring-[#1b4a5a1a]">
+          <Spark className="w-4 h-4 text-[var(--e-accent)] animate-pulse" />
+        </span>
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-[var(--e-text)]">Estamos ordenando lo que nos contaste</p>
+          <p className="mt-0.5 text-xs text-[var(--e-dim)]">Enseguida vas a poder revisar el resumen antes de compartirlo.</p>
+        </div>
+        <span
+          aria-hidden="true"
+          className="w-5 h-5 shrink-0 rounded-full border-2 border-[#1b4a5a24] border-t-[var(--e-accent)] animate-spin motion-reduce:animate-none"
+        />
+      </div>
+      <div aria-hidden="true" className="mt-4 flex flex-col gap-2 animate-pulse">
+        <span className="h-2.5 w-full bg-[#1b4a5a12]" />
+        <span className="h-2.5 w-5/6 bg-[#1b4a5a12]" />
+        <span className="h-2.5 w-2/3 bg-[#1b4a5a12]" />
+      </div>
+    </div>
+  );
+}
+
 /** Copia al portapapeles; si el navegador no deja, usa el método clásico. */
 async function copyText(text) {
   try {
@@ -192,10 +227,9 @@ function ContactSummary({ summary, onGenerate }) {
   const [copied, setCopied] = useState(false);
   const [name, setName] = useState("");
   const generating = summary === "loading";
-  const ready = typeof summary === "string";
+  const ready = typeof summary === "string" && !generating;
   const contactName = name.trim().replace(/\s+/g, " ").slice(0, 100);
   const sharedText = ready ? `${summary}${contactName ? `\n\nNombre: ${contactName}` : ""}` : "";
-  const emailUrl = `mailto:${CONTACT.email}?subject=${encodeURIComponent("Consulta para ÜILKA")}&body=${encodeURIComponent(sharedText)}`;
 
   const onCopy = async () => {
     if (await copyText(summary)) {
@@ -254,9 +288,14 @@ function ContactSummary({ summary, onGenerate }) {
               Enviar resumen por WhatsApp
               <ArrowUpRight className="w-3 h-3" />
             </a>
-            <a href={emailUrl} className={action} title={`Abrir un correo dirigido a ${CONTACT.email}`}>
+            <a href={gmailUrl(sharedText)} target="_blank" rel="noopener noreferrer" className={action} title={`Abrir Gmail con un correo dirigido a ${CONTACT.email}`}>
               <Mail className="w-4 h-4" />
-              Enviar resumen por correo
+              Abrir Gmail
+              <ArrowUpRight className="w-3 h-3" />
+            </a>
+            <a href={outlookUrl(sharedText)} target="_blank" rel="noopener noreferrer" className={action} title={`Abrir Outlook en el navegador con un correo dirigido a ${CONTACT.email}`}>
+              <Mail className="w-4 h-4" />
+              Abrir Outlook
               <ArrowUpRight className="w-3 h-3" />
             </a>
             <button type="button" onClick={onCopy} className={action} aria-live="polite">
@@ -267,6 +306,7 @@ function ContactSummary({ summary, onGenerate }) {
         </>
       ) : (
         <>
+          {generating && <SummaryLoading />}
           {summary === null && (
             <p role="alert" className="mt-2 text-[13px] text-[var(--e-body)]">
               No pudimos preparar el resumen. Probá de nuevo o llamá al equipo.
