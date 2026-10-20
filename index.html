@@ -12,7 +12,16 @@
     <link rel="canonical" href="https://uilka.pages.dev/" />
     <meta name="geo.region" content="AR-F" />
     <meta name="geo.placename" content="La Rioja, Argentina" />
-    <meta name="theme-color" content="#f7faf8" />
+    <meta name="theme-color" content="#f4f9fb" />
+
+    <!-- Foto de portada: se pide antes de que cargue el JS. -->
+    <link rel="preload" as="image" type="image/webp" href="/images/hero.webp" media="(min-width: 768px)" />
+    <link rel="preload" as="image" type="image/webp" href="/images/hero-mobile.webp" media="(max-width: 767px)" />
+
+    <!-- Fuentes: se piden en paralelo con el resto de la página. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" />
 
     <!-- Vista previa al compartir el link (WhatsApp, LinkedIn, Facebook, X). Las URLs deben ser absolutas. -->
     <meta property="og:type" content="website" />

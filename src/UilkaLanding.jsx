@@ -1,20 +1,16 @@
 /**
- * VaguadaLanding.jsx
+ * UilkaLanding.jsx — landing de ÜILKA.
  *
- * Reconstrucción legible del componente publicado en el artifact
- * "VAGUADA | Soluciones ambientales para la gestión y la industria".
- * Se descompiló a partir del bundle de Vite ya minificado, así que los nombres
- * de componentes y variables son nuevos. El marcado, las clases de Tailwind,
- * los textos y el comportamiento son los mismos que en la página publicada.
+ * Escritorio: diapositivas a pantalla completa con scroll-snap.
+ * Móvil: diapositivas apiladas que cambian con un fundido al deslizar.
  *
  * Requisitos:
- *   - React 18+ (el original usaba React 19)
+ *   - React 18+
  *   - Tailwind CSS v4
- *   - lucide-react
- *   - vaguada.css (clases propias: slides, scroll-snap, fuentes y tema)
+ *   - uilka.css (slides, scroll-snap, fuentes y tema)
  *
- * Imágenes: todas son marcadores de posición (ver IMAGES más abajo).
- * Coloca tus archivos en /public/images/ con esos nombres o cambia las rutas.
+ * Imágenes: WebP generadas con `npm run imagenes` a partir de
+ * /imagenes-originales (ver scripts/optimizar-imagenes.mjs).
  */
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
@@ -54,35 +50,35 @@ import {
   Waste,
   Water,
 } from "./icons";
-import "./vaguada.css";
+import "./uilka.css";
 
 /* ────────────────────────────────────────────────────────────────────────── */
-/* Imágenes (marcadores de posición)                                          */
+/* Imágenes                                                                   */
 /* ────────────────────────────────────────────────────────────────────────── */
 
 const IMAGES = {
-  heroBg: "/images/hero.jpg",
-  heroBgMobile: "/images/hero-mobile.jpg",
-  processBg: "/images/proceso.jpg",
-  processBgMobile: "/images/proceso-mobile.jpg",
-  sectorsBg: "/images/sectores.jpg",
-  sectorsBgMobile: "/images/sectores-mobile.jpg",
-  contactBg: "/images/contacto.jpg",
-  contactBgMobile: "/images/contacto-mobile.jpg",
+  heroBg: "/images/hero.webp",
+  heroBgMobile: "/images/hero-mobile.webp",
+  processBg: "/images/proceso.webp",
+  processBgMobile: "/images/proceso-mobile.webp",
+  sectorsBg: "/images/sectores.webp",
+  sectorsBgMobile: "/images/sectores-mobile.webp",
+  contactBg: "/images/contacto.webp",
+  contactBgMobile: "/images/contacto-mobile.webp",
   areas: {
-    "ingenieria-diagnostico": "/images/areas/diagnostico.jpg",
-    "cumplimiento-ambiental": "/images/areas/cumplimiento.jpg",
-    "agua-saneamiento": "/images/areas/agua.jpg",
-    residuos: "/images/areas/residuos.jpg",
-    "circularidad-sustentabilidad": "/images/areas/sustentabilidad.jpg",
-    "emisiones-atmosfericas": "/images/areas/emisiones.jpg",
-    "riesgo-climatico": "/images/areas/riesgo-climatico.jpg",
-    "remediacion-restauracion": "/images/areas/remediacion.jpg",
-    "modelado-hidraulico": "/images/areas/modelado-hidraulico.jpg",
+    "ingenieria-diagnostico": "/images/areas/diagnostico.webp",
+    "cumplimiento-ambiental": "/images/areas/cumplimiento.webp",
+    "agua-saneamiento": "/images/areas/agua.webp",
+    residuos: "/images/areas/residuos.webp",
+    "circularidad-sustentabilidad": "/images/areas/sustentabilidad.webp",
+    "emisiones-atmosfericas": "/images/areas/emisiones.webp",
+    "riesgo-climatico": "/images/areas/riesgo-climatico.webp",
+    "remediacion-restauracion": "/images/areas/remediacion.webp",
+    "modelado-hidraulico": "/images/areas/modelado-hidraulico.webp",
   },
   team: {
-    "francisco-salvadores": "/images/equipo/francisco-salvadores.jpg",
-    "luca-parquet": "/images/equipo/luca-parquet.jpg",
+    "francisco-salvadores": "/images/equipo/francisco-salvadores.webp",
+    "luca-parquet": "/images/equipo/luca-parquet.webp",
   },
 };
 
@@ -100,17 +96,19 @@ const BRAND = {
   footerBadge: "ÜILKA — Soluciones ambientales para industrias e instituciones",
 };
 
+// `items`: lo que se ejecuta y se entrega (obras, servicios, resultados).
+// El diagnóstico vive solo en su tarjeta; el resto va directo a la solución.
 const AREAS = [
   {
     id: "ingenieria-diagnostico",
     title: "Diagnóstico y eficiencia",
     subtitle: "Detectamos pérdidas y oportunidades de ahorro en tu operación.",
     items: [
-      "Diagnóstico ambiental integral",
-      "Balances de materia y energía",
-      "Eficiencia energética e hídrica",
-      "Identificación de riesgos",
-      "Evaluación técnico‑económica",
+      "Relevamiento en planta y puntos críticos",
+      "Riesgos de multa o clausura, priorizados",
+      "Alternativas de solución con costos",
+      "Soluciones urgentes, listas para ejecutar",
+      "Devolución clara para la dirección",
     ],
   },
   {
@@ -129,12 +127,12 @@ const AREAS = [
     title: "Agua y efluentes",
     subtitle: "Diseño y obra, de la captación al vuelco.",
     items: [
-      "Captación y almacenamiento",
-      "Potabilización",
+      "Obras de captación y almacenamiento",
+      "Plantas potabilizadoras",
       "Plantas de tratamiento de efluentes",
       "Redes de agua y cloacas",
-      "Reúso de agua",
-      "Dragado de lagunas",
+      "Sistemas de reúso de agua",
+      "Dragado y limpieza de lagunas",
     ],
   },
   {
@@ -142,10 +140,11 @@ const AREAS = [
     title: "Gestión de residuos",
     subtitle: "Nos hacemos cargo de tus residuos, de la generación a la disposición final.",
     items: [
-      "Residuos comunes y peligrosos",
-      "Almacenamiento y trazabilidad",
+      "Urbanos, industriales y peligrosos",
+      "Orgánicos, de obra y voluminosos",
+      "Separación y acopio en tu predio",
       "Retiro y transporte",
-      "Tratamiento y disposición final",
+      "Reciclado, tratamiento y disposición final",
     ],
   },
   {
@@ -153,9 +152,9 @@ const AREAS = [
     title: "Sustentabilidad Empresarial y Modelos de Negocio Circulares",
     subtitle: "Residuos convertidos en valor y desempeño ambiental medible.",
     items: [
-      "Valorización de subproductos",
-      "Simbiosis industrial",
-      "Indicadores de sustentabilidad",
+      "Subproductos convertidos en ingresos",
+      "Simbiosis con otras empresas, en marcha",
+      "Indicadores ambientales medidos",
       "Reportes de sustentabilidad",
       "Certificaciones (ISO, B Corp, etc.)",
     ],
@@ -165,10 +164,10 @@ const AREAS = [
     title: "Emisiones atmosféricas",
     subtitle: "Medición, modelación y control.",
     items: [
-      "Monitoreo y caracterización",
+      "Monitoreo en chimenea y en el entorno",
       "Modelación de dispersión",
-      "Sistemas de control y tratamiento",
-      "Optimización de procesos",
+      "Sistemas de control y tratamiento instalados",
+      "Ajustes de proceso que bajan emisiones",
     ],
   },
   {
@@ -176,10 +175,10 @@ const AREAS = [
     title: "Riesgo climático y adaptación",
     subtitle: "Datos climáticos para decidir inversiones.",
     items: [
-      "Tendencias y eventos extremos",
-      "Sequías, olas de calor y tormentas",
-      "Riesgo físico sobre activos",
-      "Vulnerabilidad y adaptación",
+      "Tendencias y eventos extremos de tu zona",
+      "Riesgo físico sobre tus activos",
+      "Escenarios de sequía, calor y tormentas",
+      "Medidas y obras de adaptación",
     ],
   },
   {
@@ -187,11 +186,11 @@ const AREAS = [
     title: "Remediación y restauración",
     subtitle: "Suelos, aguas y ecosistemas afectados.",
     items: [
-      "Caracterización y delimitación",
-      "Evaluación de riesgo",
-      "Tratamiento in situ y ex situ",
-      "Aguas superficiales y subterráneas",
+      "Delimitación de la zona afectada",
+      "Tratamiento de suelos in situ y ex situ",
+      "Saneamiento de aguas superficiales y subterráneas",
       "Restauración y revegetación",
+      "Cierre con muestreo de verificación",
     ],
   },
   {
@@ -200,8 +199,8 @@ const AREAS = [
     // ‑: guion que no se separa de línea.
     subtitle: "Crecidas y escurrimientos simulados con HEC‑RAS y HEC‑HMS.",
     items: [
-      "Estudios de inundabilidad",
-      "Caudales de diseño",
+      "Estudios de inundabilidad con mapas",
+      "Caudales de diseño para tus obras",
       "Modelación 1D y 2D",
       "Líneas de ribera",
       "Drenaje pluvial",
@@ -278,10 +277,12 @@ const PROCESS_STEPS = [
 
 const AREAS_PER_SLIDE = 3;
 const AREAS_PAGE_COUNT = Math.ceil(AREAS.length / AREAS_PER_SLIDE);
+// Llave en mano va antes de las áreas: primero se entiende cómo trabajamos,
+// después qué áreas coordinamos.
 const SLIDE_LABELS = [
   "Inicio",
-  ...Array.from({ length: AREAS_PAGE_COUNT }).map((_, i) => `Áreas ${i + 1}/${AREAS_PAGE_COUNT}`),
   "Llave en Mano",
+  ...Array.from({ length: AREAS_PAGE_COUNT }).map((_, i) => `Áreas ${i + 1}/${AREAS_PAGE_COUNT}`),
   "Sectores",
   "Equipo",
   "Contacto",
@@ -439,12 +440,12 @@ function RibbonLogoArt({ className, bubbles = true }) {
   );
 }
 
-function VaguadaLogo({ className = "", size = "md", variant = "dark", bubbles = true }) {
+function UilkaLogo({ className = "", size = "md", variant = "dark", bubbles = true }) {
   return (
     <div
       className={`flex items-center justify-center transition-all duration-300 relative overflow-hidden group-hover:scale-105 ${LOGO_SIZES[size]} ${LOGO_VARIANTS[variant]} ${className}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-teal-400/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-[#d4f6ff]/0 via-[#d4f6ff]/25 to-[#75cbe3]/30 pointer-events-none" />
       <RibbonLogoArt className={LOGO_SVG_CLASS} bubbles={bubbles} />
     </div>
   );
@@ -463,6 +464,138 @@ function LinkedinIcon({ className = "" }) {
       <rect width="4" height="12" x="2" y="9" />
       <circle cx="4" cy="4" r="2" />
     </svg>
+  );
+}
+
+/* ── Guiños de proceso: burbujas y microscopio ─────────────────────────── */
+
+/** Generador pseudoaleatorio con semilla: el dibujo sale siempre igual. */
+function seeded(seed) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const BUBBLES = (() => {
+  const r = seeded(7);
+  return Array.from({ length: 14 }, () => ({
+    left: 3 + r() * 94,
+    size: 5 + Math.round(r() * 12),
+    duration: 14 + r() * 14,
+    delay: -r() * 28, // negativas: al cargar ya hay burbujas a distintas alturas
+    drift: Math.round((r() - 0.5) * 28),
+    opacity: 0.5 + r() * 0.35,
+  }));
+})();
+
+/** Burbujas de oxigenación que suben despacio, como en un reactor aireado. */
+function Bubbles({ className = "" }) {
+  return (
+    <div aria-hidden="true" className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
+      {BUBBLES.map((b, i) => (
+        <span
+          key={i}
+          className="bubble"
+          style={{
+            left: `${b.left}%`,
+            width: b.size,
+            height: b.size,
+            animationDuration: `${b.duration}s`,
+            animationDelay: `${b.delay}s`,
+            "--drift": `${b.drift}px`,
+            "--bubble-opacity": b.opacity,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** Formas de la muestra: bacilos, cadenas de cocos, flóculos y partículas sueltas. */
+const MICROSCOPE_SHAPES = (() => {
+  const r = seeded(21);
+  const W = 600;
+  const H = 400;
+  const bacilli = Array.from({ length: 30 }, () => {
+    const h = 4 + r() * 2.5;
+    return { x: r() * W, y: r() * H, a: r() * 180, l: 12 + r() * 16, h };
+  });
+  const chains = Array.from({ length: 9 }, () => {
+    const n = 3 + Math.floor(r() * 4);
+    const a = r() * Math.PI * 2;
+    const bend = (r() - 0.5) * 0.5;
+    const x0 = r() * W;
+    const y0 = r() * H;
+    return Array.from({ length: n }, (_, k) => ({
+      x: x0 + Math.cos(a + bend * k) * 6.6 * k,
+      y: y0 + Math.sin(a + bend * k) * 6.6 * k,
+    }));
+  });
+  const flocs = Array.from({ length: 4 }, () => {
+    const cx = r() * W;
+    const cy = r() * H;
+    return {
+      cx,
+      cy,
+      rx: 18 + r() * 14,
+      ry: 12 + r() * 10,
+      a: r() * 180,
+      cells: Array.from({ length: 14 }, () => {
+        const ang = r() * Math.PI * 2;
+        const d = Math.sqrt(r()) * 20;
+        return { x: cx + Math.cos(ang) * d, y: cy + Math.sin(ang) * d * 0.7, rad: 1.5 + r() * 2.5 };
+      }),
+    };
+  });
+  const dots = Array.from({ length: 45 }, () => ({ x: r() * W, y: r() * H, rad: 0.7 + r() * 1.1 }));
+  return { W, H, bacilli, chains, flocs, dots };
+})();
+
+/** Fondo tipo microscopio: una muestra con bacterias trabajando, muy tenue y quieta. */
+function Microscope({ className = "" }) {
+  const { W, H, bacilli, chains, flocs, dots } = MICROSCOPE_SHAPES;
+  return (
+    <div aria-hidden="true" className={`microscope absolute inset-0 overflow-hidden pointer-events-none opacity-[0.16] text-[var(--e-teal)] ${className}`}>
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" className="w-full h-full" fill="currentColor" stroke="currentColor">
+        {flocs.map((f, i) => (
+          <g key={`f${i}`}>
+            <ellipse cx={f.cx} cy={f.cy} rx={f.rx} ry={f.ry} transform={`rotate(${f.a} ${f.cx} ${f.cy})`} fillOpacity="0.12" strokeOpacity="0.35" strokeWidth="0.8" />
+            {f.cells.map((c, k) => (
+              <circle key={k} cx={c.x} cy={c.y} r={c.rad} fillOpacity="0.45" stroke="none" />
+            ))}
+          </g>
+        ))}
+        {bacilli.map((b, i) => (
+          <rect
+            key={`b${i}`}
+            x={b.x - b.l / 2}
+            y={b.y - b.h / 2}
+            width={b.l}
+            height={b.h}
+            rx={b.h / 2}
+            transform={`rotate(${b.a} ${b.x} ${b.y})`}
+            fillOpacity="0.3"
+            strokeOpacity="0.8"
+            strokeWidth="0.9"
+          />
+        ))}
+        {chains.map((c, i) => (
+          <g key={`c${i}`} fillOpacity="0.35" strokeOpacity="0.8" strokeWidth="0.8">
+            {c.map((p, k) => (
+              <circle key={k} cx={p.x} cy={p.y} r="3" />
+            ))}
+          </g>
+        ))}
+        {dots.map((d, i) => (
+          <circle key={`d${i}`} cx={d.x} cy={d.y} r={d.rad} fillOpacity="0.6" stroke="none" />
+        ))}
+      </svg>
+    </div>
   );
 }
 
@@ -497,15 +630,17 @@ const FLIP_CARD_STYLES = {
     icon: "w-7 h-7",
     front: "shadow-md",
     frontBody: "p-4 sm:p-5",
-    number: "text-[11px]",
+    number: "text-xs",
     titleWrap: "px-2",
     // Escala con el ancho de la tarjeta para que la palabra más larga entre entera.
     title: "text-[length:min(1.5rem,10.5cqi)]",
+    frontSubtitle: "text-[13px]",
     back: "shadow-md bg-white p-4 sm:p-5",
     backHeader: "gap-2.5 pb-2.5 mb-2.5",
-    backTitle: "text-xs sm:text-sm",
-    subtitle: "text-xs mb-1",
-    item: "text-xs lg:text-[13px]",
+    backTitle: "text-sm",
+    subtitle: "text-[13px] mb-1",
+    item: "text-[13px] lg:text-sm",
+    hint: "Ver servicios →",
   },
   mobile: {
     icon: "w-7 h-7",
@@ -514,11 +649,13 @@ const FLIP_CARD_STYLES = {
     number: "text-xs",
     titleWrap: "px-2",
     title: "text-[length:min(1.5rem,10.5cqi)]",
+    frontSubtitle: "text-sm",
     back: "bg-white p-5",
     backHeader: "gap-2.5 pb-3 mb-3",
     backTitle: "text-sm",
-    subtitle: "text-[13px] mb-1",
+    subtitle: "text-sm mb-1",
     item: "text-sm",
+    hint: "Tocá para ver servicios",
   },
 };
 
@@ -531,31 +668,37 @@ function AreaFlipCard({ area, index, flipped, onToggle, variant = "desktop" }) {
     <div
       onClick={onToggle}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onToggle();
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault(); // la barra espaciadora no debe desplazar la página
+          onToggle();
+        }
       }}
       role="button"
       tabIndex={0}
-      className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] cursor-pointer ${flipped ? "[transform:rotateY(180deg)]" : ""}`}
+      aria-pressed={flipped}
+      aria-label={`${area.title}: ${flipped ? "ocultar" : "ver"} servicios`}
+      className={`group relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--e-accent)] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}
     >
       {/* Frente */}
       <div className={`absolute inset-0 [backface-visibility:hidden] border-2 border-stone-800 overflow-hidden ${s.front}`}>
-        <div className="absolute inset-0 bg-cover bg-center opacity-80" style={bgImage(IMAGES.areas[area.id])} />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/55 to-stone-950/15" />
+        <img
+          src={IMAGES.areas[area.id]}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b2630]/95 via-[#0f2f3b]/55 to-[#1d5566]/15" />
         <div className={`relative z-10 h-full flex flex-col ${s.frontBody}`}>
           <div className="flex items-center justify-between">
-            <span className={`font-mono-code text-white/70 font-bold ${s.number}`}>0{index + 1}</span>
+            <span className={`font-mono-code text-white/75 font-bold ${s.number}`}>0{index + 1}</span>
             <div className="text-white">{icon}</div>
           </div>
-          <div className={`@container flex-1 flex items-center justify-center text-center ${s.titleWrap}`}>
+          <div className={`@container flex-1 flex flex-col items-center justify-center gap-3 text-center ${s.titleWrap}`}>
             <h3 className={`font-syne font-bold uppercase text-white leading-tight ${s.title}`}>{area.title}</h3>
+            <p className={`text-white/85 leading-snug max-w-[30ch] ${s.frontSubtitle}`}>{area.subtitle}</p>
           </div>
-          {variant === "desktop" ? (
-            <div className="text-center">
-              <span className="font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Ver servicios →</span>
-            </div>
-          ) : (
-            <span className="text-center font-mono-code text-[10px] text-white/75 uppercase tracking-wider">Tocá para ver servicios</span>
-          )}
+          <span className="text-center font-mono-code text-[11px] text-white/80 uppercase tracking-wider">{s.hint}</span>
         </div>
       </div>
 
@@ -593,20 +736,26 @@ function ScrollArrowHint({ className = "" }) {
   );
 }
 
-/** Flechas de navegación de las slides móviles: tocables, marcan si se puede subir y/o bajar. */
+const MOBILE_ARROW_BTN = "pointer-events-auto p-2 animate-bounce";
+
+/**
+ * Flechas de navegación de las slides móviles: tocables, marcan si se puede
+ * subir y/o bajar. Van fijas a la pantalla (fuera de cada slide) y por encima
+ * del contenido, así nunca quedan tapadas ni se desplazan con él.
+ */
 function MobileSlideArrows({ up = false, down = false, onUp, onDown }) {
   return (
-    <div className="absolute inset-0 flex flex-col justify-between py-3 pointer-events-none text-stone-400">
+    <div className="absolute inset-0 z-30 flex flex-col justify-between py-3 pointer-events-none text-stone-400">
       <div className="flex justify-center">
         {up && (
-          <button type="button" onClick={onUp} aria-label="Sección anterior" className="pointer-events-auto p-2 animate-bounce">
+          <button type="button" onClick={onUp} aria-label="Sección anterior" className={MOBILE_ARROW_BTN}>
             <ChevronUp className="w-4 h-4" />
           </button>
         )}
       </div>
       <div className="flex justify-center">
         {down && (
-          <button type="button" onClick={onDown} aria-label="Siguiente sección" className="pointer-events-auto p-2 animate-bounce">
+          <button type="button" onClick={onDown} aria-label="Siguiente sección" className={MOBILE_ARROW_BTN}>
             <ChevronDown className="w-4 h-4" />
           </button>
         )}
@@ -620,23 +769,45 @@ function MobileSlideArrows({ up = false, down = false, onUp, onDown }) {
 /* ────────────────────────────────────────────────────────────────────────── */
 
 const SLIDE_BASE =
-  "slide-section flex flex-col border-b-4 border-stone-800 px-4 sm:px-6 lg:px-8 relative overflow-hidden";
+  "slide-section flex flex-col px-4 sm:px-6 lg:px-8 relative overflow-hidden";
 
-function HeroSlide() {
+/** Ubicación + botón de contacto de la portada. */
+function HeroContact({ onContact, align = "start" }) {
   return (
-    <section className={`${SLIDE_BASE} justify-between bg-[#f7faf8] py-8 sm:py-12 text-stone-900`}>
-      <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-screen bg-cover bg-center opacity-[0.3] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
-      <div className="absolute inset-0 bg-[#f7faf8]/60 pointer-events-none" />
+    <div className={`flex flex-col gap-4 ${align === "center" ? "items-center" : "items-center md:items-start"}`}>
+      <span className="inline-flex items-center gap-2 font-mono-code text-xs sm:text-[13px] text-stone-600">
+        <Pin className="w-4 h-4 text-[var(--e-icon)] shrink-0" />
+        {BRAND.location}
+      </span>
+      <button
+        type="button"
+        onClick={onContact}
+        className="group inline-flex items-center gap-3 px-5 py-3 bg-stone-950 hover:bg-emerald-700 text-white font-syne font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+      >
+        Contacto
+        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+      </button>
+    </div>
+  );
+}
+
+function HeroSlide({ onContact }) {
+  return (
+    <section className={`${SLIDE_BASE} justify-between slide-bg-light py-8 sm:py-12 text-stone-900`}>
+      <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-screen bg-cover bg-center opacity-[0.38] pointer-events-none scale-105" style={bgImage(IMAGES.heroBg)} />
+      <div className="absolute inset-0 bg-[#f4f9fb]/55 pointer-events-none" />
+      {/* La foto se funde abajo con el tono base, para que el paso a la siguiente slide sea gradual. */}
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-b from-transparent to-[#f4f9fb] pointer-events-none" />
       <div className="absolute right-[-2%] bottom-[-5%] w-[480px] sm:w-[620px] lg:w-[750px] opacity-[0.08] text-stone-900 pointer-events-none z-0">
         <ValleyMark />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full relative z-10 flex-1 flex flex-col">
+      <div className="slide-content max-w-7xl mx-auto w-full relative z-10 flex-1 flex flex-col">
         {/* Marca + titular */}
         <div className="flex-1 flex items-center">
           <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 sm:gap-12 w-full max-w-5xl mx-auto">
             <div className="flex flex-col items-center gap-3">
-              <VaguadaLogo
+              <UilkaLogo
                 size="lg"
                 variant="light"
                 className="w-32 h-32 sm:w-40 sm:h-40 lg:w-44 lg:h-44 shadow-md shrink-0"
@@ -646,17 +817,20 @@ function HeroSlide() {
                   <span className="font-extrabold tracking-tight text-stone-950 text-4xl sm:text-5xl lg:text-6xl font-syne uppercase">
                     {BRAND.name}
                   </span>
-                  <span className="w-2.5 h-2.5 bg-emerald-600 animate-pulse" />
+                  <span className="w-2.5 h-2.5 ribbon-gradient animate-pulse" />
                 </div>
               </div>
             </div>
-            <h1 className="font-syne text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-[-0.03em] text-stone-950 uppercase leading-[1.05] text-center md:text-left">
-              {BRAND.tagline}
-            </h1>
+            <div className="flex flex-col gap-7">
+              <h1 className="font-syne text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-[-0.03em] text-stone-950 uppercase leading-[1.05] text-center md:text-left">
+                {BRAND.tagline}
+              </h1>
+              <HeroContact onContact={onContact} />
+            </div>
           </div>
         </div>
 
-        <div className="pt-4 border-t-2 border-stone-800 flex items-center justify-center gap-2 text-stone-700 animate-pulse text-[11px] font-mono-code font-bold uppercase tracking-wider">
+        <div className="pt-4 ribbon-rule flex items-center justify-center gap-2 text-stone-700 animate-pulse text-xs font-mono-code font-bold uppercase tracking-wider">
           <span>Deslizá para conocer más</span>
           <ChevronDown className="w-4 h-4 text-emerald-700" />
         </div>
@@ -669,24 +843,26 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
   const areas = AREAS.slice(pageIndex * AREAS_PER_SLIDE, pageIndex * AREAS_PER_SLIDE + AREAS_PER_SLIDE);
 
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#eef3f1] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center slide-bg-tint py-8 sm:py-10`}>
+      <Bubbles />
       <div className="absolute inset-0 opacity-[0.045] pointer-events-none flex flex-wrap gap-20 p-8 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 12 }).map((_, i) => (
           <ValleyMark key={i} className="w-24 h-24" />
         ))}
       </div>
 
-      <div className="max-w-7xl mx-auto w-full relative z-10">
+      <div className="slide-content max-w-7xl mx-auto w-full relative z-10">
         <div className="flex items-center gap-2 mb-4">
-          <span className="w-1.5 h-1.5 bg-emerald-600" />
-          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
+          <span className="w-5 h-[3px] ribbon-gradient" />
+          <span className="font-mono-code text-xs sm:text-[13px] font-bold uppercase tracking-widest text-stone-500">
             Servicios
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
           {areas.map((area) => (
-            <div key={area.id} className="[perspective:1400px] h-72 sm:h-96 lg:h-80">
+            // Alto pensado para que entre la lista completa del dorso.
+            <div key={area.id} className="[perspective:1400px] h-80 sm:h-[30rem] lg:h-[26rem] xl:h-[24rem]">
               <AreaFlipCard
                 area={area}
                 index={AREAS.indexOf(area)}
@@ -703,12 +879,12 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
             {Array.from({ length: pageCount }).map((_, i) => (
               <span
                 key={i}
-                className={`h-1.5 transition-all duration-300 ${i === pageIndex ? "w-6 bg-emerald-700" : "w-1.5 bg-stone-300"}`}
+                className={`h-1.5 transition-all duration-300 ${i === pageIndex ? "w-8 ribbon-gradient" : "w-1.5 bg-[#c5dce5]"}`}
               />
             ))}
           </div>
           {pageIndex < pageCount - 1 && (
-            <span className="flex items-center gap-1 text-[10px] font-mono-code text-stone-400 uppercase tracking-wider">
+            <span className="flex items-center gap-1 text-[11px] font-mono-code text-stone-500 uppercase tracking-wider">
               <ChevronDown className="w-3 h-3 animate-bounce" />
               Más
             </span>
@@ -721,19 +897,19 @@ function AreasSlide({ pageIndex, pageCount, flippedIds, onToggle }) {
 
 function ProcessSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#f7faf8] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center slide-bg-light py-8 sm:py-10`}>
       <SectionBackdrop
         image={IMAGES.processBg}
         imageClass="opacity-[0.32]"
-        gradientClass="bg-gradient-to-b from-[#f7faf8] via-[#f7faf8]/85 to-[#f7faf8]"
+        gradientClass="bg-gradient-to-b from-[#f4f9fb] via-[#f4f9fb]/85 to-[#f4f9fb]"
       />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] opacity-[0.05] pointer-events-none text-stone-900">
         <ValleyMark />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="flex flex-col items-center text-center gap-3 pb-4 mb-8 border-b-2 border-stone-800">
-          <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
+      <div className="slide-content max-w-7xl mx-auto w-full relative z-10">
+        <div className="flex flex-col items-center text-center gap-4 mb-14 lg:mb-16">
+          <span className="font-mono-code text-xs sm:text-[13px] font-bold uppercase tracking-widest text-stone-500">
             Llave en mano
           </span>
           <h2 className="font-syne text-4xl sm:text-6xl lg:text-7xl font-extrabold text-stone-950 tracking-tight leading-none">
@@ -741,34 +917,21 @@ function ProcessSlide() {
           </h2>
         </div>
 
-        <div className="flex flex-col md:flex-row items-stretch gap-0 mb-6">
-          {PROCESS_STEPS.map((step, i) => {
-            const isLast = i === PROCESS_STEPS.length - 1;
-            const Icon = step.icon;
-            return (
-              <div key={i} className="flex items-stretch flex-1">
-                <div className="bg-white border-2 border-stone-800 p-6 sm:p-7 flex flex-col items-center justify-center text-center flex-1 shadow-xs">
-                  <Icon className="w-10 h-10 text-[var(--e-icon)] mb-3" />
-                  <span className="font-mono-code text-[11px] font-bold text-stone-400 mb-2">0{i + 1}</span>
-                  <p className="text-sm sm:text-base text-stone-700 leading-relaxed font-light max-w-[26ch]">
-                    <span className="font-bold text-stone-950">{step.lead}</span>
-                    {step.rest}
-                  </p>
-                </div>
-                {!isLast && (
-                  <>
-                    <div className="hidden md:flex items-center justify-center w-10 shrink-0 text-stone-800">
-                      <ArrowRight className="w-6 h-6" />
-                    </div>
-                    <div className="flex md:hidden items-center justify-center h-8 w-full text-stone-800 rotate-90 -my-1">
-                      <ArrowRight className="w-6 h-6" />
-                    </div>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        {/* Línea de tiempo: la cinta del logo une los tres pasos, sin cajas ni números. */}
+        <ol className="relative grid md:grid-cols-3 gap-10 md:gap-8 mb-6">
+          <span aria-hidden="true" className="hidden md:block absolute top-6 left-[16.67%] right-[16.67%] h-[2px] ribbon-gradient" />
+          {PROCESS_STEPS.map(({ icon: Icon, lead, rest }) => (
+            <li key={lead} className="relative flex flex-col items-center text-center">
+              <span className="relative z-10 grid place-items-center w-12 h-12 bg-[#f4f9fb] ring-1 ring-[#1b4a5a24] shadow-sm">
+                <Icon className="w-7 h-7 text-[var(--e-accent)]" />
+              </span>
+              <h3 className="mt-6 font-syne text-2xl lg:text-3xl font-extrabold text-stone-950 tracking-tight">{lead}</h3>
+              <p className="mt-2 text-base lg:text-[17px] text-stone-600 leading-relaxed max-w-[28ch] first-letter:uppercase">
+                {rest.replace(/^:\s*/, "")}
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
       <ScrollArrowHint />
     </section>
@@ -777,19 +940,20 @@ function ProcessSlide() {
 
 function SectorsSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#eef3f1] py-8 sm:py-10`}>
+    <section className={`${SLIDE_BASE} justify-center slide-bg-tint py-8 sm:py-10`}>
       <SectionBackdrop
         image={IMAGES.sectorsBg}
         imageClass="opacity-[0.28]"
-        gradientClass="bg-gradient-to-r from-[#eef3f1] via-[#eef3f1]/90 to-[#eef3f1]/60"
+        // Velo horizontal de siempre + fundido arriba y abajo hacia el tono base.
+        gradientClass="bg-[linear-gradient(to_bottom,#f4f9fb,transparent_22%,transparent_78%,#f4f9fb),linear-gradient(to_right,#e8f3f7,rgb(232_243_247/0.9)_50%,rgb(232_243_247/0.6))]"
       />
       <div className="absolute -right-10 -bottom-10 w-80 h-80 opacity-[0.05] pointer-events-none text-stone-900">
         <ValleyMark />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full relative z-10">
+      <div className="slide-content max-w-7xl mx-auto w-full relative z-10">
         <div className="flex flex-col items-center text-center gap-3 pb-4 mb-6 border-b-2 border-stone-800">
-          <span className="w-10 h-px bg-emerald-600/70" />
+          <span className="w-16 h-[3px] ribbon-gradient" />
           <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
             {SECTORS.title}
           </h2>
@@ -802,7 +966,7 @@ function SectorsSlide() {
               className="bg-white/95 border-2 border-stone-800 p-3.5 flex items-center gap-3 hover:bg-stone-100 transition-all shadow-2xs group cursor-default"
             >
               <Icon className="w-8 h-8 text-[var(--e-icon)] shrink-0" />
-              <h3 className="font-syne text-xs sm:text-sm font-bold uppercase text-stone-950 group-hover:text-emerald-900 transition-colors">
+              <h3 className="font-syne text-sm font-bold uppercase text-stone-950 group-hover:text-emerald-900 transition-colors">
                 {name}
               </h3>
             </div>
@@ -816,10 +980,11 @@ function SectorsSlide() {
 
 function TeamSlide() {
   return (
-    <section className={`${SLIDE_BASE} justify-center bg-[#f7faf8] py-8 sm:py-10`}>
-      <div className="max-w-7xl mx-auto w-full relative z-10">
+    <section className={`${SLIDE_BASE} justify-center slide-bg-light py-8 sm:py-10`}>
+      <Microscope />
+      <div className="slide-content max-w-7xl mx-auto w-full relative z-10">
         <div className="flex flex-col items-center text-center gap-3 pb-4 mb-6 border-b-2 border-stone-800">
-          <span className="w-10 h-px bg-emerald-600/70" />
+          <span className="w-16 h-[3px] ribbon-gradient" />
           <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
             {TEAM.title}
           </h2>
@@ -828,28 +993,31 @@ function TeamSlide() {
           {TEAM.members.map((member) => (
             <div key={member.id} className="bg-white/95 border-2 border-stone-800 p-6 flex flex-col shadow-xs">
               <div className="flex items-center gap-4 mb-4">
-                <div
-                  className="w-28 h-28 sm:w-32 sm:h-32 bg-cover bg-center border-2 border-stone-300 shadow-sm shrink-0"
-                  style={bgImage(IMAGES.team[member.id])}
+                <img
+                  src={IMAGES.team[member.id]}
+                  alt={member.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-28 h-28 sm:w-32 sm:h-32 object-cover border-2 border-stone-300 shadow-sm shrink-0"
                 />
                 <div>
                   <h3 className="font-syne text-lg sm:text-xl font-bold uppercase text-stone-950 leading-tight">
                     {member.displayName ?? member.name}
                   </h3>
-                  <span className="font-mono-code text-[11px] sm:text-xs font-bold uppercase tracking-wide text-emerald-800 block mt-0.5">
+                  <span className="font-mono-code text-xs sm:text-[13px] font-bold uppercase tracking-wide text-emerald-800 block mt-0.5">
                     {member.role}
                   </span>
                 </div>
               </div>
               <div className="flex items-start gap-2 pb-3 mb-4 border-b border-stone-200">
                 <Graduation className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
-                <span className="text-xs text-stone-600 font-mono-code leading-relaxed">{member.credential}</span>
+                <span className="text-[13px] text-stone-600 font-mono-code leading-relaxed">{member.credential}</span>
               </div>
               <a
                 href={member.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-auto inline-flex items-center gap-1.5 text-[11px] font-mono-code font-bold text-stone-500 hover:text-emerald-700 transition-colors uppercase tracking-wide"
+                className="mt-auto inline-flex items-center gap-1.5 text-xs font-mono-code font-bold text-stone-500 hover:text-emerald-700 transition-colors uppercase tracking-wide"
               >
                 <LinkedinIcon className="w-3.5 h-3.5" />
                 LinkedIn
@@ -863,111 +1031,108 @@ function TeamSlide() {
   );
 }
 
-function ContactCardHeader({ label, icon: Icon }) {
+/**
+ * Contacto: una sola acción principal (WhatsApp) y el resto como datos grandes
+ * y tocables, separados por líneas finas. Sin cajas ni numeración.
+ */
+function WhatsAppButton({ className = "" }) {
   return (
-    <div className="flex items-center justify-between pb-3 border-b-2 border-stone-200 mb-4">
-      <span className="font-mono-code text-[11px] text-stone-500 uppercase font-bold">{label}</span>
-      <Icon className="w-6 h-6 text-[var(--e-icon)]" />
+    <a
+      href={CONTACT.whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-stone-950 hover:brightness-125 text-white font-syne font-bold text-sm uppercase tracking-wider transition ${className}`}
+    >
+      <Chat className="w-5 h-5 text-emerald-400" />
+      Escribinos por WhatsApp
+      <ArrowUpRight className="w-4 h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+    </a>
+  );
+}
+
+function ContactRow({ label, href, external, value, note, action }) {
+  return (
+    <div className="group flex items-center gap-4 py-5 border-t border-[#1b4a5a24] first:border-t-0 sm:first:border-t">
+      <span className="hidden sm:block w-24 shrink-0 font-mono-code text-xs uppercase text-[var(--e-dim)]">{label}</span>
+      <div className="min-w-0 flex-1">
+        <span className="sm:hidden block mb-1 font-mono-code text-[11px] uppercase text-[var(--e-dim)]">{label}</span>
+        <a
+          href={href}
+          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : { target: "_top" })}
+          className="font-syne text-lg sm:text-2xl text-[var(--e-text)] hover:text-[var(--e-accent)] transition-colors break-all sm:break-normal"
+        >
+          {value}
+        </a>
+        {note && <p className="mt-1 text-sm text-[var(--e-dim)]">{note}</p>}
+      </div>
+      {action}
+    </div>
+  );
+}
+
+function ContactList({ onCopyEmail, copied }) {
+  return (
+    <div className="flex flex-col">
+      <ContactRow
+        label="Correo"
+        href={`mailto:${CONTACT.email}`}
+        value={CONTACT.email}
+        action={
+          <button
+            type="button"
+            onClick={onCopyEmail}
+            aria-label={copied ? "Correo copiado" : "Copiar correo"}
+            title={copied ? "Copiado" : "Copiar"}
+            className="shrink-0 grid place-items-center w-10 h-10 text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors cursor-pointer"
+          >
+            {copied ? <Check className="w-5 h-5 text-[var(--e-accent)]" /> : <Copy className="w-5 h-5" />}
+          </button>
+        }
+      />
+      <ContactRow
+        label="Teléfono"
+        href={CONTACT.phoneHref}
+        value={CONTACT.phoneDisplay}
+        note="WhatsApp y llamadas"
+        action={
+          <a
+            href={CONTACT.phoneHref}
+            target="_top"
+            aria-label="Llamar"
+            title="Llamar"
+            className="shrink-0 grid place-items-center w-10 h-10 text-[var(--e-dim)] hover:text-[var(--e-accent)] transition-colors"
+          >
+            <Phone className="w-5 h-5" />
+          </a>
+        }
+      />
     </div>
   );
 }
 
 function ContactSlide({ onCopyEmail, copied }) {
-  const card = "bg-white/95 border-2 border-stone-800 p-6 flex flex-col justify-between shadow-xs";
-
   return (
-    <section className="slide-section flex flex-col justify-between bg-[#f7faf8] px-4 sm:px-6 lg:px-8 pt-8 pb-4 relative overflow-hidden">
+    <section className="slide-section flex flex-col justify-between slide-bg-light px-4 sm:px-6 lg:px-8 pt-8 pb-4 relative overflow-hidden">
       <SectionBackdrop
         image={IMAGES.contactBg}
         imageClass="opacity-[0.26]"
-        gradientClass="bg-gradient-to-t from-[#f7faf8] via-[#f7faf8]/90 to-[#f7faf8]"
+        gradientClass="bg-gradient-to-t from-[#f4f9fb] via-[#f4f9fb]/90 to-[#f4f9fb]"
       />
 
-      <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
-        <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-3 pb-4 mb-6 border-b-2 border-stone-800">
-          <span className="w-10 h-px bg-emerald-600/70" />
-          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight">
-            {CONTACT.title}
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
-          {/* Correo */}
-          <div className={card}>
-            <div>
-              <ContactCardHeader label="01 / CORREO" icon={Mail} />
-              <a
-                href={`mailto:${CONTACT.email}`}
-                className="font-mono-code text-[13px] xl:text-base font-bold text-stone-950 hover:text-emerald-700 transition-colors break-words block mb-2"
-              >
-                {CONTACT.email}
-              </a>
-            </div>
-            <div className="mt-6 pt-4 border-t border-stone-300 flex items-center gap-2">
-              <a
-                href={`mailto:${CONTACT.email}`}
-                className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-stone-950 hover:bg-stone-800 text-white font-syne font-bold text-xs uppercase tracking-wider transition-colors"
-              >
-                <span>Enviar</span>
-                <Mail className="w-4 h-4" />
-              </a>
-              <button
-                onClick={onCopyEmail}
-                type="button"
-                className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 font-syne font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
-              >
-                <span>{copied ? "Copiado" : "Copiar"}</span>
-                {copied ? <Check className="w-4 h-4 text-emerald-700" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
+      <div className="slide-content max-w-6xl mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20 items-center">
+          <div className="flex flex-col items-start gap-6">
+            <span className="w-16 h-[3px] ribbon-gradient" />
+            <h2 className="font-syne text-5xl lg:text-6xl font-extrabold text-stone-950 tracking-tight leading-[1.02]">
+              {CONTACT.title}
+            </h2>
+            <WhatsAppButton className="mt-2" />
           </div>
-
-          {/* WhatsApp / teléfono */}
-          <div className={card}>
-            <div>
-              <ContactCardHeader label="02 / CANAL DIRECTO" icon={Chat} />
-              <a
-                href={CONTACT.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono-code text-sm sm:text-base font-bold text-stone-950 hover:text-emerald-700 transition-colors block mb-2"
-              >
-                {CONTACT.phoneDisplay}
-              </a>
-              <p className="text-xs text-stone-500 font-mono-code uppercase tracking-wide">WhatsApp y llamadas</p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-stone-300 flex items-center gap-2">
-              <a
-                href={CONTACT.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-syne font-bold text-xs uppercase tracking-wider transition-colors"
-              >
-                <span>WhatsApp</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-              <a
-                href={CONTACT.phoneHref}
-                target="_top"
-                className="flex-1 inline-flex items-center justify-between px-4 py-2.5 bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 font-syne font-bold text-xs uppercase tracking-wider transition-colors"
-              >
-                <span>Llamar</span>
-                <Phone className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
-          {/* Ubicación */}
-          <div className={card}>
-            <div>
-              <ContactCardHeader label="03 / COBERTURA" icon={Pin} />
-              <div className="font-syne text-lg sm:text-xl font-bold uppercase text-stone-950 mb-2">{CONTACT.location}</div>
-            </div>
-          </div>
+          <ContactList onCopyEmail={onCopyEmail} copied={copied} />
         </div>
       </div>
 
-      <footer className="max-w-7xl mx-auto w-full pt-4 border-t-2 border-stone-800 text-xs font-mono-code text-stone-600 flex flex-col sm:flex-row items-center justify-between gap-2 relative z-10">
+      <footer className="max-w-7xl mx-auto w-full pt-4 ribbon-rule text-xs font-mono-code text-stone-600 flex flex-col sm:flex-row items-center justify-between gap-2 relative z-10">
         <div className="flex items-center gap-2">
           <span className="font-syne font-bold uppercase text-stone-950">{BRAND.name}</span>
           <span>—</span>
@@ -979,17 +1144,18 @@ function ContactSlide({ onCopyEmail, copied }) {
   );
 }
 
-function DesktopSlides({ onCopyEmail, copied }) {
+function DesktopSlides({ onCopyEmail, copied, onContact }) {
   const [flippedIds, toggleFlipped] = useToggleSet();
   const pageCount = AREAS_PAGE_COUNT;
 
+  // El orden tiene que coincidir con SLIDE_LABELS.
   return (
-    <div className="bg-[#f7faf8] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950">
-      <HeroSlide />
+    <div className="bg-[#f4f9fb] text-stone-900 selection:bg-[#bfe9f5] selection:text-[#0f2a33]">
+      <HeroSlide onContact={onContact} />
+      <ProcessSlide />
       {Array.from({ length: pageCount }).map((_, i) => (
         <AreasSlide key={i} pageIndex={i} pageCount={pageCount} flippedIds={flippedIds} onToggle={toggleFlipped} />
       ))}
-      <ProcessSlide />
       <SectorsSlide />
       <TeamSlide />
       <ContactSlide onCopyEmail={onCopyEmail} copied={copied} />
@@ -1001,7 +1167,7 @@ function SlideNav({ activeIndex, onNavigate }) {
   return (
     <aside
       aria-label="Navegación de diapositivas"
-      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#f7faf8]/90 backdrop-blur-xs p-2 border border-stone-300 shadow-md"
+      className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5 bg-[#f4f9fb]/90 backdrop-blur-xs p-2 border border-stone-300 shadow-md"
     >
       {SLIDE_LABELS.map((label, i) => {
         const active = activeIndex === i;
@@ -1010,17 +1176,18 @@ function SlideNav({ activeIndex, onNavigate }) {
             key={i}
             onClick={() => onNavigate(i)}
             type="button"
-            className="group relative flex items-center justify-center p-1 cursor-pointer"
-            title={`Ir a la sección 0${i + 1}: ${label}`}
+            aria-label={`Ir a la sección 0${i + 1}: ${label}`}
+            aria-current={active ? "true" : undefined}
+            className="group relative flex items-center justify-center p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--e-accent)]"
           >
             <span
               className={`transition-all duration-300 ${
                 active
-                  ? "w-3 h-3 bg-stone-950 ring-2 ring-emerald-600 ring-offset-2 ring-offset-[#f7faf8]"
+                  ? "w-3 h-3 bg-stone-950 ring-2 ring-[var(--e-blue)] ring-offset-2 ring-offset-[#f4f9fb]"
                   : "w-2 h-2 bg-stone-400 group-hover:bg-stone-700"
               }`}
             />
-            <span className="pointer-events-none absolute right-7 px-2 py-1 bg-stone-900 text-white font-mono-code text-[10px] uppercase font-bold tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm">
+            <span className="pointer-events-none absolute right-7 px-2 py-1 bg-stone-900 text-white font-mono-code text-[11px] uppercase font-bold tracking-wider opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity whitespace-nowrap shadow-sm">
               0{i + 1} · {label}
             </span>
           </button>
@@ -1034,17 +1201,17 @@ function SlideNav({ activeIndex, onNavigate }) {
 /* Móvil: página continua                                                     */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-function MobileHero() {
+function MobileHero({ onContact }) {
   return (
-    <section className="relative h-full flex flex-col justify-center px-8 py-10 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-8 pt-8 pb-14 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.heroBgMobile}
         imageClass="opacity-[0.4] scale-105"
-        gradientClass="bg-gradient-to-b from-[#f7faf8]/55 via-[#f7faf8]/80 to-[#f7faf8]"
+        gradientClass="bg-gradient-to-b from-[#f4f9fb]/55 via-[#f4f9fb]/80 to-[#f4f9fb]"
       />
       <div className="relative z-10 flex flex-col items-center">
-        <div className="flex flex-col items-center text-center gap-4 mb-10">
-          <VaguadaLogo
+        <div className="flex flex-col items-center text-center gap-4 mb-8">
+          <UilkaLogo
             size="lg"
             variant="light"
             bubbles={false}
@@ -1052,14 +1219,17 @@ function MobileHero() {
           />
           <div className="flex items-center justify-center gap-2.5">
             <span className="font-extrabold tracking-tight text-stone-950 text-6xl font-syne uppercase">{BRAND.name}</span>
-            <span className="w-2.5 h-2.5 bg-emerald-600 animate-pulse" />
+            <span className="w-2.5 h-2.5 ribbon-gradient animate-pulse" />
           </div>
         </div>
         <div className="flex flex-col items-center gap-4">
-          <span className="w-12 h-px bg-emerald-600/70" />
+          <span className="w-16 h-[3px] ribbon-gradient" />
           <h1 className="font-syne text-3xl font-extrabold text-stone-950 leading-snug text-center max-w-[20ch] mx-auto">
             {BRAND.tagline}
           </h1>
+          <div className="mt-4">
+            <HeroContact onContact={onContact} align="center" />
+          </div>
         </div>
       </div>
     </section>
@@ -1103,15 +1273,16 @@ function MobileAreasCarousel() {
   }, []);
 
   return (
-    <section className="relative px-4 py-5">
+    <section className="relative px-4 py-14">
+      <Bubbles />
       <div className="absolute inset-0 overflow-hidden opacity-[0.045] pointer-events-none flex flex-wrap gap-8 p-4 justify-around items-center text-stone-900 select-none">
         {Array.from({ length: 12 }).map((_, i) => (
           <ValleyMark key={i} className="w-16 h-16" />
         ))}
       </div>
       <div className="relative z-10 flex items-center justify-center gap-2 mb-8 px-4">
-        <span className="w-1.5 h-1.5 bg-emerald-600 shrink-0" />
-        <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500 text-center">
+        <span className="w-5 h-[3px] ribbon-gradient shrink-0" />
+        <span className="font-mono-code text-xs font-bold uppercase tracking-widest text-stone-500 text-center">
           Servicios
         </span>
       </div>
@@ -1147,20 +1318,22 @@ function MobileAreasCarousel() {
             </div>
           ))}
         </div>
+        {/* Flechas laterales: pegadas al borde de la tarjeta activa y siempre
+            dentro de la pantalla (el contenedor arranca 16 px adentro). */}
         {activeIndex > 0 && (
           <div
-            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-slate-400 animate-swipe-left"
-            style={{ left: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 56px)` }}
+            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-stone-800 animate-swipe-left drop-shadow-[0_0_6px_rgba(255,255,255,0.95)]"
+            style={{ left: `max(-10px, calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 50px))` }}
           >
-            <ChevronLeft className="w-7 h-7" strokeWidth={2.5} />
+            <ChevronLeft className="w-8 h-8" strokeWidth={2.5} />
           </div>
         )}
         {activeIndex < AREAS.length - 1 && (
           <div
-            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-slate-400 animate-swipe-right"
-            style={{ right: `calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 56px)` }}
+            className="absolute inset-y-0 flex items-center pointer-events-none z-20 text-stone-800 animate-swipe-right drop-shadow-[0_0_6px_rgba(255,255,255,0.95)]"
+            style={{ right: `max(-10px, calc((100vw - ${MOBILE_AREA_CARD_WIDTH}px) / 2 - 50px))` }}
           >
-            <ChevronRight className="w-7 h-7" strokeWidth={2.5} />
+            <ChevronRight className="w-8 h-8" strokeWidth={2.5} />
           </div>
         )}
       </div>
@@ -1170,43 +1343,58 @@ function MobileAreasCarousel() {
 
 function MobileProcess() {
   return (
-    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-14 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.processBgMobile}
         imageClass="opacity-[0.26]"
-        gradientClass="bg-gradient-to-b from-[#f7faf8]/80 via-[#f7faf8]/92 to-[#f7faf8]"
+        gradientClass="bg-gradient-to-b from-[#f4f9fb]/80 via-[#f4f9fb]/92 to-[#f4f9fb]"
       />
-      <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
-        <span className="w-10 h-px bg-emerald-600/70" />
-        <h2 className="font-syne text-3xl font-extrabold text-stone-950 tracking-tight leading-tight">
+      <div className="relative z-10 flex flex-col items-center text-center gap-2 mb-6">
+        <span className="font-mono-code text-xs font-bold uppercase tracking-widest text-stone-500">Llave en mano</span>
+        <h2 className="font-syne text-[2.5rem] font-extrabold text-stone-950 tracking-tight leading-[1.02]">
           Nos encargamos de todo.
         </h2>
       </div>
-      <div className="relative z-10 flex flex-col gap-3">
-        {PROCESS_STEPS.map(({ icon: Icon, lead, rest }, i) => (
-          <div key={i} className="bg-white border-2 border-stone-800 p-4 flex gap-3 items-start">
-            <Icon className="w-8 h-8 text-[var(--e-icon)] shrink-0" />
-            <p className="text-[13px] text-stone-700 leading-relaxed font-light pt-1.5">
-              <span className="font-bold text-stone-950">{lead}</span>
-              {rest}
-            </p>
-          </div>
-        ))}
-      </div>
+
+      {/* Los tres pasos, con alto según la pantalla, unidos por una línea fina
+          a la altura de los íconos. */}
+      <ol className="relative z-10 flex flex-col gap-5">
+        {PROCESS_STEPS.map(({ icon: Icon, lead, rest }, i) => {
+          const isLast = i === PROCESS_STEPS.length - 1;
+          const text = rest.replace(/^:\s*/, "");
+          return (
+            <li key={lead} className="relative h-[clamp(7rem,18dvh,10rem)] flex flex-col">
+              <div className="relative flex-1 flex items-center gap-4 py-4 px-4 bg-white border-2 border-stone-800 overflow-hidden">
+                <Icon className="w-10 h-10 shrink-0 text-[var(--e-accent)]" />
+                <div className="min-w-0">
+                  <h3 className="font-syne text-[1.4rem] font-extrabold leading-none text-stone-950">{lead}</h3>
+                  <p className="mt-1.5 text-[15px] leading-snug first-letter:uppercase text-stone-600">{text}</p>
+                </div>
+              </div>
+              {!isLast && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-9 top-full h-5 w-0.5 -translate-x-1/2 ribbon-gradient opacity-70"
+                />
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
 
 function MobileSectors() {
   return (
-    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 border-b-2 border-stone-800 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-14 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.sectorsBgMobile}
         imageClass="opacity-[0.28]"
-        gradientClass="bg-gradient-to-b from-[#f7faf8]/75 via-[#f7faf8]/90 to-[#f7faf8]"
+        gradientClass="bg-gradient-to-b from-[#f4f9fb]/75 via-[#f4f9fb]/90 to-[#f4f9fb]"
       />
       <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-4">
-        <span className="w-10 h-px bg-emerald-600/70" />
+        <span className="w-16 h-[3px] ribbon-gradient" />
         <h2 className="font-syne text-2xl font-extrabold text-stone-950 tracking-tight">
           {SECTORS.title}
         </h2>
@@ -1215,7 +1403,7 @@ function MobileSectors() {
         {SECTORS.items.map(({ id, name, icon: Icon }) => (
           <div key={id} className="bg-white border-2 border-stone-800 p-3 flex flex-col gap-2">
             <Icon className="w-8 h-8 text-[var(--e-icon)]" />
-            <h3 className="font-syne text-[12px] font-bold uppercase text-stone-950 leading-tight">{name}</h3>
+            <h3 className="font-syne text-[13px] font-bold uppercase text-stone-950 leading-tight">{name}</h3>
           </div>
         ))}
       </div>
@@ -1225,10 +1413,11 @@ function MobileSectors() {
 
 function MobileTeam() {
   return (
-    <section className="px-4 py-8 border-b-2 border-stone-800">
+    <section className="relative isolate overflow-hidden px-4 py-14">
+      <Microscope className="-z-10" />
       <div className="flex items-center gap-2 mb-1">
-        <span className="w-1.5 h-1.5 bg-emerald-600" />
-        <span className="font-mono-code text-[10px] font-bold uppercase tracking-widest text-stone-500">{TEAM.subtitle}</span>
+        <span className="w-5 h-[3px] ribbon-gradient" />
+        <span className="font-mono-code text-xs font-bold uppercase tracking-widest text-stone-500">{TEAM.subtitle}</span>
       </div>
       <h2 className="font-syne text-2xl font-extrabold uppercase text-stone-950 tracking-tight mb-4">{TEAM.title}</h2>
 
@@ -1236,28 +1425,31 @@ function MobileTeam() {
         {TEAM.members.map((member) => (
           <div key={member.id} className="bg-white border-2 border-stone-800 p-4">
             <div className="flex items-center gap-3 mb-3">
-              <div
-                className="w-20 h-20 bg-cover bg-center border-2 border-stone-300 shadow-sm shrink-0"
-                style={bgImage(IMAGES.team[member.id])}
+              <img
+                src={IMAGES.team[member.id]}
+                alt={member.name}
+                loading="lazy"
+                decoding="async"
+                className="w-20 h-20 object-cover border-2 border-stone-300 shadow-sm shrink-0"
               />
               <div>
-                <h3 className="font-syne text-sm font-bold uppercase text-stone-950 leading-tight">
+                <h3 className="font-syne text-[15px] font-bold uppercase text-stone-950 leading-tight">
                   {member.displayName ?? member.name}
                 </h3>
-                <span className="font-mono-code text-[10px] font-bold uppercase tracking-wide text-emerald-800 block mt-0.5">
+                <span className="font-mono-code text-[11px] font-bold uppercase tracking-wide text-emerald-800 block mt-0.5">
                   {member.role}
                 </span>
               </div>
             </div>
             <div className="flex items-start gap-2 pb-2.5 mb-3 border-b border-stone-200">
               <Graduation className="w-3.5 h-3.5 text-stone-500 shrink-0 mt-0.5" />
-              <span className="text-[11px] text-stone-600 font-mono-code leading-relaxed">{member.credential}</span>
+              <span className="text-xs text-stone-600 font-mono-code leading-relaxed">{member.credential}</span>
             </div>
             <a
               href={member.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[10px] font-mono-code font-bold text-stone-500 uppercase tracking-wide"
+              className="inline-flex items-center gap-1.5 py-1 text-xs font-mono-code font-bold text-stone-500 uppercase tracking-wide"
             >
               <LinkedinIcon className="w-3.5 h-3.5" />
               LinkedIn
@@ -1271,88 +1463,28 @@ function MobileTeam() {
 
 function MobileContact({ onCopyEmail, copied }) {
   return (
-    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 pb-12 overflow-hidden">
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-14 overflow-hidden">
       <SectionBackdrop
         image={IMAGES.contactBgMobile}
         imageClass="opacity-[0.26]"
-        gradientClass="bg-gradient-to-b from-[#f7faf8]/80 via-[#f7faf8]/92 to-[#f7faf8]"
+        gradientClass="bg-gradient-to-b from-[#f4f9fb]/80 via-[#f4f9fb]/92 to-[#f4f9fb]"
       />
-      <div className="relative z-10 flex flex-col items-center text-center gap-3 mb-5">
-        <span className="w-10 h-px bg-emerald-600/70" />
-        <h2 className="font-syne text-2xl font-extrabold text-stone-950 tracking-tight">
+      <div className="relative z-10 flex flex-col items-start gap-4 mb-6">
+        <span className="w-16 h-[3px] ribbon-gradient" />
+        <h2 className="font-syne text-[2.5rem] font-extrabold text-stone-950 tracking-tight leading-[1.02]">
           {CONTACT.title}
         </h2>
       </div>
 
-      <div className="relative z-10 flex flex-col gap-3">
-        {/* Correo */}
-        <div className="bg-white border-2 border-stone-800 p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold">Correo</span>
-            <Mail className="w-6 h-6 text-[var(--e-icon)]" />
-          </div>
-          <a href={`mailto:${CONTACT.email}`} className="font-mono-code text-sm font-bold text-stone-950 break-all block mb-3">
-            {CONTACT.email}
-          </a>
-          <div className="flex gap-2">
-            <a
-              href={`mailto:${CONTACT.email}`}
-              className="flex-1 flex items-center justify-center gap-2 px-3.5 py-2.5 bg-stone-950 text-white font-syne font-bold text-xs uppercase tracking-wider"
-            >
-              <Mail className="w-4 h-4" />
-              Enviar
-            </a>
-            <button
-              type="button"
-              onClick={onCopyEmail}
-              className="flex-1 flex items-center justify-center gap-2 px-3.5 py-2.5 bg-white border-2 border-stone-800 text-stone-800 font-syne font-bold text-xs uppercase tracking-wider"
-            >
-              {copied ? <Check className="w-4 h-4 text-emerald-700" /> : <Copy className="w-4 h-4" />}
-              {copied ? "Copiado" : "Copiar"}
-            </button>
-          </div>
-        </div>
-
-        {/* WhatsApp / teléfono */}
-        <div className="bg-white border-2 border-stone-800 p-4">
-          <div className="flex items-center gap-2.5 mb-3">
-            <Chat className="w-7 h-7 text-[var(--e-icon)] shrink-0" />
-            <div>
-              <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold block">Canal directo</span>
-              <span className="font-syne text-sm font-bold text-stone-950 block">{CONTACT.phoneDisplay}</span>
-              <span className="text-[10px] text-stone-500 font-mono-code uppercase tracking-wide">WhatsApp y llamadas</span>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <a
-              href={CONTACT.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 text-center px-3 py-2.5 bg-emerald-700 text-white font-syne font-bold text-xs uppercase tracking-wider"
-            >
-              WhatsApp
-            </a>
-            <a
-              href={CONTACT.phoneHref}
-              target="_top"
-              className="flex-1 text-center px-3 py-2.5 bg-white border-2 border-stone-800 text-stone-800 font-syne font-bold text-xs uppercase tracking-wider"
-            >
-              Llamar
-            </a>
-          </div>
-        </div>
-
-        {/* Ubicación */}
-        <div className="bg-white border-2 border-stone-800 p-4 flex items-center gap-2.5">
-          <Pin className="w-7 h-7 text-[var(--e-icon)] shrink-0" />
-          <div>
-            <span className="font-mono-code text-[10px] text-stone-500 uppercase font-bold block">Cobertura</span>
-            <span className="font-syne text-sm font-bold text-stone-950">{CONTACT.location}</span>
-          </div>
-        </div>
+      <div className="relative z-10 flex flex-col gap-6">
+        <WhatsAppButton className="w-full !text-[13px] !px-4" />
+        <ContactList onCopyEmail={onCopyEmail} copied={copied} />
       </div>
 
-      <p className="relative z-10 text-center text-[11px] text-stone-500 font-mono-code mt-8">{BRAND.footerBadge}</p>
+      <footer className="relative z-10 mt-8 pt-4 ribbon-rule text-center text-[11px] text-stone-500 font-mono-code flex flex-col gap-1">
+        <span>{BRAND.footerBadge}</span>
+        <span>{BRAND.location}</span>
+      </footer>
     </section>
   );
 }
@@ -1362,7 +1494,10 @@ const MOBILE_SWIPE_THRESHOLD = 45;
 
 function MobileLanding({ onCopyEmail, copied }) {
   const [slide, setSlide] = useState(0);
-  const touchStartY = useRef(null);
+  const slideRefs = useRef([]);
+  // Al empezar el gesto: dónde estaba el dedo y si la slide ya estaba en su
+  // borde superior / inferior (si no entra en pantalla, primero se desplaza).
+  const touchStart = useRef(null);
 
   const goTo = useCallback((next) => {
     setSlide((prev) => {
@@ -1371,16 +1506,32 @@ function MobileLanding({ onCopyEmail, copied }) {
     });
   }, []);
 
+  // Cada slide nueva arranca desde arriba.
+  useEffect(() => {
+    slideRefs.current[slide]?.scrollTo({ top: 0 });
+  }, [slide]);
+
   const onTouchStart = (e) => {
-    touchStartY.current = e.touches[0].clientY;
+    const el = slideRefs.current[slide];
+    touchStart.current = {
+      y: e.touches[0].clientY,
+      atTop: !el || el.scrollTop <= 1,
+      atBottom: !el || el.scrollTop + el.clientHeight >= el.scrollHeight - 1,
+    };
   };
 
   const onTouchEnd = (e) => {
-    if (touchStartY.current === null) return;
-    const delta = touchStartY.current - e.changedTouches[0].clientY;
-    touchStartY.current = null;
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const delta = start.y - e.changedTouches[0].clientY;
     if (Math.abs(delta) < MOBILE_SWIPE_THRESHOLD) return;
-    goTo((prev) => prev + (delta > 0 ? 1 : -1));
+    if (delta > 0 && start.atBottom) goTo((prev) => prev + 1);
+    if (delta < 0 && start.atTop) goTo((prev) => prev - 1);
+  };
+
+  const slideRef = (i) => (el) => {
+    slideRefs.current[i] = el;
   };
 
   // Cada slide es absoluta y ocupa toda la pantalla: cambiar de sección es un
@@ -1394,34 +1545,34 @@ function MobileLanding({ onCopyEmail, copied }) {
 
   return (
     <div
-      className={`mobile-slides-container bg-[#f7faf8] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
+      className={`mobile-slides-container bg-[#f4f9fb] text-stone-900 ${slide === 0 ? "mobile-slides--refreshable" : ""}`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      <div className={slideClass(0, false)}>
-        <MobileHero />
-        <MobileSlideArrows down onDown={() => goTo(1)} />
+      <div ref={slideRef(0)} className={slideClass(0, false)} aria-hidden={slide !== 0}>
+        <MobileHero onContact={() => goTo(MOBILE_SLIDE_COUNT - 1)} />
       </div>
-      <div className={slideClass(1)}>
-        <MobileAreasCarousel />
-        <MobileSlideArrows up down onUp={() => goTo(0)} onDown={() => goTo(2)} />
-      </div>
-      <div className={slideClass(2)}>
+      <div ref={slideRef(1)} className={slideClass(1)} aria-hidden={slide !== 1}>
         <MobileProcess />
-        <MobileSlideArrows up down onUp={() => goTo(1)} onDown={() => goTo(3)} />
       </div>
-      <div className={slideClass(3)}>
+      <div ref={slideRef(2)} className={slideClass(2)} aria-hidden={slide !== 2}>
+        <MobileAreasCarousel />
+      </div>
+      <div ref={slideRef(3)} className={slideClass(3)} aria-hidden={slide !== 3}>
         <MobileSectors />
-        <MobileSlideArrows up down onUp={() => goTo(2)} onDown={() => goTo(4)} />
       </div>
-      <div className={slideClass(4)}>
+      <div ref={slideRef(4)} className={slideClass(4)} aria-hidden={slide !== 4}>
         <MobileTeam />
-        <MobileSlideArrows up down onUp={() => goTo(3)} onDown={() => goTo(5)} />
       </div>
-      <div className={slideClass(5)}>
+      <div ref={slideRef(5)} className={slideClass(5)} aria-hidden={slide !== 5}>
         <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
-        <MobileSlideArrows up onUp={() => goTo(4)} />
       </div>
+      <MobileSlideArrows
+        up={slide > 0}
+        down={slide < MOBILE_SLIDE_COUNT - 1}
+        onUp={() => goTo((prev) => prev - 1)}
+        onDown={() => goTo((prev) => prev + 1)}
+      />
       {copied && (
         <CopiedToast className="fixed bottom-5 left-4 right-4 z-50 flex items-center justify-center gap-2 px-4 py-3 bg-stone-950 text-white font-syne font-bold shadow-2xl text-xs uppercase tracking-wider border-2 border-stone-900" />
       )}
@@ -1433,7 +1584,7 @@ function MobileLanding({ onCopyEmail, copied }) {
 /* Componente principal                                                       */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export default function VaguadaLanding() {
+export default function UilkaLanding() {
   const [copied, setCopied] = useState(false);
   const scrollerRef = useRef(null);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -1444,24 +1595,63 @@ export default function VaguadaLanding() {
   const isTouchTablet = !isMobile && isTouch;
 
   const copyEmail = useCallback(() => {
-    navigator.clipboard.writeText(BRAND.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    navigator.clipboard
+      ?.writeText(BRAND.email)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      })
+      .catch(() => {});
   }, []);
 
-  // Sigue la diapositiva visible para la navegación lateral.
+  const slides = () => scrollerRef.current?.querySelectorAll(".slide-section") ?? [];
+
+  // Sigue la diapositiva visible para la navegación lateral. Se calcula por
+  // la posición real de cada slide, porque en pantallas bajas pueden medir
+  // más que la ventana.
   useEffect(() => {
     if (isMobile || isTouchTablet) return;
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    const onScroll = () => setActiveSlide(Math.round(scroller.scrollTop / window.innerHeight));
+    let frame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const probe = scroller.scrollTop + scroller.clientHeight / 2;
+        let index = 0;
+        slides().forEach((el, i) => {
+          if (el.offsetTop <= probe) index = i;
+        });
+        setActiveSlide(index);
+      });
+    };
     scroller.addEventListener("scroll", onScroll, { passive: true });
-    return () => scroller.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", onScroll);
+    };
+  }, [isMobile, isTouchTablet]);
+
+  // Entrada suave del contenido de cada slide al llegar a ella.
+  useEffect(() => {
+    if (isMobile || isTouchTablet) return;
+    const scroller = scrollerRef.current;
+    if (!scroller || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (e.target.dataset.visible = String(e.isIntersecting))),
+      { root: scroller, threshold: 0.3 },
+    );
+    slides().forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, [isMobile, isTouchTablet]);
 
   const goToSlide = (index) => {
-    scrollerRef.current?.scrollTo({ top: index * window.innerHeight, behavior: "smooth" });
+    const target = slides()[index];
+    if (!target) return;
+    if (isTouchTablet) target.scrollIntoView({ behavior: "smooth" });
+    else scrollerRef.current.scrollTo({ top: target.offsetTop, behavior: "smooth" });
   };
 
   if (isMobile) {
@@ -1470,12 +1660,12 @@ export default function VaguadaLanding() {
 
   return (
     <div
-      className={`w-screen font-sans bg-[#f7faf8] text-stone-900 selection:bg-emerald-200 selection:text-emerald-950 ${
+      className={`w-screen font-sans bg-[#f4f9fb] text-stone-900 selection:bg-[#bfe9f5] selection:text-[#0f2a33] ${
         isTouchTablet ? "min-h-screen" : "h-screen overflow-hidden flex flex-col"
       }`}
     >
       <div ref={scrollerRef} className={`slides-container no-scrollbar ${isTouchTablet ? "no-snap" : "flex-1"}`}>
-        <DesktopSlides onCopyEmail={copyEmail} copied={copied} />
+        <DesktopSlides onCopyEmail={copyEmail} copied={copied} onContact={() => goToSlide(SLIDE_LABELS.length - 1)} />
       </div>
 
       {!isTouchTablet && <SlideNav activeIndex={activeSlide} onNavigate={goToSlide} />}

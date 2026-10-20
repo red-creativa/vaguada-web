@@ -2,3 +2,7 @@ node_modules
 dist
 .DS_Store
 *.log
+
+# Copias de respaldo y archivos sin usar: quedan solo en esta compu
+_versiones/
+_sin-usar/
