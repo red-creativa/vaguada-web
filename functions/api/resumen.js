@@ -50,7 +50,7 @@ export async function onRequestPost({ request, env }) {
         generationConfig: {
           temperature: 0.2,
           maxOutputTokens: 350,
-          thinkingConfig: { thinkingLevel: "low" },
+          thinkingConfig: { thinkingLevel: "minimal" },
         },
       }),
     });

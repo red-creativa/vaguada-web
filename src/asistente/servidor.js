@@ -5,7 +5,7 @@
 
 const MAX_MESSAGES = 24; // hasta 12 turnos completos de usuario y asistente
 const MAX_CHARS = 1500; // largo máximo de cada mensaje
-export const GEMINI_MODEL = "gemini-3.8-flash";
+export const GEMINI_MODEL = "gemini-3.5-flash-lite";
 
 export const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {

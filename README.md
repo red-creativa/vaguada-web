@@ -89,7 +89,7 @@ El switch **Sitio / Asistente** (arriba a la derecha) transforma la página en u
 |---|---|
 | `src/asistente/Asistente.jsx` | El switch, la conversación, el reintento de respuestas y el resumen con opciones de contacto |
 | `src/asistente/conocimiento.js` | El propósito e instrucciones del asistente, los servicios y las **fichas de trámites** |
-| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Gemini 3.8 Flash |
+| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Gemini 3.5 Flash-Lite |
 | `functions/api/resumen.js` | Prepara, cuando la persona lo pide, un resumen de la consulta para WhatsApp o correo |
 
 Cuando el asistente ya entiende el caso, explica cómo ÜILKA puede encauzarlo y ofrece llamar al equipo o preparar un resumen neutral. Mientras se genera, aparece una animación de carga. El resumen se muestra antes de compartirlo; permite agregar nombre y apellido opcionalmente, abrir WhatsApp con el resumen o redactar un correo formal en la ventana de composición habitual de Gmail o Outlook web.
@@ -98,6 +98,6 @@ Cuando el asistente ya entiende el caso, explica cómo ÜILKA puede encauzarlo y
 
 **Activarlo en Cloudflare** (una sola vez): crear una API key de Gemini en Google AI Studio; en Cloudflare Pages → proyecto → Settings → Variables and Secrets → Add → **Secret**, nombre `GEMINI_API_KEY`, valor la clave creada. Configurarlo para Preview y Production y volver a desplegar. La clave solo se usa en las funciones del servidor; nunca se incluye en el navegador.
 
-**Cupo:** Gemini API tiene cuotas gratuitas por proyecto (solicitudes por minuto, tokens por minuto y solicitudes por día). Los límites dependen del modelo y del proyecto, pueden cambiar y se consultan en la página Rate limits de Google AI Studio. Las cuotas diarias se reinician a medianoche del Pacífico. El asistente usa Gemini 3.8 Flash con razonamiento bajo.
+**Cupo:** Gemini API tiene cuotas gratuitas por proyecto (solicitudes por minuto, tokens por minuto y solicitudes por día). Los límites dependen del modelo y del proyecto, pueden cambiar y se consultan en la página Rate limits de Google AI Studio. Las cuotas diarias se reinician a medianoche del Pacífico. El asistente usa Gemini 3.5 Flash-Lite con razonamiento mínimo.
 
 **En la compu:** `npm run dev` responde con un texto de prueba (no hay IA local).
