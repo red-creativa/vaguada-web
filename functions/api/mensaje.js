@@ -17,7 +17,7 @@ function tidy(text) {
     .replace(/^["“'«]+|["”'»]+$/g, "")
     .replace(/^hola[^.!?\n]{0,20}[.!,]?\s*/i, "")
     .trim()
-    .slice(0, 300);
+    .slice(0, 600);
 }
 
 export async function onRequestPost({ request, env }) {
@@ -45,7 +45,7 @@ export async function onRequestPost({ request, env }) {
       ],
       temperature: 0.2,
       ...MENSAJE_PRESET.params,
-      max_completion_tokens: 200,
+      max_completion_tokens: 350,
     });
     const mensaje = tidy(textOf(out));
     return mensaje ? json({ mensaje }) : json({ error: "vacio" }, 502);

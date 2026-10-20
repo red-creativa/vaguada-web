@@ -23,51 +23,7 @@ const PRIVACY = "No grabamos ni guardamos tu conversación. Se borra al cerrar o
 const MAX_USER_TURNS = 12;
 const MAX_CHARS = 1500;
 
-/* ── Mensaje para WhatsApp ────────────────────────────────────────────────
- * Cada respuesta de la IA termina con un bloque <resumen>…</resumen>: no se
- * muestra en el chat, sino en la barra "Tu mensaje para WhatsApp" (junto a la
- * caja de texto), que se actualiza con cada respuesta.
- */
-// Tolera mayúsculas y espacios: "<resumen>", "< Resumen >", "</resumen >"…
-const OPEN_RE = /<\s*resumen\s*>/i;
-const CLOSE_RE = /<\s*\/\s*resumen\s*>/i;
-
-/** Separa lo que se muestra del resumen oculto (también mientras va llegando el texto). */
-function splitAnswer(raw) {
-  const tidy = (s) => s.replace(/[\s*_`]+$/, ""); // por si lo envolvió en **negritas**
-  const open = raw.match(OPEN_RE);
-  if (open) {
-    const rest = raw.slice(open.index + open[0].length);
-    const close = rest.match(CLOSE_RE);
-    return { visible: tidy(raw.slice(0, open.index)), summary: (close ? rest.slice(0, close.index) : rest).trim() };
-  }
-  // Mientras llega el texto, no mostrar un "<resu" a medio escribir.
-  const lt = raw.lastIndexOf("<");
-  if (lt >= 0 && raw.length - lt <= 12 && "<resumen>".startsWith(raw.slice(lt).toLowerCase().replace(/\s/g, ""))) {
-    return { visible: tidy(raw.slice(0, lt)), summary: "" };
-  }
-  return { visible: raw, summary: "" };
-}
-
-/**
- * La consulta, en primera persona como si la escribiera el cliente (la arma
- * la IA en el bloque <resumen>). Si todavía no hay, la primera pregunta.
- */
-function clientMessage(summary, question) {
-  const text = summary
-    .split("\n")
-    .map((l) => l.replace(/^[-•*]\s*/, "").trim())
-    .filter(Boolean)
-    .join(" ")
-    .replace(/^"|"$/g, "");
-  return (text || question).slice(0, 600);
-}
-
-/** El texto completo que se envía (y que se ve y se copia desde la barra). */
-const whatsappText = (summary, question) => `Hola ÜILKA. ${clientMessage(summary, question)}`;
-
-const whatsappUrl = (summary, question) =>
-  `${CONTACT.whatsappUrl}?text=${encodeURIComponent(whatsappText(summary, question))}`;
+const whatsappUrl = (text) => `${CONTACT.whatsappUrl}?text=${encodeURIComponent(text)}`;
 
 /* ── Switch Sitio / Asistente ─────────────────────────────────────────── */
 
@@ -212,22 +168,6 @@ function Typing() {
   );
 }
 
-function WhatsAppLink({ summary, question, children = "Seguir por WhatsApp" }) {
-  return (
-    <a
-      href={whatsappUrl(summary, question)}
-      title="Se abre WhatsApp con un resumen de tu consulta; podés editarlo antes de enviar"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--e-box)] text-white font-syne text-xs uppercase tracking-wider hover:brightness-125 transition"
-    >
-      <Chat className="w-4 h-4 text-[var(--e-accent-soft)]" />
-      {children}
-      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-    </a>
-  );
-}
-
 /** Copia al portapapeles; si el navegador no deja, usa el método clásico. */
 async function copyText(text) {
   try {
@@ -247,22 +187,12 @@ async function copyText(text) {
 }
 
 /**
- * Pie de la última respuesta: el mensaje para el operador, chiquito y en
- * cursiva, completo, con las acciones para enviarlo por WhatsApp o copiarlo.
+ * El mensaje para el operador solo se genera cuando la persona lo solicita.
  */
-function OperatorNote({ summary, question, preparing }) {
+function OperatorNote({ operator, onGenerate }) {
   const [copied, setCopied] = useState(false);
-  const text = whatsappText(summary, question);
-
-  if (preparing) {
-    return (
-      <div className="mt-4 pt-3 border-t border-[#1b4a5a1a] flex items-center gap-2 text-[13px] italic text-[var(--e-dim)]">
-        <span className="not-italic font-semibold text-[var(--e-body)]">Mensaje para el operador:</span>
-        armándolo…
-        <Typing />
-      </div>
-    );
-  }
+  const generating = operator === "loading";
+  const text = typeof operator === "string" ? `Hola ÜILKA. ${operator}` : "";
 
   const onCopy = async () => {
     if (await copyText(text)) {
@@ -272,37 +202,56 @@ function OperatorNote({ summary, question, preparing }) {
   };
 
   const action =
-    "inline-flex items-center gap-1.5 py-1 font-mono-code text-[11px] uppercase text-[var(--e-accent)] hover:text-[var(--e-text)] transition-colors cursor-pointer";
+    "inline-flex items-center gap-1.5 py-1 font-mono-code text-[11px] uppercase text-[var(--e-accent)] hover:text-[var(--e-text)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-default";
 
   return (
     <div className="mt-4 pt-3 border-t border-[#1b4a5a1a]">
-      <p className="text-[13px] leading-relaxed italic text-[var(--e-dim)]">
-        <span className="not-italic font-semibold text-[var(--e-body)]">Mensaje para el operador:</span> “{text}”
-      </p>
-      <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1">
-        <a
-          href={whatsappUrl(summary, question)}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Se abre WhatsApp con este mensaje; podés editarlo antes de enviar"
-          className={action}
-        >
-          <Chat className="w-4 h-4" />
-          Enviar por WhatsApp
-          <ArrowUpRight className="w-3 h-3" />
-        </a>
-        <button type="button" onClick={onCopy} className={action} aria-live="polite">
-          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? "Copiado" : "Copiar"}
-        </button>
-      </div>
+      {typeof operator === "string" ? (
+        <>
+          <p className="text-[13px] leading-relaxed italic text-[var(--e-dim)]">
+            <span className="not-italic font-semibold text-[var(--e-body)]">Mensaje para el operador:</span> “{text}”
+          </p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1">
+            <a
+              href={whatsappUrl(text)}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Se abre WhatsApp con este mensaje; podés editarlo antes de enviar"
+              className={action}
+            >
+              <Chat className="w-4 h-4" />
+              Enviar por WhatsApp
+              <ArrowUpRight className="w-3 h-3" />
+            </a>
+            <button type="button" onClick={onCopy} className={action} aria-live="polite">
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? "Copiado" : "Copiar"}
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          {operator === null && (
+            <p role="alert" className="mb-2 text-[13px] text-[var(--e-body)]">
+              No pudimos generar el mensaje. Probá de nuevo.
+            </p>
+          )}
+          <button type="button" onClick={onGenerate} disabled={generating} className={action}>
+            {generating ? <Typing /> : <Chat className="w-4 h-4" />}
+            {generating ? "Generando mensaje…" : operator === null ? "Reintentar" : "Generar mensaje para el operador"}
+          </button>
+        </>
+      )}
+      {generating && (
+        <span className="sr-only" role="status">
+          Generando el mensaje para el operador
+        </span>
+      )}
     </div>
   );
 }
 
-function AssistantMessage({ message, loading, isLast, summary, firstQuestion }) {
-  const { visible } = splitAnswer(message.content);
-  const preparing = message.operator === undefined && !splitAnswer(message.content).summary;
+function AssistantMessage({ message, loading, isLast, onGenerateOperator }) {
   return (
     <div className="self-start w-full max-w-[94%] flex gap-3">
       <span className="mt-1 grid place-items-center w-8 h-8 shrink-0 bg-white ring-1 ring-[#1b4a5a24]">
@@ -310,22 +259,13 @@ function AssistantMessage({ message, loading, isLast, summary, firstQuestion }) 
       </span>
       <div className="min-w-0 flex-1 bg-white/95 px-4 py-3 text-[15px] leading-relaxed text-[var(--e-body)]">
         {message.error ? (
-          <div className="flex flex-col gap-3">
-            <p>
-              Ahora no puedo responderte. Escribinos por WhatsApp y te respondemos nosotros.
-            </p>
-            <div>
-              <WhatsAppLink summary={summary} question={firstQuestion} />
-            </div>
-          </div>
-        ) : visible ? (
-          <>
-            <Markdown text={visible} />
-            {isLast && !loading && <OperatorNote summary={summary} question={firstQuestion} preparing={preparing} />}
-          </>
+          <p>Ahora no puedo responderte. Podés generar un mensaje con lo que nos contaste y enviárselo al equipo.</p>
+        ) : message.content ? (
+          <Markdown text={message.content} />
         ) : (
           loading && <Typing />
         )}
+        {isLast && !loading && <OperatorNote operator={message.operator} onGenerate={onGenerateOperator} />}
       </div>
     </div>
   );
@@ -375,15 +315,6 @@ export function AssistantView({ active = true }) {
 
   const userTurns = messages.filter((m) => m.role === "user").length;
   const limitReached = userTurns >= MAX_USER_TURNS;
-  const firstQuestion = messages.find((m) => m.role === "user")?.content ?? "";
-  // Último mensaje para el operador que se pudo armar (el más completo): va en WhatsApp.
-  const operatorOf = (m) => m.operator || splitAnswer(m.content).summary;
-  const summary =
-    messages
-      .filter((m) => m.role === "assistant" && m.content)
-      .map(operatorOf)
-      .filter(Boolean)
-      .at(-1) ?? "";
 
   // Si se cierra la página a mitad de una respuesta, se corta.
   useEffect(() => () => abortRef.current?.abort(), []);
@@ -425,18 +356,23 @@ export function AssistantView({ active = true }) {
   // Actualiza una respuesta puntual (por id), aunque mientras tanto haya cambiado la lista.
   const patchMessage = (id, patch) => setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
 
-  // Después de cada respuesta, otra llamada arma el "Mensaje para el operador".
-  // operator: undefined = armándose · string = listo · null = no se pudo (se usa el anterior).
-  const requestOperatorMessage = async (id, conversation) => {
+  const requestOperatorMessage = async (id) => {
+    patchMessage(id, { operator: "loading" });
     try {
       const res = await fetch("/api/mensaje", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages: conversation }),
+        body: JSON.stringify({
+          messages: messages
+            .filter((m) => !m.error && m.content)
+            .map(({ role, content }) => ({ role, content })),
+        }),
         cache: "no-store",
       });
-      const data = res.ok ? await res.json() : null;
-      patchMessage(id, { operator: data?.mensaje?.trim() || null });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (typeof data?.mensaje !== "string" || !data.mensaje.trim()) throw new Error("Respuesta vacía");
+      patchMessage(id, { operator: data.mensaje.trim() });
     } catch {
       patchMessage(id, { operator: null });
     }
@@ -447,7 +383,7 @@ export function AssistantView({ active = true }) {
     if (!content || loading || limitReached) return;
 
     const history = [
-      ...messages.filter((m) => !m.error && m.content).map(({ role, content: c }) => ({ role, content: splitAnswer(c).visible })),
+      ...messages.filter((m) => !m.error && m.content).map(({ role, content }) => ({ role, content })),
       { role: "user", content },
     ];
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -486,9 +422,6 @@ export function AssistantView({ active = true }) {
       if (!controller.signal.aborted) setLoading(false);
     }
 
-    if (answer && !controller.signal.aborted) {
-      requestOperatorMessage(id, [...history, { role: "assistant", content: splitAnswer(answer).visible }]);
-    }
   };
 
   const onSubmit = (e) => {
@@ -559,8 +492,7 @@ export function AssistantView({ active = true }) {
                     message={m}
                     loading={loading && i === messages.length - 1}
                     isLast={i === messages.length - 1}
-                    summary={summary}
-                    firstQuestion={firstQuestion}
+                    onGenerateOperator={() => requestOperatorMessage(m.id)}
                   />
                 ),
               )}
@@ -573,7 +505,7 @@ export function AssistantView({ active = true }) {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           {limitReached ? (
             <p className="py-2 text-sm text-[var(--e-body)]">
-              Llegaste al límite de esta conversación. Para seguir, enviá el mensaje para el operador por WhatsApp.
+              Llegaste al límite de esta conversación. Generá un mensaje para el operador y seguí por WhatsApp.
             </p>
           ) : (
             <div className="flex items-end gap-2 p-1.5 bg-white ring-1 ring-[#1b4a5a33] focus-within:ring-2 focus-within:ring-[var(--e-accent)] transition">

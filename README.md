@@ -87,14 +87,15 @@ El switch **Sitio / Asistente** (arriba a la derecha) transforma la página en u
 
 | Archivo | Qué hace |
 |---|---|
-| `src/asistente/Asistente.jsx` | El switch y la pantalla del chat |
-| `src/asistente/conocimiento.js` | Lo que sabe el asistente: servicios (salen de `src/contenido.js`) y **fichas de trámites** para completar |
-| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Workers AI (modelo Gemma 4) |
+| `src/asistente/Asistente.jsx` | El switch, la conversación y el botón para generar el mensaje al operador |
+| `src/asistente/conocimiento.js` | El propósito e instrucciones del asistente, los servicios y las **fichas de trámites** |
+| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Workers AI (Gemma 4 con razonamiento habilitado por defecto) |
+| `functions/api/mensaje.js` | Genera, cuando la persona lo pide, un resumen de toda la conversación para WhatsApp |
 
 **Privacidad:** no se guarda nada. La conversación vive solo en la pestaña (sin cookies ni almacenamiento), la función no registra el contenido y Workers AI no conserva entradas ni salidas. No activar AI Gateway con registros.
 
 **Activarlo en Cloudflare** (una sola vez): Workers & Pages → el proyecto → Settings → Bindings → Add → **Workers AI**, nombre de variable `AI`, en Preview y en Production. Después, volver a desplegar.
 
-**Cupo:** el plan gratuito incluye 10.000 neurons por día (unas 250 respuestas). Si se agota, el chat ofrece seguir por WhatsApp hasta el día siguiente.
+**Cupo y modelos:** Workers AI incluye 10.000 neurons diarios sin cargo; el consumo por respuesta varía según el modelo y el uso de razonamiento. El modelo predeterminado, Gemma 4, admite razonamiento y no requiere facturación adicional. Los presets `glm` y `deepseek-razona` requieren Workers Paid o créditos prepagos de AI Gateway. `ASISTENTE_MODELO` puede cambiar el preset predeterminado desde las variables de Cloudflare.
 
 **En la compu:** `npm run dev` responde con un texto de prueba (no hay IA local).

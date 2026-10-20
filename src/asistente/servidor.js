@@ -13,10 +13,10 @@
  * `x-uilka-modelo: <nombre>` (solo acepta estos nombres).
  */
 export const PRESETS = {
-  // Gemma 4 (26B, ~4B activos) sin razonamiento: rápido y el más barato.
+  // Gemma 4 (26B, ~4B activos): razonamiento habilitado; incluido en el cupo gratuito.
   gemma: {
     model: "@cf/google/gemma-4-26b-a4b-it",
-    params: { max_completion_tokens: 900, chat_template_kwargs: { enable_thinking: false }, store: false },
+    params: { max_completion_tokens: 1800, chat_template_kwargs: { enable_thinking: true }, store: false },
   },
   // Llama 3.3 70B.
   llama70: {
@@ -50,7 +50,7 @@ export function pickPreset(request, env) {
   return PRESETS[name];
 }
 
-const MAX_MESSAGES = 16; // últimos mensajes que se envían al modelo
+const MAX_MESSAGES = 24; // hasta 12 turnos completos de usuario y asistente
 const MAX_CHARS = 1500; // largo máximo de cada mensaje
 
 export const json = (body, status = 200) =>
@@ -65,7 +65,7 @@ export function foreignOrigin(request) {
   return Boolean(origin && new URL(origin).host !== new URL(request.url).host);
 }
 
-/** Deja pasar solo mensajes de usuario/asistente, recortados y sin bloques <resumen> viejos. */
+/** Valida y recorta mensajes de usuario/asistente, quitando bloques resumen de conversaciones antiguas. */
 export function sanitize(messages, { userLast = true } = {}) {
   if (!Array.isArray(messages) || messages.length === 0) return null;
   const clean = messages
