@@ -9,10 +9,10 @@
  */
 
 import { SYSTEM_PROMPT } from "../../src/asistente/conocimiento.js";
-import { foreignOrigin, geminiSseToText, json, sanitize } from "../../src/asistente/servidor.js";
+import { foreignOrigin, GEMINI_MODEL, geminiSseToText, json, sanitize } from "../../src/asistente/servidor.js";
 
 const TEXT = { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" };
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse`;
 
 export async function onRequestPost({ request, env }) {
   if (foreignOrigin(request)) return json({ error: "origen" }, 403);
@@ -42,7 +42,7 @@ export async function onRequestPost({ request, env }) {
         generationConfig: {
           temperature: 0.4,
           maxOutputTokens: 1200,
-          thinkingConfig: { thinkingBudget: 0 },
+          thinkingConfig: { thinkingLevel: "low" },
         },
       }),
     });

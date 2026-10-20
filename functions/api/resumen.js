@@ -6,9 +6,9 @@
  */
 
 import { RESUMEN_PROMPT } from "../../src/asistente/conocimiento.js";
-import { foreignOrigin, geminiTextOf, json, sanitize } from "../../src/asistente/servidor.js";
+import { foreignOrigin, GEMINI_MODEL, geminiTextOf, json, sanitize } from "../../src/asistente/servidor.js";
 
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 /** Limpia lo que a veces agregan los modelos: comillas, saludo, prefijos. */
 function tidy(text) {
@@ -50,7 +50,7 @@ export async function onRequestPost({ request, env }) {
         generationConfig: {
           temperature: 0.2,
           maxOutputTokens: 350,
-          thinkingConfig: { thinkingBudget: 0 },
+          thinkingConfig: { thinkingLevel: "low" },
         },
       }),
     });
