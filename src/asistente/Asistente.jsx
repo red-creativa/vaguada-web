@@ -52,7 +52,7 @@ function whatsappUrl(summary, question) {
     ? summary
         .split("\n")
         .map((l) => l.trim())
-        .filter(Boolean)
+        .filter((l) => l && !/^[^:]{1,20}:\s*$/.test(l)) // sin líneas vacías tipo "Empresa:"
         .map((l) => `• ${l}`)
     : [`Mi consulta: ${question.slice(0, 300)}`];
   const text = ["Hola ÜILKA, les escribo desde el asistente de la web.", ...lines].join("\n").slice(0, 800);
