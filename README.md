@@ -80,3 +80,21 @@ Todo el contenido está en constantes al principio de `src/UilkaLanding.jsx`:
 
 `src/uilka.css` incluye una **capa de tema** que convierte las clases `stone`/`emerald` del JSX en tarjetas de vidrio en azul pizarra (`--e-text`, `--e-accent`, etc.).
 Para cambiar la paleta, edita las variables de `:root`.
+
+## Asistente con IA
+
+El switch **Sitio / Asistente** (arriba a la derecha) transforma la página en un chat. También se abre directo con `…/#asistente`.
+
+| Archivo | Qué hace |
+|---|---|
+| `src/asistente/Asistente.jsx` | El switch y la pantalla del chat |
+| `src/asistente/conocimiento.js` | Lo que sabe el asistente: servicios (salen de `src/contenido.js`) y **fichas de trámites** para completar |
+| `functions/api/chat.js` | Función de Cloudflare Pages que consulta Workers AI (modelo Gemma 4) |
+
+**Privacidad:** no se guarda nada. La conversación vive solo en la pestaña (sin cookies ni almacenamiento), la función no registra el contenido y Workers AI no conserva entradas ni salidas. No activar AI Gateway con registros.
+
+**Activarlo en Cloudflare** (una sola vez): Workers & Pages → el proyecto → Settings → Bindings → Add → **Workers AI**, nombre de variable `AI`, en Preview y en Production. Después, volver a desplegar.
+
+**Cupo:** el plan gratuito incluye 10.000 neurons por día (unas 250 respuestas). Si se agota, el chat ofrece seguir por WhatsApp hasta el día siguiente.
+
+**En la compu:** `npm run dev` responde con un texto de prueba (no hay IA local).
