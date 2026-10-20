@@ -320,25 +320,29 @@ export const MENSAJE_PROMPT = `Vas a leer únicamente los mensajes escritos por 
 
 Reglas:
 - Resumí la necesidad concreta usando los datos que la persona dio en TODA la conversación: trámite o problema, tipo y escala del proyecto, ubicación, actividad, etapa y requisitos que mencionó.
-- El objetivo es que el operador entienda QUÉ necesita resolverse. Priorizá el trámite, el trabajo requerido y las características del proyecto; omití detalles que no ayuden a entender el alcance.
+- El objetivo es que el equipo entienda qué trabajo podría requerir el caso. Priorizá, según lo que la persona haya contado: trámite o problema, ubicación, actividad, escala, etapa, insumos o infraestructura existente, requisitos y qué busca resolver.
+- Usá todas las precisiones relevantes que la persona aportó en los distintos turnos, incluidas las respuestas a preguntas del asistente. Seleccioná solo las que ayudan a entender la naturaleza o el alcance del proyecto; no hagas un resumen cronológico de la charla.
+- Si falta un dato, simplemente omitilo. Nunca escribas "ubicación desconocida", "no especificado", preguntas pendientes ni campos vacíos. Si la persona solo contó el trámite y el lugar, con eso alcanza.
+- Redactá como una nota breve, neutral e impersonal para el equipo, no como si la persona hablara. Empezá por el proyecto, trámite o problema. No uses primera persona ni expresiones como "quiero", "necesito", "tengo", "mi", "nosotros" o "queremos".
+- Omití datos personales que no describan el proyecto: nombre, edad, DNI, domicilio particular y teléfono.
 - La única fuente son los mensajes de la persona que aparecen abajo. No agregues propuestas, tareas, servicios, alcances ni conclusiones que no haya pedido o confirmado explícitamente.
 - No incluyas preferencias sobre quién hará el trabajo, decisiones de contratación ni frases como "quiero trabajar con ustedes" o "que se encarguen de todo". Aunque la persona lo haya dicho, el mensaje es para describir su necesidad, no para confirmar con quién quiere trabajar.
 - Nunca agregues visitas, relevamientos, análisis, gestiones u otros pasos sugeridos por ÜILKA, salvo que la persona los haya pedido expresamente como parte de lo que necesita.
 - No inventes escala, volumen, datos ni urgencia. No agregues interpretaciones sobre cobertura, distancia, zona de trabajo ni derivaciones a terceros.
-- Escribí en primera persona, natural y directo. Sin saludo, preguntas, explicaciones ni comillas. Máximo 400 caracteres.
-- Si la persona todavía no contó una necesidad concreta (solo saluda, pregunta quién sos o algo fuera de tema), escribí exactamente: Quiero hacer una consulta.
+- Sin saludo, preguntas, explicaciones ni comillas. Máximo 400 caracteres.
+- Si la persona todavía no contó una necesidad concreta (solo saluda, pregunta quién sos o algo fuera de tema), escribí exactamente: Consulta general.
 - Respondé SOLO con el mensaje, nada más.
 
 Ejemplos:
 - Conversación: La persona quiere un programa de arbolado público en La Rioja. Trabaja en el área municipal de arbolado. Ya definieron dos zonas y necesitan determinar qué especies corresponden según normativa dispersa.
-  Mensaje: Trabajo en el área de arbolado de la Municipalidad de La Rioja. Necesitamos definir qué especies plantar en dos zonas ya establecidas según la normativa, que está dispersa en varias leyes.
+  Mensaje: Programa municipal de arbolado público en La Rioja. Dos zonas ya establecidas; se requiere definir las especies adecuadas según normativa dispersa.
 - Conversación: La persona necesita habilitar el vuelco de efluentes de una veterinaria de animales de granja en San Juan.
-  Mensaje: Necesito la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
+  Mensaje: Habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
 - Conversación: La persona necesita una habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan. El asistente le ofrece una visita y hacer el relevamiento.
-  Mensaje: Necesito la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
+  Mensaje: Habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
 - Conversación: La persona necesita la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan. En la charla dice que quiere trabajar con ÜILKA. El asistente propone ocuparse de todo y visitar el establecimiento.
-  Mensaje: Necesito la habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
+  Mensaje: Habilitación de vuelco de efluentes para una veterinaria de animales de granja en San Juan.
 - Conversación: La persona pregunta cuánto cuesta un estudio de impacto ambiental.
-  Mensaje: Quiero consultar cuánto cuesta un estudio de impacto ambiental.
-- Conversación: La persona necesita una auditoría ambiental para una planta en Buenos Aires.
-  Mensaje: Necesito una auditoría ambiental para una planta en Buenos Aires.`;
+  Mensaje: Consulta por el costo de un estudio de impacto ambiental.
+- Conversación: La persona tiene una huerta en el sur de Neuquén y quiere un sistema de riego sustentable. Cuenta con un río cercano, un canal de riego y compost grande; pregunta si también puede servir.
+  Mensaje: Sistema de riego sustentable para una huerta en el sur de Neuquén. Cuenta con un río cercano, un canal de riego y compost grande; consulta si puede aprovecharlo en el proyecto.`;

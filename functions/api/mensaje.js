@@ -17,7 +17,7 @@ function tidy(text) {
     .replace(/^["“'«]+|["”'»]+$/g, "")
     .replace(/^hola[^.!?\n]{0,20}[.!,]?\s*/i, "")
     .trim()
-    .slice(0, 600);
+    .slice(0, 400);
 }
 
 export async function onRequestPost({ request, env }) {
