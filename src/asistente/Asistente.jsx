@@ -13,12 +13,12 @@ import { BRAND, CONTACT } from "../contenido";
 import { Bubbles, Microscope } from "../decoracion";
 
 const SUGGESTIONS = [
-  "Necesito regularizar ambientalmente mi empresa o actividad",
-  "Tengo una inspección o intimación ambiental y necesito orientación",
   "Necesito una evaluación de impacto ambiental para un proyecto",
-  "Quiero mejorar la gestión de residuos de mi empresa",
-  "Quiero reducir el consumo de agua y mejorar el manejo de efluentes",
-  "Quiero medir y mejorar el desempeño ambiental de mi organización",
+  "Tengo un incumplimiento ambiental y quiero regularizarlo",
+  "Quiero preparar mi empresa para una auditoría ambiental",
+  "Necesito diseñar el tratamiento de efluentes de mi actividad",
+  "Quiero mejorar la gestión y el tratamiento de los residuos de mi empresa",
+  "Quiero diseñar un sistema de riego eficiente e incorporar energía solar",
 ];
 
 const PRIVACY = "La conversación no se guarda en el sitio, pero se envía a Gemini para responder. En el nivel gratuito Google puede usarla para mejorar sus productos y revisarla; no compartas datos sensibles.";
