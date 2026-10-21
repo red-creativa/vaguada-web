@@ -391,7 +391,7 @@ function Intro() {
           Contanos qué necesitás
         </h1>
         <p className="text-base sm:text-lg leading-relaxed text-[var(--e-body)] max-w-[46ch]">
-          Si tenés una empresa y necesitás resolver un tema ambiental, desarrollar una solución de ingeniería o regularizar tu situación normativa, contanos. Si además tenés un proyecto sustentable, queremos conocerlo. También podés consultarnos por cualquier otro tema ambiental.
+          Si tenés una empresa y necesitás resolver un tema ambiental, desarrollar una solución de ingeniería o regularizar tu situación normativa, contanos. Si además tenés un proyecto sustentable, queremos conocerlo. También podés consultarnos por cualquier otra inquietud.
         </p>
       </div>
       <p className="flex items-start gap-2.5 px-4 py-3 bg-white/70 ring-1 ring-[#1b4a5a1f] text-sm text-[var(--e-body)]">
