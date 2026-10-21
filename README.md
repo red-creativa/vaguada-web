@@ -70,7 +70,7 @@ Todo el contenido está en constantes al principio de `src/UilkaLanding.jsx`:
 
 ## Comportamiento
 
-- **Escritorio**: diapositivas a pantalla completa con scroll-snap y navegación lateral por puntos. Orden: Inicio → Llave en mano → Áreas (3) → Sectores → Equipo → Contacto. En pantallas bajas una diapositiva puede crecer en vez de cortar contenido.
+- **Escritorio**: diapositivas a pantalla completa con scroll-snap y navegación lateral por puntos. Orden: Inicio → Llave en mano → Áreas (3) → Proyectos de inversión → Sectores → Equipo → Contacto. En pantallas bajas una diapositiva puede crecer en vez de cortar contenido.
 - **Tablets táctiles**: las mismas secciones en una página continua, sin snap.
 - **Móvil (≤ 767 px)**: diapositivas con fundido al deslizar; las áreas en un carrusel horizontal. Si una diapositiva no entra en pantalla, primero se desplaza y recién después pasa a la siguiente.
 - Las tarjetas de área giran al hacer clic o tocar (y con Enter o espacio).

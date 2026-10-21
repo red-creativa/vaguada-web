@@ -122,6 +122,56 @@ const PROCESS_STEPS = [
   { icon: Deliver, lead: "Entrega", rest: ": permiso aprobado u obra en marcha." },
 ];
 
+const INVESTMENT_STEPS = [
+  "Oportunidad de mejora",
+  "Evaluación y prefactibilidad",
+  "Desarrollo del proyecto",
+];
+
+function InvestmentStageVisual({ index, className }) {
+  if (index === 0) {
+    return (
+      <svg viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
+        <path d="M22 27a10 10 0 1 1 20 0c0 4-2.4 6.2-4.3 8.7-1.1 1.4-1.7 3-1.7 4.8H28c0-1.8-.6-3.4-1.7-4.8C24.4 33.2 22 31 22 27Z" fill="#75cbe333" stroke="currentColor" strokeWidth="2.5" />
+        <path d="M28 44h8M29.5 49h5M32 3v7M10 27h7M47 27h7M15 10l5 5M49 10l-5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" />
+        <path d="m46 39 2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4Z" fill="currentColor" opacity=".55" />
+      </svg>
+    );
+  }
+
+  if (index === 1) {
+    return (
+      <span className={`relative flex items-center justify-center text-[var(--e-accent)] ${className}`} aria-hidden="true">
+        <span className="absolute -left-1 top-0 font-syne text-2xl sm:text-3xl font-extrabold opacity-70">$</span>
+        <Circular className="w-12 h-12 sm:w-14 sm:h-14" />
+        <span className="absolute -right-1 bottom-0 font-syne text-2xl sm:text-3xl font-extrabold opacity-70">$</span>
+      </span>
+    );
+  }
+
+  return (
+    <span className={`relative flex items-center justify-center text-[var(--e-accent)] ${className}`} aria-hidden="true">
+      <Design className="w-12 h-12 sm:w-14 sm:h-14 -rotate-6" />
+      <Infrastructure className="absolute w-9 h-9 sm:w-10 sm:h-10 translate-x-5 translate-y-4 text-[var(--e-icon)]" />
+    </span>
+  );
+}
+
+function InvestmentStages({ className = "" }) {
+  return (
+    <ol className={`grid grid-cols-3 gap-3 sm:gap-6 ${className}`}>
+      {INVESTMENT_STEPS.map((step, index) => (
+        <li key={step} className="flex flex-col items-center text-center">
+          <InvestmentStageVisual index={index} className="w-16 h-16 sm:w-24 sm:h-24 text-[var(--e-accent)]" />
+          <h3 className="mt-3 sm:mt-5 max-w-[16ch] font-syne text-sm sm:text-xl lg:text-2xl font-extrabold leading-tight text-stone-950">
+            {step}
+          </h3>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 const AREAS_PER_SLIDE = 3;
 const AREAS_PAGE_COUNT = Math.ceil(AREAS.length / AREAS_PER_SLIDE);
 // Llave en mano va antes de las áreas: primero se entiende cómo trabajamos,
@@ -130,6 +180,7 @@ const SLIDE_LABELS = [
   "Inicio",
   "Llave en Mano",
   ...Array.from({ length: AREAS_PAGE_COUNT }).map((_, i) => `Áreas ${i + 1}/${AREAS_PAGE_COUNT}`),
+  "Proyectos de inversión",
   "Sectores",
   "Equipo",
   "Contacto",
@@ -653,6 +704,32 @@ function ProcessSlide() {
   );
 }
 
+function InvestmentSlide() {
+  return (
+    <section className={`${SLIDE_BASE} justify-center slide-bg-tint py-8 sm:py-10`}>
+      <SectionBackdrop
+        image={IMAGES.processBg}
+        imageClass="opacity-[0.12]"
+        gradientClass="bg-gradient-to-r from-[#f4f9fb] via-[#f4f9fb]/90 to-[#e5f1f6]/75"
+      />
+      <div className="slide-content max-w-7xl mx-auto w-full relative z-10">
+        <div className="max-w-5xl mb-10 sm:mb-12">
+          <h2 className="font-syne text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-950 tracking-tight leading-[1.08]">
+            También desarrollamos proyectos de inversión.
+          </h2>
+          <p className="max-w-3xl mt-4 text-sm sm:text-base lg:text-lg leading-relaxed text-stone-600">
+            Cada empresa tiene oportunidades por descubrir. En ÜILKA conversamos, identificamos posibilidades y las
+            transformamos en proyectos de ingeniería con potencial de inversión.
+          </p>
+        </div>
+
+        <InvestmentStages />
+      </div>
+      <ScrollArrowHint />
+    </section>
+  );
+}
+
 function SectorsSlide() {
   return (
     <section className={`${SLIDE_BASE} justify-center slide-bg-tint py-8 sm:py-10`}>
@@ -871,6 +948,7 @@ function DesktopSlides({ onCopyEmail, copied, onContact }) {
       {Array.from({ length: pageCount }).map((_, i) => (
         <AreasSlide key={i} pageIndex={i} pageCount={pageCount} flippedIds={flippedIds} onToggle={toggleFlipped} />
       ))}
+      <InvestmentSlide />
       <SectorsSlide />
       <TeamSlide />
       <ContactSlide onCopyEmail={onCopyEmail} copied={copied} />
@@ -1100,6 +1178,29 @@ function MobileProcess() {
   );
 }
 
+function MobileInvestment() {
+  return (
+    <section className="relative min-h-full flex flex-col justify-center px-4 py-8 overflow-hidden">
+      <SectionBackdrop
+        image={IMAGES.processBgMobile}
+        imageClass="opacity-[0.12]"
+        gradientClass="bg-gradient-to-b from-[#f4f9fb]/80 via-[#f4f9fb]/95 to-[#f4f9fb]"
+      />
+      <div className="relative z-10 mb-6">
+        <h2 className="font-syne text-3xl font-extrabold text-stone-950 tracking-tight leading-tight">
+          También desarrollamos proyectos de inversión.
+        </h2>
+        <p className="mt-3 text-sm leading-relaxed text-stone-600">
+          Cada empresa tiene oportunidades por descubrir. En ÜILKA conversamos, identificamos posibilidades y las
+          transformamos en proyectos de ingeniería con potencial de inversión.
+        </p>
+      </div>
+
+      <InvestmentStages className="relative z-10" />
+    </section>
+  );
+}
+
 function MobileSectors() {
   return (
     <section className="relative min-h-full flex flex-col justify-center px-4 py-14 overflow-hidden">
@@ -1204,7 +1305,7 @@ function MobileContact({ onCopyEmail, copied }) {
   );
 }
 
-const MOBILE_SLIDE_COUNT = 6;
+const MOBILE_SLIDE_COUNT = 7;
 const MOBILE_SWIPE_THRESHOLD = 45;
 
 function MobileLanding({ onCopyEmail, copied }) {
@@ -1274,12 +1375,15 @@ function MobileLanding({ onCopyEmail, copied }) {
         <MobileAreasCarousel />
       </div>
       <div ref={slideRef(3)} className={slideClass(3)} aria-hidden={slide !== 3}>
-        <MobileSectors />
+        <MobileInvestment />
       </div>
       <div ref={slideRef(4)} className={slideClass(4)} aria-hidden={slide !== 4}>
-        <MobileTeam />
+        <MobileSectors />
       </div>
       <div ref={slideRef(5)} className={slideClass(5)} aria-hidden={slide !== 5}>
+        <MobileTeam />
+      </div>
+      <div ref={slideRef(6)} className={slideClass(6)} aria-hidden={slide !== 6}>
         <MobileContact onCopyEmail={onCopyEmail} copied={copied} />
       </div>
       <MobileSlideArrows
