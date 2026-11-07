@@ -174,12 +174,10 @@ function InvestmentStages({ className = "" }) {
 
 const AREAS_PER_SLIDE = 3;
 const AREAS_PAGE_COUNT = Math.ceil(AREAS.length / AREAS_PER_SLIDE);
-// Llave en mano va antes de las áreas: primero se entiende cómo trabajamos,
-// después qué áreas coordinamos.
 const SLIDE_LABELS = [
   "Inicio",
-  "Llave en Mano",
   ...Array.from({ length: AREAS_PAGE_COUNT }).map((_, i) => `Áreas ${i + 1}/${AREAS_PAGE_COUNT}`),
+  "Llave en Mano",
   "Proyectos de inversión",
   "Sectores",
   "Equipo",
@@ -944,10 +942,10 @@ function DesktopSlides({ onCopyEmail, copied, onContact }) {
   return (
     <div className="bg-[#f4f9fb] text-stone-900 selection:bg-[#bfe9f5] selection:text-[#0f2a33]">
       <HeroSlide onContact={onContact} />
-      <ProcessSlide />
       {Array.from({ length: pageCount }).map((_, i) => (
         <AreasSlide key={i} pageIndex={i} pageCount={pageCount} flippedIds={flippedIds} onToggle={toggleFlipped} />
       ))}
+      <ProcessSlide />
       <InvestmentSlide />
       <SectorsSlide />
       <TeamSlide />
@@ -1369,10 +1367,10 @@ function MobileLanding({ onCopyEmail, copied }) {
         <MobileHero onContact={() => goTo(MOBILE_SLIDE_COUNT - 1)} />
       </div>
       <div ref={slideRef(1)} className={slideClass(1)} aria-hidden={slide !== 1}>
-        <MobileProcess />
+        <MobileAreasCarousel />
       </div>
       <div ref={slideRef(2)} className={slideClass(2)} aria-hidden={slide !== 2}>
-        <MobileAreasCarousel />
+        <MobileProcess />
       </div>
       <div ref={slideRef(3)} className={slideClass(3)} aria-hidden={slide !== 3}>
         <MobileInvestment />
