@@ -8,7 +8,7 @@ export const BRAND = {
   email: "salvadoresfrancisco@gmail.com",
   tagline: "Soluciones ambientales para industrias e instituciones",
   description: "Desarrollos aplicados al sector industrial, infraestructura y recursos naturales.",
-  location: "La Rioja y provincias vecinas, Argentina",
+  location: "San Juan y provincias vecinas, Argentina",
   footerBadge: "ÜILKA — Soluciones ambientales para industrias e instituciones",
 };
 
@@ -169,6 +169,6 @@ export const CONTACT = {
   phoneDisplay: "+54 3804 49-4798",
   phoneHref: "tel:+543804494798",
   whatsappUrl: "https://wa.me/543804494798",
-  location: "La Rioja y provincias vecinas, Argentina",
+  location: "San Juan y provincias vecinas, Argentina",
   signature: "ÜILKA — Soluciones ambientales para industrias e instituciones",
 };

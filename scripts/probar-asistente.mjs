@@ -84,10 +84,10 @@ const CASOS = [
     cat: "provincias-vecinas",
     turnos: [
       "necesito la habilitación de vuelco de efluentes",
-      "es en san juan. es para una veterinaria de animales de granja.",
+      "es en la rioja. es para una veterinaria de animales de granja.",
     ],
-    chequeos: [no(/fuera de (la )?zona|fuera de La Rioja|red de (profesionales|confianza)|conectar(me)? con alguien/i, "presenta San Juan como fuera de zona o deriva a terceros")],
-    final: [sinResumen(/fuera de (la )?zona|fuera de La Rioja|red de (profesionales|confianza)|conectar(me)? con alguien/i, "el mensaje presenta San Juan como fuera de zona o deriva a terceros")],
+    chequeos: [no(/fuera de (la )?zona|fuera de San Juan|red de (profesionales|confianza)|conectar(me)? con alguien/i, "presenta La Rioja como fuera de zona o deriva a terceros")],
+    final: [sinResumen(/fuera de (la )?zona|fuera de San Juan|red de (profesionales|confianza)|conectar(me)? con alguien/i, "el mensaje presenta La Rioja como fuera de zona o deriva a terceros")],
   },
   { cat: "amplias", turnos: ["tengo un loteo"], chequeos: [] },
   { cat: "amplias", turnos: ["qué hacen ustedes?"], chequeos: [] },
